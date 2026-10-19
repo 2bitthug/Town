@@ -1,4 +1,4 @@
-# Digital Town — Group 8: Private / Beta Launch
+# Town — Group 8: Private / Beta Launch
 
 This group adds the controlled beta launch layer.
 

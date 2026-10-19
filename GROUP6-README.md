@@ -1,4 +1,4 @@
-# Digital Town — Group 6: Seed the Digital Town
+# Town — Group 6: Seed the Town
 
 Run `supabase/group6-seed-town.sql` once in the same Supabase project.
 

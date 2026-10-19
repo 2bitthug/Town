@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 
-function Frame({ title, eyebrow = 'DIGITAL TOWN', children }) {
+function Frame({ title, eyebrow = 'TOWN', children }) {
   return <section className="town-page"><div className="town-page-heading"><div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1></div></div>{children}</section>
 }
 

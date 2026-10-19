@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test';
 
-test('user can sign in and navigate Digital Town', async ({ page, isMobile }) => {
+test('user can sign in and navigate Town', async ({ page, isMobile }) => {
   test.skip(isMobile, 'Mobile navigation is tested separately');
 
   await page.goto('/');

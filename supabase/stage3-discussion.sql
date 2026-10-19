@@ -1,5 +1,5 @@
 -- Stage 3: posting and discussion permissions/functions.
--- Safe to run after the Digital Town foundation migration.
+-- Safe to run after the Town foundation migration.
 
 alter table public.posts enable row level security;
 alter table public.comments enable row level security;

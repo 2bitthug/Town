@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 
-function Frame({ title, eyebrow = 'DIGITAL TOWN', children }) {
+function Frame({ title, eyebrow = 'TOWN', children }) {
   return <section className="town-page"><div className="town-page-heading"><div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1></div></div>{children}</section>
 }
 
@@ -17,7 +17,7 @@ const checks = [
 export function BetaLaunchPage({ currentUserId }) {
   const [status, setStatus] = useState(null)
   const [loading, setLoading] = useState(true)
-  const [checksDone, setChecksDone] = useState(() => JSON.parse(localStorage.getItem('digital-town-beta-checks') || '{}'))
+  const [checksDone, setChecksDone] = useState(() => JSON.parse(localStorage.getItem('town-beta-checks') || '{}'))
 
   useEffect(() => {
     let alive = true
@@ -33,7 +33,7 @@ export function BetaLaunchPage({ currentUserId }) {
   const toggle = (key) => {
     const next = { ...checksDone, [key]: !checksDone[key] }
     setChecksDone(next)
-    localStorage.setItem('digital-town-beta-checks', JSON.stringify(next))
+    localStorage.setItem('town-beta-checks', JSON.stringify(next))
   }
 
   const completed = checks.filter(([key]) => checksDone[key]).length

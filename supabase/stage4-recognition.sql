@@ -1,5 +1,5 @@
 -- Stage 4: contribution reputation and automatic recognition.
--- Safe to run after the Digital Town foundation migration.
+-- Safe to run after the Town foundation migration.
 
 create or replace function public.add_reputation_event(
   target_user uuid,
