@@ -1,12 +1,12 @@
 import { test } from '@playwright/test';
 
-test('capture Digital Town layout audit', async ({ page }) => {
+test('capture Town layout audit', async ({ page }) => {
   await page.setViewportSize({
     width: 1280,
     height: 720,
   });
 
-  // Open Digital Town
+  // Open Town
   await page.goto('/');
 
   // Go to Feed to access the login screen

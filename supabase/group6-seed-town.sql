@@ -1,4 +1,4 @@
--- Group 6: Seed the Digital Town
+-- Group 6: Seed the Town
 -- Run once after Groups 1-5.
 -- Requires at least one existing profile; that profile becomes the initial seed owner.
 -- This creates 30 starter communities, categories, topics, memberships, and starter discussions.

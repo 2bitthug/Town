@@ -168,7 +168,9 @@ for each row execute procedure public.handle_new_user();
 -- Profile details for discovery and the settings page.
 alter table public.profiles add column if not exists bio text not null default '' check (char_length(bio) <= 240);
 alter table public.profiles add column if not exists interests text not null default '' check (char_length(interests) <= 300);
-alter table public.profiles add column if not exists avatar_url text;
+alter table public.profiles drop column if exists avatar_url;
+alter table public.profiles drop column if exists avatar_preset;
+alter table public.profiles add column if not exists avatar_id text not null default 'avatar-01' check (avatar_id ~ '^avatar-(0[1-9]|1[01]|1[3-9]|2[01])$');
 grant update on public.profiles to authenticated;
 
 -- Message pinning.

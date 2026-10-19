@@ -1,4 +1,4 @@
-# Digital Town — Group 7: Beta Readiness
+# Town — Group 7: Beta Readiness
 
 This group prepares the platform for controlled beta testing.
 

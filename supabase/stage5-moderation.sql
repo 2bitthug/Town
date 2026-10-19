@@ -1,5 +1,5 @@
 -- Stage 5: moderation policy refresh
--- Safe to run after the Digital Town foundation migration.
+-- Safe to run after the Town foundation migration.
 
 alter table public.reports enable row level security;
 alter table public.moderation_actions enable row level security;
