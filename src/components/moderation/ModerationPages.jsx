@@ -47,11 +47,11 @@ export function ModerationPage({ currentUserId }) {
   }
   if (loading) return <Frame title="Moderation queue"><State>Loading…</State></Frame>
   if (error) return <Frame title="Moderation queue"><div className="town-error">{error}</div></Frame>
-  if (!allowed) return <Frame title="Moderation"><State>You are not a moderator or owner of any community yet.</State></Frame>
+  if (!allowed) return <Frame title="Moderation"><State>You are not a moderator or owner of any downtown yet.</State></Frame>
   return <Frame title="Moderation queue">
-    <p className="widget-help">Review reports from communities where you are a moderator or owner. Actions are recorded in the moderation log.</p>
+    <p className="widget-help">Review reports from downtowns where you are a moderator or owner. Actions are recorded in the moderation log.</p>
     {!reports.length ? <div className="town-empty">No open reports.</div> : <div className="moderation-list">{reports.map(r => <article className="moderation-card" key={r.id}>
-      <div><p className="eyebrow">{r.community?.name || 'COMMUNITY'} · {r.status}</p><h3>{r.post ? r.post.title : 'Reported comment'}</h3><p>{r.comment ? r.comment.body : r.reason}</p><small>Reason: {r.reason}</small></div>
+      <div><p className="eyebrow">{r.community?.name || 'DOWNTOWN'} · {r.status}</p><h3>{r.post ? r.post.title : 'Reported comment'}</h3><p>{r.comment ? r.comment.body : r.reason}</p><small>Reason: {r.reason}</small></div>
       <div className="actions"><button className="button danger" disabled={busy === r.id} onClick={() => act(r, r.post_id ? 'remove_post' : 'remove_comment')}>{r.post_id ? 'Remove post' : 'Remove comment'}</button><button className="button secondary" disabled={busy === r.id} onClick={() => act(r, 'dismiss')}>Dismiss</button></div>
     </article>)}</div>}
   </Frame>

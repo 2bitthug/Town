@@ -308,7 +308,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
 
     centerText(
       ctx,
-      safeText(community, 'Choose your community'),
+      safeText(community, 'Choose your downtown'),
       640,
       886
     )
@@ -383,7 +383,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
 
       <p className="widget-help">
         Create a downloadable card with your profile photo, bio, username,
-        days joined, reputation, pet and most-active community. Change the
+        days joined, reputation, pet and most-active downtown. Change the
         fields before exporting; the card is generated in your browser.
       </p>
 
@@ -421,7 +421,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
 
           <div className="town-share-active">
             <span>Most active in:</span>
-            <strong>{community || 'Your community'}</strong>
+            <strong>{community || 'Your downtown'}</strong>
           </div>
 
           {showPet && (
@@ -451,7 +451,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
           <input
             value={community}
             onChange={(e) => setCommunity(e.target.value)}
-            placeholder="Community name"
+            placeholder="Downtown name"
           />
         </label>
 

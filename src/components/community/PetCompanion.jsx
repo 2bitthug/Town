@@ -8,7 +8,7 @@ export function PetCompanion({ userId, petId }) {
   const key = userId ? `town-pet-companion:${userId}` : 'town-pet-companion:guest'
   const [pet, setPet] = useState({ name: defaultName, state: 'idle', care: 3, progress: 0, accessory: 'none', personality: 'curious', animation: 'breathe' })
   const [open, setOpen] = useState(false)
-  const [suggestion, setSuggestion] = useState('Explore a community that matches your interests.')
+  const [suggestion, setSuggestion] = useState('Explore a downtown that matches your interests.')
   const [saved, setSaved] = useState(false)
   const sprite = petId && petId !== 'none' ? `/pets/${petId}.svg` : ''
 
@@ -39,7 +39,7 @@ export function PetCompanion({ userId, petId }) {
     const onReact = (event) => {
       const kind = event?.detail?.kind
       if (kind === 'post-published') { setState('reacting'); setPet(p => ({ ...p, progress: Math.min(100, p.progress + 10) })); setSuggestion('Nice work publishing! Your next quest: help someone with an answer.') }
-      else if (kind === 'community-opened') { setState('reacting'); setSuggestion(event?.detail?.label ? `Curious about ${event.detail.label}? Take a look around.` : 'Explore a community and see what people are discussing.') }
+      else if (kind === 'community-opened') { setState('reacting'); setSuggestion(event?.detail?.label ? `Curious about ${event.detail.label}? Take a look around.` : 'Explore a downtown and see what people are discussing.') }
       else if (kind === 'message-received') { setState('reacting'); setSuggestion('You have a new message. Open Chat when you are ready.'); }
       else return
       setTimeout(() => setState('idle'), 4200)

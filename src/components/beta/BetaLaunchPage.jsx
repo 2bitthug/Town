@@ -7,10 +7,10 @@ function Frame({ title, eyebrow = 'TOWN', children }) {
 
 const checks = [
   ['Account', 'Sign in, sign out, and confirm your profile loads correctly.'],
-  ['Discovery', 'Browse communities, search, and try each feed sorting option.'],
+  ['Discovery', 'Browse downtowns, search, and try each feed sorting option.'],
   ['Contribution', 'Create a post, vote, save it, and participate in discussion.'],
-  ['Community', 'Join a community and check its topics, members, and rules.'],
-  ['Safety', 'Check reporting, moderation, and community management behaviour.'],
+  ['Downtown', 'Join a downtown and check its topics, members, and rules.'],
+  ['Safety', 'Check reporting, moderation, and downtown management behaviour.'],
   ['Feedback', 'Report anything confusing or broken through Beta feedback.']
 ]
 
@@ -61,7 +61,7 @@ export function BetaLaunchPage({ currentUserId }) {
 
     <div className="actions beta-launch-actions">
       <a className="button primary" href="#/beta-feedback">Report beta feedback</a>
-      <a className="button secondary" href="#/communities">Browse communities</a>
+      <a className="button secondary" href="#/communities">Browse downtowns</a>
     </div>
   </Frame>
 }

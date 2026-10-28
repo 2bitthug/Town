@@ -6,7 +6,7 @@ const SORTS = [
   ['discussed', 'Most discussed'],
 ]
 
-function PageFrame({ eyebrow = 'TOWN', title, children, actions }) {
+export function PageFrame({ eyebrow = 'TOWN', title, children, actions }) {
   return (
     <section className="town-page">
       <div className="town-page-heading">
@@ -36,7 +36,7 @@ export function TownHomePage() {
         <div className="town-hero-copy">
           <p className="town-kicker">A TOWN BUILT BY ITS MEMBERS</p>
           <h2>The platform helps you find things. It doesn’t decide what you should care about.</h2>
-          <p>Browse communities, search deliberately, and choose how discussions are sorted. No hidden recommendation score.</p>
+          <p>Browse downtowns, search deliberately, and choose how discussions are sorted. No hidden recommendation score.</p>
         </div>
       </div>
     </PageFrame>
@@ -87,17 +87,17 @@ export function CommunitiesPage() {
 
   return (
     <PageFrame
-      eyebrow="COMMUNITIES"
+      eyebrow="DOWNTOWNS"
       title="Choose where to spend your attention."
-      actions={<a className="button primary" href="#/create-community">Create community</a>}
+      actions={<a className="button primary" href="#/create-community">Create downtown</a>}
     >
-      <div className="town-directory-intro"><p>Start with a small set of communities. Explore the full directory whenever you want.</p><button type="button" className="button secondary" onClick={() => setShowAll(v => !v)}>{showAll ? 'Show curated selection' : `Show all ${communities.length} communities`}</button></div>
+      <div className="town-directory-intro"><p>Start with a small set of downtowns. Explore the full directory whenever you want.</p><button type="button" className="button secondary" onClick={() => setShowAll(v => !v)}>{showAll ? 'Show curated selection' : `Show all ${communities.length} downtowns`}</button></div>
       <div className="town-directory-controls">
-        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search communities…" aria-label="Search communities" />
+        <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search downtowns…" aria-label="Search downtowns" />
         <select value={category} onChange={e => setCategory(e.target.value)} aria-label="Filter by category">
           {categories.map(item => <option key={item}>{item}</option>)}
         </select>
-        <select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort communities">
+        <select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort downtowns">
           <option value="latest">Latest</option>
           <option value="name">Name</option>
         </select>
@@ -105,7 +105,7 @@ export function CommunitiesPage() {
 
       {loading && <Loading />}
       {error && <div className="town-error">{error}<button className="button secondary" onClick={load}>Retry</button></div>}
-      {!loading && !error && !filtered.length && <Empty>{query || category !== 'All' ? 'No communities match your filters.' : 'No communities have been seeded yet.'}</Empty>}
+      {!loading && !error && !filtered.length && <Empty>{query || category !== 'All' ? 'No downtowns match your filters.' : 'No downtowns have been seeded yet.'}</Empty>}
       <div className="community-grid">
         {curated.map(community => (
           <a className="community-card" href={`#/community/${community.slug}`} key={community.id}>
@@ -113,8 +113,8 @@ export function CommunitiesPage() {
             <div className="community-card-body">
               <div className="community-card-topline"><span>{community.category}</span></div>
               <h2>{community.name}</h2>
-              <p>{community.description || 'A community in the town.'}</p>
-              <span className="community-open">Open community →</span>
+              <p>{community.description || 'A downtown in the town.'}</p>
+              <span className="community-open">Open downtown →</span>
             </div>
           </a>
         ))}
@@ -141,7 +141,7 @@ export function CommunityPage({ slug, currentUserId }) {
       .eq('slug', slug)
       .maybeSingle()
     if (communityError || !communityData) {
-      setError(communityError?.message || 'Community not found.')
+      setError(communityError?.message || 'Downtown not found.')
       setLoading(false)
       return
     }
@@ -150,7 +150,7 @@ export function CommunityPage({ slug, currentUserId }) {
       supabase.from('posts').select('id,title,body,post_type,created_at,is_pinned,author_id').eq('community_id', communityData.id).eq('status', 'published').order('created_at', { ascending: false }).limit(20),
       currentUserId ? supabase.from('community_memberships').select('role').eq('community_id', communityData.id).eq('user_id', currentUserId).maybeSingle() : Promise.resolve({ data: null })
     ])
-    if (categoryError || postError) setError(categoryError?.message || postError?.message || 'Unable to load community.')
+    if (categoryError || postError) setError(categoryError?.message || postError?.message || 'Unable to load downtown.')
     setCommunity(communityData)
     setCategories(categoryData || [])
     setPosts(postData || [])
@@ -175,14 +175,14 @@ export function CommunityPage({ slug, currentUserId }) {
     setBusy(false)
   }
 
-  if (loading) return <PageFrame eyebrow="COMMUNITY" title="Loading…"><Loading /></PageFrame>
-  if (error && !community) return <PageFrame eyebrow="COMMUNITY" title="Community unavailable"><div className="town-error">{error}<button className="button secondary" onClick={load}>Retry</button></div></PageFrame>
+  if (loading) return <PageFrame eyebrow="DOWNTOWN" title="Loading…"><Loading /></PageFrame>
+  if (error && !community) return <PageFrame eyebrow="DOWNTOWN" title="Downtown unavailable"><div className="town-error">{error}<button className="button secondary" onClick={load}>Retry</button></div></PageFrame>
 
   return (
     <PageFrame
       eyebrow={community.category}
       title={community.name}
-      actions={<><a className="button primary" href="#/create-post">New post</a>{currentUserId && <button className={`button ${member ? 'secondary' : 'primary'}`} disabled={busy} onClick={toggleMembership}>{busy ? 'Working…' : member ? 'Leave community' : 'Join community'}</button>}</>}
+      actions={<>{/* New post button */}<a className="button primary" href="#/create-post">New post</a>{slug === 'city-mumbai' && (<>{/* Section links */}<a className="button secondary" href={`#/library/${slug}`}>Library</a><a className="button secondary" href={`#/wiki/${slug}`}>Wiki</a><a className="button secondary" href={`#/updates/${slug}`}>Updates</a></>)}{currentUserId && (<button className={`button ${member ? 'secondary' : 'primary'}`} disabled={busy} onClick={toggleMembership}>{busy ? 'Working…' : member ? 'Leave downtown' : 'Join downtown'}</button>)}</>}
     >
       <div className="community-header">
         <p>{community.description || 'No description yet.'}</p>
@@ -194,7 +194,7 @@ export function CommunityPage({ slug, currentUserId }) {
         <section>
           <div className="town-section-heading"><div><p className="eyebrow">DISCUSSION</p><h2>Recent posts</h2></div></div>
           {!posts.length ? <Empty>No posts yet. Be the first person to start a discussion.</Empty> : <div className="post-list">
-            {posts.map(post => <article className="post-card" key={post.id}>
+            {posts.map(post => <article className="post-card" key={post.id} onClick={() => window.location.hash = `#/post/${post.id}`} style={{ cursor: 'pointer' }}>
               {post.is_pinned && <span className="post-pin">PINNED</span>}
               <span className="post-type">{post.post_type}</span>
               <h3><a className="post-title-link" href={`#/post/${post.id}`}>{post.title}</a></h3>
@@ -204,8 +204,8 @@ export function CommunityPage({ slug, currentUserId }) {
           </div>}
         </section>
         <aside className="community-sidebar">
-          <div className="town-side-card"><p className="eyebrow">TOPICS</p><h3>Community structure</h3>{categories.length ? <ul>{categories.map(c => <li key={c.id}><strong>{c.name}</strong><span>{c.description}</span></li>)}</ul> : <p>No categories yet.</p>}</div>
-          <div className="town-side-card"><p className="eyebrow">RULES</p><h3>Community rules</h3><p>{community.rules || 'No rules have been published yet.'}</p></div>
+          <div className="town-side-card"><p className="eyebrow">TOPICS</p><h3>Downtown structure</h3>{categories.length ? <ul>{categories.map(c => <li key={c.id}><strong>{c.name}</strong><span>{c.description}</span></li>)}</ul> : <p>No categories yet.</p>}</div>
+          <div className="town-side-card"><p className="eyebrow">RULES</p><h3>Downtown rules</h3><p>{community.rules || 'No rules have been published yet.'}</p></div>
         </aside>
       </div>
     </PageFrame>
@@ -238,7 +238,7 @@ export function CreateCommunityPage({ currentUserId }) {
     window.location.hash = `#/community/${data.slug}`
   }
 
-  return <PageFrame eyebrow="COMMUNITIES" title="Create a community">
+  return <PageFrame eyebrow="DOWNTOWNS" title="Create a downtown">
     <form className="town-form" onSubmit={submit}>
       <label>Name<input value={form.name} onChange={e => update('name', e.target.value)} minLength={2} maxLength={80} required placeholder="e.g. Bengaluru Builders" /></label>
       <label>Slug<input value={form.slug} onChange={e => update('slug', e.target.value)} maxLength={80} required placeholder="bengaluru-builders" /></label>
@@ -246,7 +246,7 @@ export function CreateCommunityPage({ currentUserId }) {
       <label>Description<textarea value={form.description} onChange={e => update('description', e.target.value)} maxLength={500} placeholder="What belongs here?" /></label>
       <label>Rules<textarea value={form.rules} onChange={e => update('rules', e.target.value)} maxLength={5000} placeholder="Keep the discussion useful and respectful." /></label>
       {error && <div className="town-error">{error}</div>}
-      <div className="town-form-actions"><button className="button primary" disabled={busy}>{busy ? 'Creating…' : 'Create community'}</button><a className="button secondary" href="#/communities">Cancel</a></div>
+      <div className="town-form-actions"><button className="button primary" disabled={busy}>{busy ? 'Creating…' : 'Create downtown'}</button><a className="button secondary" href="#/communities">Cancel</a></div>
     </form>
   </PageFrame>
 }

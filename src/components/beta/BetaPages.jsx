@@ -78,9 +78,9 @@ export function LegalPage({ kind }) {
       title: 'Terms',
       eyebrow: 'PLATFORM RULES',
       sections: [
-        ['Use of the town', 'Use communities, posts, comments, voting, and messaging lawfully and in a way that does not deliberately disrupt other users.'],
+        ['Use of the town', 'Use downtowns, posts, comments, voting, and messaging lawfully and in a way that does not deliberately disrupt other users.'],
         ['Content', 'You are responsible for content you submit. Do not post material you do not have the right to publish, or content intended to harass, deceive, or facilitate abuse.'],
-        ['Moderation', 'Community owners and moderators may remove content or restrict participation under published community rules. Platform administrators may act on serious or repeated violations.'],
+        ['Moderation', 'Downtown owners and moderators may remove content or restrict participation under published downtown rules. Platform administrators may act on serious or repeated violations.'],
         ['Beta status', 'During beta testing, features may change, be disabled, or be reset as the platform is evaluated.']
       ]
     },
@@ -88,9 +88,9 @@ export function LegalPage({ kind }) {
       title: 'Privacy',
       eyebrow: 'DATA PRACTICES',
       sections: [
-        ['Account data', 'The platform stores account and profile information required to operate accounts, communities, posts, discussions, moderation, and recognition features.'],
-        ['User content', 'Posts, comments, votes, saves, community memberships, and moderation records are stored as part of operating the platform.'],
-        ['Visibility', 'Public community content and public profiles may be visible to other users. Private account information is not intentionally exposed through public profile views.'],
+        ['Account data', 'The platform stores account and profile information required to operate accounts, downtowns, posts, discussions, moderation, and recognition features.'],
+        ['User content', 'Posts, comments, votes, saves, downtown memberships, and moderation records are stored as part of operating the platform.'],
+        ['Visibility', 'Public downtown content and public profiles may be visible to other users. Private account information is not intentionally exposed through public profile views.'],
         ['Beta feedback', 'Feedback submitted through the beta form is associated with the submitting account so reports can be followed up and deduplicated.']
       ]
     },

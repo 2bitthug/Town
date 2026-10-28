@@ -395,7 +395,7 @@ function PokerSection() {
       <div className="poker-top"><span>Play money · $1,000 starting stack</span><strong>Pot ${game.pot}</strong></div>
       <div className="poker-table">
         <div className="poker-opponents">{game.players.slice(1).map((p, i) => <div className={`poker-seat ${p.folded ? 'folded' : ''}`} key={p.name}><strong>{p.name}</strong><span>${p.chips}</span><div className="poker-hand-mini"><PokerCard hidden /><PokerCard hidden /></div>{p.folded && <small>Folded</small>}</div>)}</div>
-        <div className="poker-community"><span className="street-label">{game.street.toUpperCase()}</span><div className="poker-cards">{game.community.map((c, i) => <PokerCard key={i} card={c} />)}</div>{!game.community.length && <div className="poker-empty">Community cards</div>}</div>
+        <div className="poker-community"><span className="street-label">{game.street.toUpperCase()}</span><div className="poker-cards">{game.community.map((c, i) => <PokerCard key={i} card={c} />)}</div>{!game.community.length && <div className="poker-empty">Downtown cards</div>}</div>
         <div className="poker-hero"><div><strong>You</strong><span>${hero.chips}</span></div><div className="poker-cards">{hero.hand.map((c, i) => <PokerCard key={i} card={c} />)}</div></div>
       </div>
       <div className="poker-status"><strong>{game.winner || game.status}</strong><span>{game.message}</span></div>
@@ -536,7 +536,7 @@ function SocialSection({ currentUserId }) {
   const loadConnections = useCallback(async () => {
     const { data, error: e } = await supabase.from('connections').select('id,sender_id,receiver_id,status,sender:profiles!connections_sender_id_fkey(id,username,created_at,bio,interests,avatar_id),receiver:profiles!connections_receiver_id_fkey(id,username,created_at,bio,interests,avatar_id)').or(`sender_id.eq.${currentUserId},receiver_id.eq.${currentUserId}`).eq('status', 'accepted')
     const { data: incoming, error: pendingError } = await supabase.from('connections').select('id,sender_id,receiver_id,status,sender:profiles!connections_sender_id_fkey(id,username,created_at,bio,interests,avatar_id)').eq('receiver_id', currentUserId).eq('status', 'pending')
-    if (e || pendingError) setError('We could not load your community connections. Try again.')
+    if (e || pendingError) setError('We could not load your downtown connections. Try again.')
     else { setConnections(data || []); setPending(incoming || []) }
   }, [currentUserId])
 
@@ -548,7 +548,7 @@ function SocialSection({ currentUserId }) {
       const { data, error: e } = await supabase.from('profiles').select('id,username,created_at,bio,interests,avatar_id').ilike('username', `%${term}%`).neq('id', currentUserId).limit(20)
       if (e) throw e
       setUsers(data || [])
-    } catch { setError('We could not search the community right now. Check your connection and try again.') }
+    } catch { setError('We could not search the downtown right now. Check your connection and try again.') }
     finally { setLoading(false) }
   }
 
@@ -711,9 +711,9 @@ function SocialSection({ currentUserId }) {
     return current - previous > 5 * 60 * 1000
   }
 
-  return <Card id="community" eyebrow="10 · Community" title="Chat">
+  return <Card id="community" eyebrow="10 · Downtown" title="Chat">
     <p className="widget-help">Search usernames, connect with people, and use private chat. Double-click a message for quick actions.</p>
-    <form className="input-row" onSubmit={searchUsers}><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search a username" aria-label="Search community usernames" /><button className="button primary" disabled={loading}>{loading ? 'Searching…' : 'Search'}</button></form>
+    <form className="input-row" onSubmit={searchUsers}><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search a username" aria-label="Search downtown usernames" /><button className="button primary" disabled={loading}>{loading ? 'Searching…' : 'Search'}</button></form>
     {error && <p className="status notice" role="status" aria-live="polite">{error}</p>}
     <div className="social-layout">
       <div>
@@ -722,7 +722,7 @@ function SocialSection({ currentUserId }) {
         <h3 className="subheading">Incoming requests</h3>
         <div className="user-list">{pending.map(c => <div className="user-row" key={c.id}><div><strong>{c.sender.username}</strong><span>Wants to connect</span></div><div className="actions"><button className="button secondary" onClick={() => respondToRequest(c.id, 'accepted')}>Accept</button><button className="button secondary" onClick={() => respondToRequest(c.id, 'rejected')}>Decline</button></div></div>)}{!pending.length && <EmptyState title="No pending requests.">New incoming connection requests will appear here.</EmptyState>}</div>
         <h3 className="subheading">Connections</h3>
-        <div className="user-list">{connections.map(c => { const other = c.sender_id === currentUserId ? c.receiver : c.sender; return <button className={`user-row chat-select ${selected?.id === other.id ? 'selected' : ''}`} key={c.id} onClick={() => openChat(other)}><div><strong>{other.username}</strong><span>Connected · Open chat</span></div><span>›</span></button> })}{!connections.length && <EmptyState title="No connections yet.">Search for someone above and send a connection request to start building your community.</EmptyState>}</div>
+        <div className="user-list">{connections.map(c => { const other = c.sender_id === currentUserId ? c.receiver : c.sender; return <button className={`user-row chat-select ${selected?.id === other.id ? 'selected' : ''}`} key={c.id} onClick={() => openChat(other)}><div><strong>{other.username}</strong><span>Connected · Open chat</span></div><span>›</span></button> })}{!connections.length && <EmptyState title="No connections yet.">Search for someone above and send a connection request to start building your downtown.</EmptyState>}</div>
       </div>
       <div className="chat-box">
         {selected ? <>
@@ -758,7 +758,7 @@ function SocialSection({ currentUserId }) {
           <form className="chat-compose" onSubmit={sendMessage}><label className="attach-button" title="Share a photo, video, or file">ï¼‹<input type="file" accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip" onChange={e => uploadAttachment(e.target.files?.[0])} hidden /></label><input value={message} onChange={e => updateTyping(e.target.value)} placeholder="Write a message…" aria-label="Message" /><button className="button primary">Send</button></form>
         </> : <div className="chat-empty"><strong>Select a connection</strong><p>Choose an accepted connection to start a private chat.</p></div>}
       </div>
-    </div><SourceNote>Community data is stored in your account. Chat supports delivery/read states, typing, replies, edits, deletion, reactions, attachments, search, and drafts.</SourceNote>
+    </div><SourceNote>Downtown data is stored in your account. Chat supports delivery/read states, typing, replies, edits, deletion, reactions, attachments, search, and drafts.</SourceNote>
   </Card>
 }
 
@@ -1485,7 +1485,7 @@ function GlobalSearchBar() {
     } catch (e) { setError(e.message || 'Search failed. Please try again.'); setResults({ posts: [], communities: [] }) }
     finally { setLoading(false) }
   }
-  return <section className="town-global-search" aria-label="Search Town"><form onSubmit={search} role="search"><label htmlFor="town-global-search-input">Search Town</label><div><input id="town-global-search-input" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search posts and communities…" autoComplete="off"/><button className="button primary" disabled={loading}>{loading ? 'Searching…' : 'Search'}</button></div></form>{error && <p className="town-global-search-message" role="alert">{error}</p>}{searched && !loading && !error && <div className="town-global-results"><div className="town-global-result-group"><h2>Communities</h2>{results.communities.map(c => <a key={c.id} href={`#/community/${c.slug}`}><strong>{c.name}</strong><span>{c.description || c.category || 'Community'}</span></a>)}{!results.communities.length && <p>No matching communities.</p>}</div><div className="town-global-result-group"><h2>Posts</h2>{results.posts.map(p => <a key={p.id} href={`#/post/${p.id}`}><strong>{p.title}</strong><span>{(p.body || '').slice(0, 120)}</span></a>)}{!results.posts.length && <p>No matching posts.</p>}</div><button className="button secondary" type="button" onClick={() => { setSearched(false); setQuery('') }}>Clear results</button></div>}</section>
+  return <section className="town-global-search" aria-label="Search Town"><form onSubmit={search} role="search"><label htmlFor="town-global-search-input">Search Town</label><div><input id="town-global-search-input" value={query} onChange={e => setQuery(e.target.value)} placeholder="Search posts and downtowns…" autoComplete="off"/><button className="button primary" disabled={loading}>{loading ? 'Searching…' : 'Search'}</button></div></form>{error && <p className="town-global-search-message" role="alert">{error}</p>}{searched && !loading && !error && <div className="town-global-results"><div className="town-global-result-group"><h2>Downtowns</h2>{results.communities.map(c => <a key={c.id} href={`#/community/${c.slug}`}><strong>{c.name}</strong><span>{c.description || c.category || 'Downtown'}</span></a>)}{!results.communities.length && <p>No matching downtowns.</p>}</div><div className="town-global-result-group"><h2>Posts</h2>{results.posts.map(p => <a key={p.id} href={`#/post/${p.id}`}><strong>{p.title}</strong><span>{(p.body || '').slice(0, 120)}</span></a>)}{!results.posts.length && <p>No matching posts.</p>}</div><button className="button secondary" type="button" onClick={() => { setSearched(false); setQuery('') }}>Clear results</button></div>}</section>
 }
 
 function App() {
@@ -1496,6 +1496,18 @@ function App() {
   const [canModerate, setCanModerate] = useState(false)
   const [globalAccent, setGlobalAccent] = useState('#39ff14')
   useEffect(() => { setMobileNavOpen(false) }, [route])
+  useEffect(() => {
+    if (!mobileNavOpen) return
+    const closeOnEscape = (event) => {
+      if (event.key === 'Escape') setMobileNavOpen(false)
+    }
+    window.addEventListener('keydown', closeOnEscape)
+    document.body.style.overflow = 'hidden'
+    return () => {
+      window.removeEventListener('keydown', closeOnEscape)
+      document.body.style.overflow = ''
+    }
+  }, [mobileNavOpen])
   useEffect(() => {
     const syncAccent = () => setGlobalAccent(localStorage.getItem(session?.user?.id ? `town-accent:${session.user.id}` : 'town-accent') || '#39ff14')
     syncAccent()
@@ -1546,7 +1558,7 @@ function App() {
   const primaryNav = [
     ['home', 'Home'],
     ['feed', 'Feed'],
-    ['communities', 'Communities'],
+    ['communities', 'Downtowns'],
     ['social', 'Chat']
   ]
 
@@ -1580,8 +1592,8 @@ function App() {
   else if (routeName === 'privacy') page = <LegalPage kind="privacy" />
   else if (routeName === 'accessibility') page = <LegalPage kind="accessibility" />
   else if (routeName === 'settings') page = <SettingsPage currentUserId={session?.user?.id} />
-  else if (routeName === 'about') page = <InfoPage title="About"><p className="feature-text">A general-purpose town built around communities and discussions.</p></InfoPage>
-  else if (routeName === 'help') page = <InfoPage title="Help"><p className="feature-text">Browse communities, search deliberately, and use transparent sorting to control what you see.</p></InfoPage>
+  else if (routeName === 'about') page = <InfoPage title="About"><p className="feature-text">A general-purpose town built around downtowns and discussions.</p></InfoPage>
+  else if (routeName === 'help') page = <InfoPage title="Help"><p className="feature-text">Browse downtowns, search deliberately, and use transparent sorting to control what you see.</p></InfoPage>
   else page = <NotFoundPage />
 
   if (routeName !== 'home' && !session) return <Auth onLogin={() => window.location.reload()} />
@@ -1641,6 +1653,12 @@ function App() {
           </a>}
         </nav>
       </aside>
+      {mobileNavOpen && <button
+        className="mobile-nav-backdrop"
+        type="button"
+        aria-label="Close navigation"
+        onClick={() => setMobileNavOpen(false)}
+      />}
 
       <main className="ps2-main">
         {page}

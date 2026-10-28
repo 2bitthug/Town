@@ -1,4 +1,4 @@
-﻿:root {
+:root {
   font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: #e7edf0;
   background: #090d10;
@@ -5594,3 +5594,64 @@ a, button, input[type="button"], input[type="submit"], select, summary, [role="b
 .share-card-builder .share-card-actions input:not([type=checkbox]),.share-card-builder .share-card-actions textarea{box-sizing:border-box;width:100%;padding:9px;border:1px solid #3a3040;border-radius:7px;background:#111;color:#fff}
 .share-card-builder .share-card-actions .share-card-check{display:flex;align-items:center;gap:8px}
 @media(max-width:480px){.share-card-builder .town-share-card{width:min(100%,300px)}.share-card-builder .town-share-card-top{grid-template-columns:78px minmax(0,1fr);gap:8px}.share-card-builder .town-share-avatar{width:76px;height:76px}}
+
+
+/* Final mobile layout overrides: left drawer and unclipped home content. */
+.mobile-nav-backdrop { display: none; }
+@media (max-width: 900px) {
+  .ps2-shell { width: 100%; max-width: 100%; min-width: 0; overflow-x: clip; }
+  .ps2-topbar { position: sticky; top: 0; z-index: 40; box-sizing: border-box; width: 100%; max-width: 100%; }
+  .ps2-layout { display: block !important; width: 100%; min-width: 0 !important; min-height: 0; }
+  .ps2-sidebar {
+    position: fixed !important;
+    top: 0 !important;
+    bottom: 0 !important;
+    left: 0 !important;
+    right: auto !important;
+    width: min(300px, 84vw) !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    box-sizing: border-box !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 0;
+    padding: 24px 16px calc(24px + env(safe-area-inset-bottom, 0px)) !important;
+    overflow-y: auto !important;
+    overscroll-behavior: contain;
+    border: 1px solid #24472b !important;
+    background: #050505 !important;
+    box-shadow: 16px 0 45px #000b;
+    z-index: 101 !important;
+    transform: translateX(-110%);
+    visibility: hidden;
+    transition: transform .22s ease, visibility .22s ease;
+  }
+  .ps2-sidebar.mobile-open { transform: translateX(0); visibility: visible; }
+  .ps2-menu-label { display: block !important; margin: 0 0 18px !important; color: #39ff14 !important; }
+  .ps2-nav { display: grid !important; grid-template-columns: minmax(0, 1fr) !important; gap: 5px !important; overflow: visible !important; }
+  .ps2-nav a { display: grid !important; grid-template-columns: 28px minmax(0, 1fr) 16px !important; min-height: 42px !important; padding: 8px 10px !important; box-sizing: border-box; font-size: .82rem !important; white-space: normal; }
+  .ps2-nav-index, .ps2-nav b { display: inline-block !important; }
+  .ps2-create-action { margin: 14px 0 !important; }
+  .ps2-section-label { display: block !important; margin: 16px 0 8px !important; }
+  .mobile-nav-backdrop { display: block; position: fixed; inset: 0; z-index: 100; width: 100%; height: 100%; padding: 0; border: 0; background: rgba(0,0,0,.68); }
+  .ps2-main { box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0 !important; padding: 22px 16px 48px !important; overflow-wrap: anywhere; }
+  .town-page, .town-hero, .town-hero-copy { box-sizing: border-box; width: 100%; max-width: 100%; min-width: 0; }
+  .town-hero { grid-template-columns: minmax(0, 1fr) !important; gap: 18px; padding: 20px !important; }
+  .town-hero h2 { width: 100%; max-width: 100%; font-size: clamp(1.65rem, 7vw, 2.35rem) !important; line-height: 1.12 !important; letter-spacing: -.025em; overflow-wrap: anywhere; word-break: normal; }
+  .ps2-top-search { position: static !important; transform: none !important; margin-left: auto; }
+}
+@media (max-width: 520px) {
+  .ps2-topbar { height: auto !important; min-height: 60px; padding: 8px 10px !important; gap: 8px !important; flex-wrap: nowrap; }
+  .mobile-nav-toggle { flex: 0 0 auto; min-height: 36px; }
+  .ps2-brand { min-width: 0; flex: 1 1 auto; }
+  .ps2-brand-title { font-size: .8rem !important; letter-spacing: .12em !important; }
+  .ps2-top-search { min-height: 32px !important; padding: 0 8px !important; font-size: .58rem !important; }
+  .ps2-top-actions { flex: 0 0 auto; margin-left: 0 !important; }
+  .ps2-top-signout { min-height: 32px !important; padding: 0 7px !important; font-size: .55rem !important; }
+  .ps2-main { padding: 20px 12px 42px !important; }
+  .town-hero { padding: 17px !important; }
+  .town-hero h2 { font-size: clamp(1.55rem, 7.2vw, 2rem) !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ps2-sidebar { transition: none !important; }
+}
