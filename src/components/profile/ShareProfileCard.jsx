@@ -51,12 +51,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
     profile.display_name || profile.username,
     'Town member'
   )
-  const avatar =
-    profile.avatar_url ||
-    profile.avatarUrl ||
-    profile.avatar ||
-    profile.profile_picture_url ||
-    avatarUrl(profile.avatar_id)
+  const avatar = avatarUrl(profile.avatar_id)
 
   const memberDays = Number(daysJoined) || 0
   const tier = memberDays >= 31 ? 'gold' : memberDays >= 8 ? 'red' : 'standard'
