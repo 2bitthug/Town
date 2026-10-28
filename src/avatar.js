@@ -76,3 +76,26 @@ export function avatarUrl(avatarId) {
   const creature = CREATURES.find(([id]) => id === avatarId) || CREATURES[0];
   return creatureSvg(creature);
 }
+
+export const CREATURE_DETAILS = {
+  'avatar-01': { name: 'Mosskin', trait: 'Calm & grounded', description: 'A quiet forest spirit for thoughtful listeners and steady contributors.', theme: 'forest' },
+  'avatar-02': { name: 'Emberfox', trait: 'Bold & curious', description: 'A bright-hearted explorer for people who ask questions and try new ideas.', theme: 'fire' },
+  'avatar-03': { name: 'Tidebit', trait: 'Adaptable & fluid', description: 'A water companion for flexible thinkers who connect different perspectives.', theme: 'water' },
+  'avatar-04': { name: 'Moonmoth', trait: 'Dreamy & reflective', description: 'A moonlit guide for imaginative people who enjoy deeper conversations.', theme: 'moon' },
+  'avatar-05': { name: 'Pebblit', trait: 'Steady & reliable', description: 'A stone-built friend for dependable members who help communities feel welcoming.', theme: 'stone' },
+  'avatar-06': { name: 'Suncub', trait: 'Optimistic & warm', description: 'A little ray of sunshine for people who encourage others and share positive energy.', theme: 'sun' },
+  'avatar-07': { name: 'Glimmerwing', trait: 'Creative & expressive', description: 'A luminous winged companion for makers, storytellers and original thinkers.', theme: 'wing' },
+  'avatar-08': { name: 'Thornback', trait: 'Resilient & protective', description: 'A leaf-armoured guardian for people who stand up for others and nurture healthy spaces.', theme: 'leaf' },
+  'avatar-09': { name: 'Cloudling', trait: 'Easygoing & curious', description: 'A drifting cloud spirit for open-minded explorers who like discovering new topics.', theme: 'cloud' },
+  'avatar-10': { name: 'Voltkit', trait: 'Energetic & playful', description: 'A spark-charged companion for lively discussions, experiments and playful ideas.', theme: 'electric' },
+  'avatar-11': { name: 'Bloomble', trait: 'Nurturing & friendly', description: 'A flower companion for helpful members who make newcomers feel included.', theme: 'flower' },
+  'avatar-12': { name: 'Deepfin', trait: 'Thoughtful & observant', description: 'A deep-water scout for careful readers who notice details and add considered answers.', theme: 'ocean' },
+  'avatar-13': { name: 'Frostpaw', trait: 'Calm & focused', description: 'An ice-born companion for patient problem-solvers who bring clarity to a discussion.', theme: 'ice' },
+  'avatar-14': { name: 'Cinderling', trait: 'Ambitious & determined', description: 'A small fire drake for persistent learners who keep working through hard problems.', theme: 'fire' },
+  'avatar-15': { name: 'Starling', trait: 'Inquisitive & open-minded', description: 'A star-guided flyer for curious minds who explore beyond their usual interests.', theme: 'star' },
+  'avatar-16': { name: 'Rootlet', trait: 'Balanced & mindful', description: 'A woodland wanderer for people who value perspective, balance and steady growth.', theme: 'forest' },
+  'avatar-17': { name: 'Prismoo', trait: 'Imaginative & unique', description: 'A crystal spirit for people who bring unexpected angles and colourful ideas.', theme: 'crystal' },
+  'avatar-18': { name: 'Bramblebun', trait: 'Loyal & supportive', description: 'A bramble-backed companion for members who show up, encourage and support others.', theme: 'forest' },
+  'avatar-19': { name: 'Nebulynx', trait: 'Independent & mysterious', description: 'A starlit feline for independent thinkers who enjoy exploring unusual ideas.', theme: 'cosmic' },
+  'avatar-20': { name: 'Coralimp', trait: 'Explorative & adventurous', description: 'A reef-dwelling sprite for adventurous members who connect people and perspectives.', theme: 'ocean' }
+};
