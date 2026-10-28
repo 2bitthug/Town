@@ -213,7 +213,7 @@ export function CommunityPage({ slug, currentUserId }) {
 }
 
 export function CreateCommunityPage({ currentUserId }) {
-  const [form, setForm] = useState({ name: '', slug: '', description: '', category: 'General', rules: '' })
+  const [form, setForm] = useState({ name: '', slug: '', description: '', rules: '' })
   const [busy, setBusy] = useState(false)
   const [error, setError] = useState('')
 
@@ -223,7 +223,7 @@ export function CreateCommunityPage({ currentUserId }) {
     setBusy(true)
     setError('')
     const slug = form.slug.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '').replace(/-+/g, '-').replace(/^-|-$/g, '')
-    const { data, error: createError } = await supabase.from('communities').insert({ ...form, name: form.name.trim(), slug, creator_id: currentUserId }).select('id,slug').single()
+    const { data, error: createError } = await supabase.from('communities').insert({ ...form, category: 'General', name: form.name.trim(), slug, creator_id: currentUserId }).select('id,slug').single()
     if (createError) {
       setError(createError.message)
       setBusy(false)
@@ -242,7 +242,6 @@ export function CreateCommunityPage({ currentUserId }) {
     <form className="town-form" onSubmit={submit}>
       <label>Name<input value={form.name} onChange={e => update('name', e.target.value)} minLength={2} maxLength={80} required placeholder="e.g. Bengaluru Builders" /></label>
       <label>Slug<input value={form.slug} onChange={e => update('slug', e.target.value)} maxLength={80} required placeholder="bengaluru-builders" /></label>
-      <label>Category<input value={form.category} onChange={e => update('category', e.target.value)} maxLength={60} required /></label>
       <label>Description<textarea value={form.description} onChange={e => update('description', e.target.value)} maxLength={500} placeholder="What belongs here?" /></label>
       <label>Rules<textarea value={form.rules} onChange={e => update('rules', e.target.value)} maxLength={5000} placeholder="Keep the discussion useful and respectful." /></label>
       {error && <div className="town-error">{error}</div>}
