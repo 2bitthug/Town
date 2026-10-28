@@ -605,7 +605,7 @@ function SocialSection({ currentUserId }) {
     if (!selected || !message.trim()) return
     const body = message.trim()
     const replyId = replyTo?.id || null
-    setMessage(''); localStorage.removeItem(draftKey); setReplyTo(null)
+    setReplyTo(null)
     let inserted = null
     let e = null
     const advancedInsert = await supabase.from('messages').insert({ sender_id: currentUserId, receiver_id: selected.id, body, delivery_status: 'sent', reply_to_id: replyId }).select('id,sender_id,receiver_id,body,created_at,delivery_status,delivered_at,read_at,edited_at,reply_to_id,attachment_url,attachment_name,attachment_type').single()
@@ -616,7 +616,7 @@ function SocialSection({ currentUserId }) {
       e = coreInsert.error
     }
     if (e) { setError('Your message could not be sent. Please check that you are still connected to this friend.'); setMessage(body) }
-    else if (inserted) setMessages(prev => prev.some(m => m.id === inserted.id) ? prev : [...prev, { delivery_status: 'sent', ...inserted }])
+    else if (inserted) { setMessages(prev => prev.some(m => m.id === inserted.id) ? prev : [...prev, { delivery_status: 'sent', ...inserted }]); setMessage(''); localStorage.removeItem(draftKey) }
   }
 
   const updateTyping = async (value) => {
@@ -669,7 +669,7 @@ function SocialSection({ currentUserId }) {
     const { error: uploadError } = await supabase.storage.from('chat-media').upload(path, file, { upsert: false })
     if (uploadError) { setError(`File upload failed: ${uploadError.message}${uploadError.statusCode ? ` (HTTP ${uploadError.statusCode})` : ''}. Check the chat-media bucket and Storage policies in Supabase.`); return }
     const { data: publicData } = supabase.storage.from('chat-media').getPublicUrl(path)
-    const { data: inserted, error: e } = await supabase.from('messages').insert({ sender_id: currentUserId, receiver_id: selected.id, body: `Attachment: ${file.name}`, attachment_url: publicData.publicUrl, attachment_name: file.name, attachment_type: file.type, delivery_status: 'sent' }).select('id,sender_id,receiver_id,body,created_at,delivery_status,attachment_url,attachment_name,attachment_type').single()
+    const { data: inserted, error: e } = await supabase.from('messages').insert({ sender_id: currentUserId, receiver_id: selected.id, body: 'Attachment: ' + file.name + '\n' + publicData.publicUrl }).select('id,sender_id,receiver_id,body,created_at').single()
     if (e) setError(`The file uploaded, but sending the attachment message failed: ${e.message}${e.code ? ` (code ${e.code})` : ''}`)
     else if (inserted) setMessages(prev => [...prev, inserted])
   }
@@ -726,7 +726,7 @@ function SocialSection({ currentUserId }) {
       </div>
       <div className="chat-box">
         {selected ? <>
-          <div className="chat-header"><div><strong>Chat with {selected.username}</strong>{typing && <span className="typing-indicator">typing…</span>}</div><div className="chat-header-actions"><button className="chat-profile-button" onClick={() => setProfileOpen(v => !v)}>Profile</button><span className="chat-live"><i /> Live</span><button className="chat-close-button" type="button" aria-label="Close chat" onClick={() => { setSelected(null); setMessages([]); setProfileOpen(false) }}>Ã—</button></div></div>
+          <div className="chat-header"><div><strong>Chat with {selected.username}</strong>{typing && <span className="typing-indicator">typing…</span>}</div><div className="chat-header-actions"><button className="chat-profile-button" onClick={() => setProfileOpen(v => !v)}>Profile</button><span className="chat-live"><i /> Live</span><button className="chat-close-button" type="button" aria-label="Close chat" onClick={() => { setSelected(null); setMessages([]); setProfileOpen(false) }}>×</button></div></div>
           {profileOpen && <div className="chat-profile-panel">{<img className="profile-avatar" src={avatarUrl(selected.avatar_id)} alt="" />}<strong>{selected.username}</strong>{selected.bio && <p>{selected.bio}</p>}{selected.interests && <span>Interests: {selected.interests}</span>}<span>Joined {selected.created_at ? new Date(selected.created_at).toLocaleDateString() : 'recently'}</span><small>Private chat · shared media and chat settings.</small><div className="shared-media"><strong>Shared media</strong>{messages.filter(m => m.attachment_url).length ? messages.filter(m => m.attachment_url).slice(-6).map(m => <a key={m.id} href={m.attachment_url} target="_blank" rel="noreferrer">{m.attachment_name || 'Attachment'}</a>) : <span>No shared files yet.</span>}</div></div>}
           {pinned.length > 0 && <div className="pinned-strip"><strong>Pinned</strong>{pinned.slice(-3).map(m => <button key={m.id} onClick={() => document.getElementById(`message-${m.id}`)?.scrollIntoView({ behavior: 'smooth' })}>{m.body || m.attachment_name}</button>)}</div>}
           <div className="chat-tools"><input value={searchMessages} onChange={e => setSearchMessages(e.target.value)} placeholder="Search messages" aria-label="Search messages" /><span>{filteredMessages.length} messages</span></div>
@@ -754,8 +754,8 @@ function SocialSection({ currentUserId }) {
             </div>
           })}{!filteredMessages.length && <EmptyState title={searchMessages ? 'No matching messages.' : 'No messages yet.'}>{searchMessages ? 'Try another search.' : 'Say hello to start the conversation.'}</EmptyState>}</div>}
           {editingId && <div className="edit-compose"><input value={editingText} onChange={e => setEditingText(e.target.value)} /><button className="button primary" onClick={() => saveEdit(editingId)}>Save</button><button className="button secondary" onClick={() => setEditingId(null)}>Cancel</button></div>}
-          {replyTo && <div className="reply-compose"><span>Replying to: {replyTo.body}</span><button onClick={() => setReplyTo(null)}>Ã—</button></div>}
-          <form className="chat-compose" onSubmit={sendMessage}><label className="attach-button" title="Share a photo, video, or file">ï¼‹<input type="file" accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip" onChange={e => uploadAttachment(e.target.files?.[0])} hidden /></label><input value={message} onChange={e => updateTyping(e.target.value)} placeholder="Write a message…" aria-label="Message" /><button className="button primary">Send</button></form>
+          {replyTo && <div className="reply-compose"><span>Replying to: {replyTo.body}</span><button onClick={() => setReplyTo(null)}>×</button></div>}
+          <form className="chat-compose" onSubmit={sendMessage}><label className="attach-button" title="Share a photo, video, or file">＋<input type="file" accept="image/*,video/*,.pdf,.doc,.docx,.txt,.zip" onChange={e => uploadAttachment(e.target.files?.[0])} hidden /></label><input value={message} onChange={e => updateTyping(e.target.value)} placeholder="Write a message…" aria-label="Message" /><button className="button primary">Send</button></form>
         </> : <div className="chat-empty"><strong>Select a connection</strong><p>Choose an accepted connection to start a private chat.</p></div>}
       </div>
     </div><SourceNote>Downtown data is stored in your account. Chat supports delivery/read states, typing, replies, edits, deletion, reactions, attachments, search, and drafts.</SourceNote>
@@ -1098,7 +1098,7 @@ function RadioMiniPlayer() {
     <div className="radio-mini-copy"><strong>{station.name}</strong><span>{station.country || 'Live station'}</span></div>
     <button className="button secondary radio-mini-toggle" type="button" onClick={toggle} aria-label={playing ? 'Pause radio' : 'Play radio'}>{playing ? 'Pause' : 'Play'}</button>
     <label className="radio-volume">Volume<input type="range" min="0" max="1" step="0.05" defaultValue="0.8" onChange={e => { if (audioRef.current) audioRef.current.volume = Number(e.target.value) }} /></label>
-    <button className="radio-mini-close" type="button" aria-label="Close radio player" onClick={() => { audioRef.current?.pause(); setStation(null); setPlaying(false) }}>Ã—</button>
+    <button className="radio-mini-close" type="button" aria-label="Close radio player" onClick={() => { audioRef.current?.pause(); setStation(null); setPlaying(false) }}>×</button>
   </div>
 }
 function HomePage({ currentUserId }) { return <TownHomePage currentUserId={currentUserId} /> }
@@ -1282,7 +1282,6 @@ function SettingsPage({ currentUserId }) {
   const milestones = [
     [7, 'First week', '7-day member'],
     [30, 'One month', '30-day member'],
-    [100, 'Century', '100-day member']
   ]
   const earnedMilestones = milestones.filter(item => daysOnSite !== null && daysOnSite >= item[0])
 
@@ -1611,7 +1610,6 @@ function App() {
           {session
             ? <a className="ps2-user-link" href={currentProfileHref}>USER: {username}</a>
             : <span>GUEST MODE</span>}
-          <span className="ps2-online"><i /> ONLINE</span>
         </div>
         {session && <button className="ps2-top-signout" onClick={signOut}>SIGN OUT</button>}
       </div>
