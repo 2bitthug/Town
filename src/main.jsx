@@ -1300,6 +1300,7 @@ function SettingsPage({ currentUserId }) {
     const { error } = await supabase
       .from('profiles')
       .update({
+        username: profile.username.trim().toLowerCase(),
         display_name: profile.display_name.trim().slice(0, 32),
         bio: profile.bio.trim().slice(0, 240),
         interests: profile.interests.trim().slice(0, 240),
@@ -1312,7 +1313,7 @@ function SettingsPage({ currentUserId }) {
       .eq('id', currentUserId)
 
     if (error && /pet_id|column .* does not exist|schema cache/i.test(error.message || '')) {
-      const retry = await supabase.from('profiles').update({ display_name: profile.display_name.trim().slice(0, 32), bio: profile.bio.trim().slice(0, 240), interests: profile.interests.trim().slice(0, 240), avatar_id: profile.avatar_id, accent_color: profile.accent_color, profile_sections: cleanSections }).eq('id', currentUserId)
+      const retry = await supabase.from('profiles').update({ username: profile.username.trim().toLowerCase(), display_name: profile.display_name.trim().slice(0, 32), bio: profile.bio.trim().slice(0, 240), interests: profile.interests.trim().slice(0, 240), avatar_id: profile.avatar_id, accent_color: profile.accent_color, profile_sections: cleanSections }).eq('id', currentUserId)
       if (!retry.error) { localStorage.setItem(`town-pet:${currentUserId}`, profile.pet_id); localStorage.setItem(`town-pet-companion:${currentUserId}`, JSON.stringify({ name: profile.pet_name || 'Pixel' })); window.dispatchEvent(new CustomEvent('town-profile-saved', { detail: { pet_id: profile.pet_id } })); setMessage('Profile saved. Pet saved on this device until the Town profile migration is applied.') }
       else setMessage(`Could not save profile: ${retry.error.message}`)
     } else if (error) setMessage(`Could not save profile: ${error.message}`)
@@ -1381,7 +1382,7 @@ function SettingsPage({ currentUserId }) {
           </section>
 
           <div className="profile-editor-fields">
-            <label>Username<input value={profile.username} disabled /></label>
+            <label>Username<input value={profile.username} maxLength={24} pattern="[a-zA-Z0-9_]{3,24}" onChange={e => setProfile({ ...profile, username: e.target.value.toLowerCase() })} required /><small>Username changes are limited to once every 15 days, up to 3 changes in 60 days.</small></label>
             <label>Display name<input value={profile.display_name} maxLength={32} onChange={e => setProfile({ ...profile, display_name: e.target.value })} placeholder="Your display name" /></label>
             <label>Bio<textarea value={profile.bio} maxLength={240} onChange={e => setProfile({ ...profile, bio: e.target.value })} placeholder="A short description about you." /><small>{profile.bio.length}/240</small></label>
             <label>Interests<input value={profile.interests} maxLength={240} onChange={e => setProfile({ ...profile, interests: e.target.value })} placeholder="music, games, cricket" /></label>
