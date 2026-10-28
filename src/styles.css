@@ -5738,3 +5738,13 @@ a, button, input[type="button"], input[type="submit"], select, summary, [role="b
 .share-card-builder .town-share-card-gold .town-share-avatar{border-color:#f5c451;color:#f5c451}
 .share-card-builder .town-share-card-gold .town-share-bio,.share-card-builder .town-share-card-gold .town-share-labels span,.share-card-builder .town-share-card-gold .town-share-values strong,.share-card-builder .town-share-card-gold .town-share-active span,.share-card-builder .town-share-card-gold .town-share-active strong{border-color:#8b6725}
 @media(max-width:480px){.share-card-builder .town-share-card{width:min(100%,320px)}.share-card-builder .town-share-card-top{grid-template-columns:76px minmax(0,1fr);gap:8px}.share-card-builder .town-share-avatar{width:74px;height:74px}.share-card-builder .town-share-display-name{font-size:17px}}
+
+
+/* Town creature identity and picker */
+.profile-creature-copy { min-width: 0; }
+.profile-creature-trait { display: block; margin-top: 3px; color: var(--profile-accent, #00ff66); font-size: .86rem; font-weight: 700; }
+.profile-creature-purpose { margin: 7px 0 0; max-width: 560px; color: #a9a5b6; font-size: .82rem; line-height: 1.5; }
+.profile-avatar-grid-compact button { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
+.profile-avatar-grid-compact button img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 9px; }
+.profile-avatar-grid-compact button small { font-weight: 700; }
+.profile-avatar-grid-compact button em { display: block; color: #aaa5b8; font-size: .68rem; line-height: 1.25; font-style: normal; text-align: center; }
