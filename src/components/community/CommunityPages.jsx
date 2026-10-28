@@ -31,15 +31,19 @@ function Empty({ children }) {
 
 export function TownHomePage() {
   return (
-    <PageFrame eyebrow="TOWN" title="A place to find people and conversations.">
-      <div className="town-hero town-hero-clean">
-        <div className="town-hero-copy">
-          <p className="town-kicker">A TOWN BUILT BY ITS MEMBERS</p>
-          <h2>The platform helps you find things. It doesn’t decide what you should care about.</h2>
-          <p>Browse downtowns, search deliberately, and choose how discussions are sorted. No hidden recommendation score.</p>
+    <section className="town-page town-home-page">
+      <div className="town-home-hero">
+        <p className="town-kicker">YOUR SPACE. YOUR CHOICES.</p>
+        <h1 className="town-home-headline">Your feed should be yours.</h1>
+        <p className="town-home-subhead">
+          Join communities, follow the conversations you care about, and choose how posts are sorted. No algorithm quietly rearranging your priorities.
+        </p>
+        <div className="town-hero-actions">
+          <a className="button primary" href="#/communities">Explore Communities</a>
+          <a className="button secondary" href="#/help">See How It Works</a>
         </div>
       </div>
-    </PageFrame>
+    </section>
   )
 }
 
