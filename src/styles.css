@@ -5655,3 +5655,32 @@ a, button, input[type="button"], input[type="submit"], select, summary, [role="b
 @media (prefers-reduced-motion: reduce) {
   .ps2-sidebar { transition: none !important; }
 }
+
+
+/* Town monochrome overrides: pure black surfaces, white controls, black borders */
+:root, html, body, #root, .ps2-app, .ps2-layout, .ps2-main, .town-page,
+.card, .town-hero, .town-hero-copy, .town-directory-intro, .town-directory-controls,
+.chat-box, .chat-header, .chat-profile-panel, .chat-empty, .message, .message-wrap,
+.ps2-sidebar, .ps2-topbar, .ps2-nav, .ps2-nav-secondary, .town-side-card,
+.community-header, .community-layout, .post-card {
+  background-color: #000 !important;
+  background-image: none !important;
+}
+.ps2-nav a, .ps2-nav a.active, .ps2-nav-secondary a, .ps2-create-action,
+.button, button, .button.primary, .button.secondary, .chat-profile-button,
+.chat-close-button, .attach-button, .ps2-top-search, .ps2-top-signout {
+  background: #fff !important;
+  color: #000 !important;
+  border: 1px solid #000 !important;
+  box-shadow: none !important;
+}
+.ps2-nav a *, .ps2-create-action *, .button *, button * { color: #000 !important; }
+.town-hero, .town-hero::before, .town-hero::after { background: #000 !important; background-image: none !important; }
+.chat-header, .chat-header strong, .chat-header span, .chat-profile-panel,
+.chat-profile-panel strong, .chat-profile-panel span, .chat-profile-panel p,
+.chat-connection, .chat-connection *, .chat-list, .chat-list * { color: #fff !important; }
+.chat-compose input, .chat-compose textarea, .chat-compose select {
+  background: #000 !important; color: #fff !important; border: 1px solid #fff !important;
+}
+.message-time-label { color: #bbb !important; }
+.attach-button { cursor: pointer; }
