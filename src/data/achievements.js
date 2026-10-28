@@ -33,17 +33,6 @@ export const ACHIEVEMENTS = [
     }
   },
   {
-    id: 'century',
-    title: 'Century',
-    description: 'Be a member for 100 days.',
-    icon: '100',
-    category: 'profile',
-    reward: {
-      type: 'badge',
-      id: 'century'
-    }
-  },
-  {
     id: 'explorer',
     title: 'Explorer',
     description: 'Save 10 words.',
