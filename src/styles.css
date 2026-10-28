@@ -5701,3 +5701,40 @@ a, button, input[type="button"], input[type="submit"], select, summary, [role="b
   color: #fff !important;
   border-color: #666 !important;
 }
+
+
+/* Collectible member card: rarity is driven by membership age. */
+.share-card-builder .town-share-card{width:min(100%,360px);aspect-ratio:3/4;padding:7px;border-radius:16px;background:#080b0d;background-image:linear-gradient(145deg,#17221d,#050505 45%,#101017);color:#e8fff3;border:1px solid #28684f;box-shadow:0 12px 34px #0009,0 0 22px #39ff9c12}
+.share-card-builder .town-share-card-inner{height:100%;padding:14px;border:1px solid #28684f;border-radius:10px;background:radial-gradient(ellipse at 10% 5%,#39ff9c18,transparent 48%),linear-gradient(155deg,#101a17,#07090a 62%);color:#e8fff3;position:relative;overflow:hidden;box-sizing:border-box;font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.share-card-builder .town-share-card-inner:before{content:"";position:absolute;inset:0;pointer-events:none;opacity:.12;background:repeating-linear-gradient(135deg,transparent 0 18px,#39ff9c 19px,transparent 20px 36px)}
+.share-card-builder .town-share-card-top,.share-card-builder .town-share-card-brand,.share-card-builder .town-share-display-name,.share-card-builder .town-share-username,.share-card-builder .town-share-card-edition,.share-card-builder .town-share-labels,.share-card-builder .town-share-values,.share-card-builder .town-share-active,.share-card-builder .town-share-pet{position:relative;z-index:1}
+.share-card-builder .town-share-card-top{grid-template-columns:92px minmax(0,1fr);gap:12px;align-items:start}
+.share-card-builder .town-share-avatar{width:88px;height:88px;border:2px solid #39ff9c;border-radius:10px;background:#0a110e;color:#39ff9c;box-shadow:0 0 16px #39ff9c20;font-family:monospace}
+.share-card-builder .town-share-bio{min-height:86px;height:86px;border:1px solid #28684f;border-radius:7px;background:#0b1210;color:#e8fff3;padding:8px}
+.share-card-builder .town-share-bio strong{color:#39ff9c;font:700 9px monospace;letter-spacing:.12em}
+.share-card-builder .town-share-bio p{font-size:10px;line-height:1.35}
+.share-card-builder .town-share-card-brand{display:flex;justify-content:space-between;gap:6px;align-items:center;margin:13px 0 10px;color:#39ff9c;font-size:8px;letter-spacing:.08em}
+.share-card-builder .town-share-card-brand strong{padding:4px 6px;border:1px solid currentColor;border-radius:4px;font-size:8px;white-space:nowrap}
+.share-card-builder .town-share-display-name{margin:0 0 3px;font-size:20px;line-height:1.15;font-weight:800;letter-spacing:-.04em;overflow-wrap:anywhere}
+.share-card-builder .town-share-username{display:block;margin:0;font-size:11px;color:#9db9ac}
+.share-card-builder .town-share-card-edition{display:block;margin:9px 0 14px;color:#39ff9c;font-size:8px;letter-spacing:.08em}
+.share-card-builder .town-share-labels,.share-card-builder .town-share-values{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+.share-card-builder .town-share-labels span{min-height:25px;padding:4px 2px;border:1px solid #28684f;border-radius:5px;background:#0b1210;color:#9db9ac;font:8px monospace}
+.share-card-builder .town-share-values strong{min-height:35px;padding:5px 2px;border:1px solid #28684f;border-radius:5px;background:#101a17;color:#e8fff3;font:700 11px monospace;overflow-wrap:anywhere}
+.share-card-builder .town-share-active{display:grid;grid-template-columns:.85fr 1.15fr;gap:6px;align-items:center;margin-top:15px;padding-top:9px;border-top:1px solid #28684f;font-size:9px}
+.share-card-builder .town-share-active span{color:#9db9ac}
+.share-card-builder .town-share-active span,.share-card-builder .town-share-active strong{min-width:0;border:1px solid #28684f;border-radius:5px;padding:7px 5px;text-align:center;font-weight:500;overflow-wrap:anywhere}
+.share-card-builder .town-share-active strong{color:#e8fff3;background:#101a17}
+.share-card-builder .town-share-pet{right:14px;bottom:12px;width:48px;height:48px;opacity:.95}
+.share-card-builder .town-share-pet span{font-size:8px;color:#9db9ac}
+.share-card-builder .town-share-card-red{border-color:#8e263a;box-shadow:0 12px 34px #0009,0 0 22px #ff52681a}
+.share-card-builder .town-share-card-red .town-share-card-inner{border-color:#8e263a;background:radial-gradient(ellipse at 10% 5%,#ff52681a,transparent 48%),linear-gradient(155deg,#1c1015,#07090a 62%);color:#fff0f1}
+.share-card-builder .town-share-card-red .town-share-card-brand,.share-card-builder .town-share-card-red .town-share-card-edition{color:#ff5268}
+.share-card-builder .town-share-card-red .town-share-avatar{border-color:#ff5268;color:#ff5268}
+.share-card-builder .town-share-card-red .town-share-bio,.share-card-builder .town-share-card-red .town-share-labels span,.share-card-builder .town-share-card-red .town-share-values strong,.share-card-builder .town-share-card-red .town-share-active span,.share-card-builder .town-share-card-red .town-share-active strong{border-color:#8e263a}
+.share-card-builder .town-share-card-gold{border-color:#8b6725;box-shadow:0 12px 34px #0009,0 0 24px #f5c45122}
+.share-card-builder .town-share-card-gold .town-share-card-inner{border-color:#8b6725;background:radial-gradient(ellipse at 10% 5%,#f5c4511c,transparent 48%),linear-gradient(155deg,#211b0d,#07090a 62%);color:#fff4c6}
+.share-card-builder .town-share-card-gold .town-share-card-brand,.share-card-builder .town-share-card-gold .town-share-card-edition{color:#f5c451}
+.share-card-builder .town-share-card-gold .town-share-avatar{border-color:#f5c451;color:#f5c451}
+.share-card-builder .town-share-card-gold .town-share-bio,.share-card-builder .town-share-card-gold .town-share-labels span,.share-card-builder .town-share-card-gold .town-share-values strong,.share-card-builder .town-share-card-gold .town-share-active span,.share-card-builder .town-share-card-gold .town-share-active strong{border-color:#8b6725}
+@media(max-width:480px){.share-card-builder .town-share-card{width:min(100%,320px)}.share-card-builder .town-share-card-top{grid-template-columns:76px minmax(0,1fr);gap:8px}.share-card-builder .town-share-avatar{width:74px;height:74px}.share-card-builder .town-share-display-name{font-size:17px}}
