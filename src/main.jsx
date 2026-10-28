@@ -1367,6 +1367,10 @@ function SettingsPage({ currentUserId }) {
           .profile-avatar-grid-compact button.selected{border-color:var(--profile-accent,#39ff14);box-shadow:0 0 10px color-mix(in srgb,var(--profile-accent,#39ff14) 25%,transparent)}
           .profile-avatar-grid-compact img{width:48px;height:48px;display:block;margin:auto}
           .profile-avatar-grid-compact button:focus-visible{outline:2px solid var(--profile-accent,#39ff14);outline-offset:2px}
+.profile-avatar-grid-compact button{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;min-width:0;min-height:78px}
+          .profile-avatar-grid-compact img{width:48px;height:48px;object-fit:contain}
+          .profile-avatar-grid-compact small{font-size:10px;line-height:1.15;color:#ddd;text-align:center;overflow-wrap:anywhere}
+          .profile-avatar-grid-compact button.selected small{color:var(--profile-accent,#39ff14)}
           @media(max-width:760px){.engagement-grid{grid-template-columns:1fr}.profile-avatar-grid-compact{grid-template-columns:repeat(4,minmax(52px,1fr))}}
         `}</style>
 
