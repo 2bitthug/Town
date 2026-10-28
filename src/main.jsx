@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles.css'
 import { isSupabaseConfigured, supabase } from './lib/supabase'
-import { DEFAULT_AVATAR_ID, PROFILE_AVATARS, avatarUrl } from './avatar'
+import { DEFAULT_AVATAR_ID, PROFILE_AVATARS, CREATURE_DETAILS, avatarUrl } from './avatar'
 import { TownHomePage, CommunitiesPage, CommunityPage, CreateCommunityPage } from './components/community/CommunityPages'
 import { FeedPage } from './components/feed/FeedPages'
 import { PostPage, CreatePostPage } from './components/posts/PostPages'
@@ -1422,11 +1422,11 @@ function SettingsPage({ currentUserId }) {
           <legend>Choose your Town creature</legend>
           <div className="profile-editor-compact">
             <div className="profile-current-avatar">{<img src={selectedAvatarUri} alt={`${selectedAvatar[1]} current avatar`} />}</div>
-            <div><strong>{selectedAvatar[1]}</strong><p className="widget-help">Pick an original Town creature to represent you across your profile, posts, chat and collectible card.</p></div>
+            <div className="profile-creature-copy"><strong>{selectedAvatar[1]}</strong><span className="profile-creature-trait">{CREATURE_DETAILS[profile.avatar_id]?.trait || 'Your Town companion'}</span><p className="widget-help">{CREATURE_DETAILS[profile.avatar_id]?.description || 'Your creature represents you across Town.'}</p><p className="profile-creature-purpose">Your creature is your visual identity across Town. Choose by personality, not ability—every creature has the same access and features.</p></div>
             <button type="button" className="button secondary" aria-expanded={avatarPickerOpen} onClick={() => setAvatarPickerOpen(v => !v)}>{avatarPickerOpen ? 'Close creatures' : 'Choose creature'}</button>
             <button type="button" className="button secondary" onClick={generateAnother}>Random creature</button>
           </div>
-          {avatarPickerOpen && <div className="profile-avatar-popover" role="dialog" aria-label="Choose your Town creature"><div className="profile-avatar-grid-compact">{PROFILE_AVATARS.map(([id, label]) => { const selected = profile.avatar_id === id; return <button type="button" key={id} className={selected ? 'selected' : ''} aria-label={`${label}${selected ? ', selected' : ''}`} aria-pressed={selected} onClick={() => chooseAvatar(id)}><img src={avatarUrl(id)} alt="" aria-hidden="true" /><small>{label}</small>{selected && <span aria-hidden="true">✓</span>}</button> })}</div></div>}
+          {avatarPickerOpen && <div className="profile-avatar-popover" role="dialog" aria-label="Choose your Town creature"><div className="profile-avatar-grid-compact">{PROFILE_AVATARS.map(([id, label]) => { const selected = profile.avatar_id === id; return <button type="button" key={id} className={selected ? 'selected' : ''} aria-label={`${label}${selected ? ', selected' : ''}`} aria-pressed={selected} onClick={() => chooseAvatar(id)}><img src={avatarUrl(id)} alt="" aria-hidden="true" /><small>{label}</small><em>{CREATURE_DETAILS[id]?.trait}</em>{selected && <span aria-hidden="true">✓</span>}</button> })}</div></div>}
         </fieldset>
 
         <fieldset className="profile-editor-section">
