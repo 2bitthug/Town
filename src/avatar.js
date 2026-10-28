@@ -74,6 +74,11 @@ function creatureSvg(creature) {
   return `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
 }
 
+export function avatarUrl(avatarId) {
+  const creature = CREATURES.find(([id]) => id === avatarId) || CREATURES[0];
+  return creatureSvg(creature);
+}
+
 export const CREATURE_DETAILS = {
   'avatar-01': { name: 'Mosskin', trait: 'Calm & grounded', description: 'A quiet forest spirit for thoughtful listeners and steady contributors.', theme: 'forest' },
   'avatar-02': { name: 'Emberfox', trait: 'Bold & curious', description: 'A bright-hearted explorer for people who ask questions and try new ideas.', theme: 'fire' },
