@@ -5684,3 +5684,20 @@ a, button, input[type="button"], input[type="submit"], select, summary, [role="b
 }
 .message-time-label { color: #bbb !important; }
 .attach-button { cursor: pointer; }
+
+
+/* Restore dark buttons while retaining the pure-black site background */
+.ps2-nav a, .ps2-nav a.active, .ps2-nav-secondary a, .ps2-create-action,
+.button, button, .button.primary, .button.secondary, .chat-profile-button,
+.chat-close-button, .attach-button, .ps2-top-search, .ps2-top-signout {
+  background: #111 !important;
+  color: #fff !important;
+  border: 1px solid #444 !important;
+  box-shadow: none !important;
+}
+.ps2-nav a *, .ps2-create-action *, .button *, button * { color: #fff !important; }
+.ps2-nav a:hover, .ps2-create-action:hover, .button:hover, button:hover {
+  background: #222 !important;
+  color: #fff !important;
+  border-color: #666 !important;
+}
