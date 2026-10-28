@@ -65,7 +65,6 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
     : tier === 'red'
       ? { bg: '#0a090d', ink: '#fff0f1', accent: '#ff5268', line: '#8e263a', soft: '#1c1015' }
       : { bg: '#080b0d', ink: '#e8fff3', accent: '#39ff9c', line: '#28684f', soft: '#101a17' }
-  const isGold = tier === 'gold'
 
   const roundedRect = (ctx, x, y, w, h, r) => {
     ctx.beginPath()
