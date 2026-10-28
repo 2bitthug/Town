@@ -5748,3 +5748,92 @@ a, button, input[type="button"], input[type="submit"], select, summary, [role="b
 .profile-avatar-grid-compact button img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 9px; }
 .profile-avatar-grid-compact button small { font-weight: 700; }
 .profile-avatar-grid-compact button em { display: block; color: #aaa5b8; font-size: .68rem; line-height: 1.25; font-style: normal; text-align: center; }
+
+
+/* Homepage messaging hierarchy */
+.town-home-page {
+  max-width: 1180px;
+  padding-top: clamp(28px, 7vh, 76px);
+}
+.town-home-hero {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  min-height: min(620px, 72vh);
+  padding: clamp(28px, 7vw, 84px);
+  overflow: hidden;
+  border: 1px solid #29212f;
+  border-radius: 24px;
+  background:
+    radial-gradient(ellipse at 85% 15%, rgba(57,255,20,.09), transparent 35%),
+    linear-gradient(135deg, #0b0b0d 0%, #050505 70%);
+}
+.town-home-hero::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  right: -115px;
+  bottom: -145px;
+  border: 1px solid rgba(57,255,20,.16);
+  border-radius: 50%;
+  box-shadow: 0 0 0 35px rgba(57,255,20,.025), 0 0 0 70px rgba(57,255,20,.02);
+  pointer-events: none;
+}
+.town-home-hero .town-kicker {
+  margin: 0 0 18px;
+  font-size: .75rem;
+  letter-spacing: .18em;
+  text-transform: uppercase;
+}
+.town-home-headline {
+  max-width: 850px;
+  margin: 0;
+  color: #f5f5f5;
+  font-size: clamp(3rem, 7.5vw, 6.5rem);
+  line-height: .99;
+  letter-spacing: -.065em;
+  font-weight: 850;
+}
+.town-home-subhead {
+  max-width: 720px;
+  margin: 26px 0 0;
+  color: #b8b8bd;
+  font-size: clamp(1rem, 1.7vw, 1.2rem);
+  line-height: 1.8;
+}
+.town-home-hero .town-hero-actions {
+  position: relative;
+  z-index: 1;
+  gap: 12px;
+  margin-top: 32px;
+}
+.town-home-hero .button {
+  min-height: 48px;
+  padding: 0 20px;
+  border-radius: 9px;
+}
+.town-home-hero .button.primary {
+  background: #39ff14;
+  border: 1px solid #39ff14;
+  color: #050505;
+}
+.town-home-hero .button.secondary {
+  background: transparent;
+  border: 1px solid #48484b;
+  color: #ededed;
+}
+.town-home-hero .button.secondary:hover {
+  border-color: #39ff14;
+  color: #39ff14;
+}
+@media (max-width: 600px) {
+  .town-home-page { padding-top: 12px; }
+  .town-home-hero { min-height: 0; padding: 30px 22px; border-radius: 16px; }
+  .town-home-headline { font-size: clamp(2.7rem, 13vw, 4.2rem); }
+  .town-home-subhead { margin-top: 20px; line-height: 1.65; }
+  .town-home-hero .town-hero-actions { width: 100%; flex-direction: column; }
+  .town-home-hero .town-hero-actions .button { width: 100%; }
+}
