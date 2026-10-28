@@ -160,6 +160,33 @@ function Auth({ onLogin }) {
     setEmail('')
   }
 
+  if (notice) {
+    return (
+      <main className="auth-shell">
+        <div className="auth-card">
+          <p className="eyebrow">TOWN</p>
+          <h1>Check your email.</h1>
+          <p className="lead" role="status" aria-live="polite">
+            A verification link has been sent to your email address. Open the link to verify your account, then sign in to Town.
+          </p>
+          <button
+            className="button primary full"
+            type="button"
+            onClick={() => {
+              setNotice('')
+              setMode('login')
+              setError('')
+              setPassword('')
+              setEmail('')
+            }}
+          >
+            Go to sign in
+          </button>
+        </div>
+      </main>
+    )
+  }
+
   return (
     <main className="auth-shell">
       <div className="auth-card">
