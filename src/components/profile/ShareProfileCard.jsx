@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import { avatarUrl } from '../../avatar'
 
 const safeText = (value, fallback = '') =>
   String(value || fallback).replace(/\s+/g, ' ').trim()
@@ -55,7 +56,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
     profile.avatarUrl ||
     profile.avatar ||
     profile.profile_picture_url ||
-    ''
+    avatarUrl(profile.avatar_id)
 
   const memberDays = Number(daysJoined) || 0
   const tier = memberDays >= 31 ? 'gold' : memberDays >= 8 ? 'red' : 'standard'
