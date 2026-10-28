@@ -1415,14 +1415,14 @@ function SettingsPage({ currentUserId }) {
         </div>
 
         <fieldset className="profile-editor-section">
-          <legend>Choose your avatar</legend>
+          <legend>Choose your Town creature</legend>
           <div className="profile-editor-compact">
             <div className="profile-current-avatar">{<img src={selectedAvatarUri} alt={`${selectedAvatar[1]} current avatar`} />}</div>
-            <div><strong>{selectedAvatar[1]}</strong><p className="widget-help">Choose another avatar without filling the page with all choices.</p></div>
-            <button type="button" className="button secondary" aria-expanded={avatarPickerOpen} onClick={() => setAvatarPickerOpen(v => !v)}>{avatarPickerOpen ? 'Close avatars' : 'Change avatar'}</button>
-            <button type="button" className="button secondary" onClick={generateAnother}>Random avatar</button>
+            <div><strong>{selectedAvatar[1]}</strong><p className="widget-help">Pick an original Town creature to represent you across your profile, posts, chat and collectible card.</p></div>
+            <button type="button" className="button secondary" aria-expanded={avatarPickerOpen} onClick={() => setAvatarPickerOpen(v => !v)}>{avatarPickerOpen ? 'Close creatures' : 'Choose creature'}</button>
+            <button type="button" className="button secondary" onClick={generateAnother}>Random creature</button>
           </div>
-          {avatarPickerOpen && <div className="profile-avatar-popover" role="dialog" aria-label="Choose a profile avatar"><div className="profile-avatar-grid-compact">{PROFILE_AVATARS.map(([id, label]) => { const selected = profile.avatar_id === id; return <button type="button" key={id} className={selected ? 'selected' : ''} aria-label={`${label}${selected ? ', selected' : ''}`} aria-pressed={selected} onClick={() => chooseAvatar(id)}><img src={avatarUrl(id)} alt="" aria-hidden="true" />{selected && <span aria-hidden="true">✓</span>}</button> })}</div></div>}
+          {avatarPickerOpen && <div className="profile-avatar-popover" role="dialog" aria-label="Choose your Town creature"><div className="profile-avatar-grid-compact">{PROFILE_AVATARS.map(([id, label]) => { const selected = profile.avatar_id === id; return <button type="button" key={id} className={selected ? 'selected' : ''} aria-label={`${label}${selected ? ', selected' : ''}`} aria-pressed={selected} onClick={() => chooseAvatar(id)}><img src={avatarUrl(id)} alt="" aria-hidden="true" /><small>{label}</small>{selected && <span aria-hidden="true">✓</span>}</button> })}</div></div>}
         </fieldset>
 
         <fieldset className="profile-editor-section">
