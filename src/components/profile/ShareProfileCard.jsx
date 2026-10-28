@@ -6,7 +6,6 @@ const safeText = (value, fallback = '') =>
 
 export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
   const [reputation, setReputation] = useState(0)
-  const [style, setStyle] = useState('gold')
   const [status, setStatus] = useState('')
   const [community, setCommunity] = useState(
     profile.most_active_community || profile.primary_community || ''
@@ -58,31 +57,15 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
     profile.profile_picture_url ||
     ''
 
-  const isGold = style === 'gold'
-
-  const colors = isGold
-    ? {
-        bg: '#ffdf55',
-        ink: '#17100a',
-        accent: '#b98922',
-        line: '#5c4219',
-        soft: '#fff0a2',
-      }
-    : style === 'neon'
-      ? {
-          bg: '#050505',
-          ink: '#f7f3fa',
-          accent: '#39ff14',
-          line: '#ff4fba',
-          soft: '#17121c',
-        }
-      : {
-          bg: '#f5f1e8',
-          ink: '#171717',
-          accent: '#5a4a75',
-          line: '#b9b1c6',
-          soft: '#ffffff',
-        }
+  const memberDays = Number(daysJoined) || 0
+  const tier = memberDays >= 31 ? 'gold' : memberDays >= 8 ? 'red' : 'standard'
+  const tierLabel = tier === 'gold' ? 'GOLD MEMBER' : tier === 'red' ? 'RARE MEMBER' : 'NEW MEMBER'
+  const colors = tier === 'gold'
+    ? { bg: '#090a0d', ink: '#fff4c6', accent: '#f5c451', line: '#8b6725', soft: '#17140d' }
+    : tier === 'red'
+      ? { bg: '#0a090d', ink: '#fff0f1', accent: '#ff5268', line: '#8e263a', soft: '#1c1015' }
+      : { bg: '#080b0d', ink: '#e8fff3', accent: '#39ff9c', line: '#28684f', soft: '#101a17' }
+  const isGold = tier === 'gold'
 
   const roundedRect = (ctx, x, y, w, h, r) => {
     ctx.beginPath()
@@ -98,8 +81,8 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
     setStatus('Preparing your card…')
 
     const canvas = document.createElement('canvas')
-    canvas.width = 1000
-    canvas.height = 1400
+    canvas.width = 900
+    canvas.height = 1200
 
     const ctx = canvas.getContext('2d')
 
@@ -113,30 +96,32 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
     ctx.fillStyle = c.bg
     ctx.fillRect(0, 0, canvas.width, canvas.height)
 
-    // Gold-paper frame texture.
-    if (isGold) {
-      ctx.fillStyle = '#c69a36'
-
-      for (let i = 0; i < 15000; i++) {
-        const x = Math.random() * canvas.width
-        const y = Math.random() * canvas.height
-
-        ctx.globalAlpha = Math.random() * 0.18
-        ctx.fillRect(x, y, 1 + Math.random() * 3, 1 + Math.random() * 3)
-      }
-
-      ctx.globalAlpha = 1
-      ctx.fillStyle = c.bg
-      ctx.fillRect(24, 24, 952, 1352)
-    }
-
+    // Collectible-card frame and subtle rarity foil.
+    ctx.fillStyle = c.bg
+    ctx.fillRect(0, 0, canvas.width, canvas.height)
     ctx.strokeStyle = c.accent
-    ctx.lineWidth = 3
-    ctx.strokeRect(28, 28, 944, 1344)
-
+    ctx.lineWidth = 8
+    ctx.strokeRect(18, 18, 864, 1164)
     ctx.strokeStyle = c.line
     ctx.lineWidth = 2
-    ctx.strokeRect(44, 44, 912, 1312)
+    ctx.strokeRect(32, 32, 836, 1136)
+    ctx.globalAlpha = 0.12
+    ctx.strokeStyle = c.accent
+    ctx.lineWidth = 1
+    for (let y = 80; y < 1120; y += 22) {
+      ctx.beginPath()
+      ctx.moveTo(45, y)
+      ctx.lineTo(855, y - 100)
+      ctx.stroke()
+    }
+    ctx.globalAlpha = 1
+
+    ctx.fillStyle = c.accent
+    ctx.font = 'bold 22px monospace'
+    ctx.fillText('TOWN  /  COLLECTOR SERIES', 70, 82)
+    ctx.textAlign = 'right'
+    ctx.fillText(tierLabel, 830, 82)
+    ctx.textAlign = 'left'
 
     // Profile photo.
     ctx.fillStyle = c.soft
@@ -144,7 +129,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
     ctx.lineWidth = 3
 
     ctx.beginPath()
-    ctx.arc(205, 205, 125, 0, Math.PI * 2)
+    ctx.arc(190, 225, 112, 0, Math.PI * 2)
     ctx.fill()
     ctx.stroke()
 
@@ -161,9 +146,9 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
 
         ctx.save()
         ctx.beginPath()
-        ctx.arc(205, 205, 118, 0, Math.PI * 2)
+        ctx.arc(190, 225, 105, 0, Math.PI * 2)
         ctx.clip()
-        ctx.drawImage(img, 87, 87, 236, 236)
+        ctx.drawImage(img, 85, 120, 210, 210)
         ctx.restore()
       } catch {
         drawInitials(ctx, displayName, c)
@@ -177,41 +162,46 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
     ctx.strokeStyle = c.line
     ctx.lineWidth = 3
 
-    roundedRect(ctx, 420, 100, 490, 145, 5)
+    roundedRect(ctx, 335, 125, 495, 190, 12)
     ctx.fill()
     ctx.stroke()
 
     ctx.fillStyle = c.ink
     ctx.font = 'bold 25px monospace'
-    ctx.fillText('BIO', 445, 135)
+    ctx.fillText('PLAYER PROFILE', 360, 165)
 
     ctx.font = '23px sans-serif'
 
     wrapText(
       ctx,
       safeText(bio, 'A little about me…'),
+      360,
+      210,
       445,
-      176,
-      440,
-      30,
-      3
+      32,
+      4
     )
 
     // Member name and username.
     ctx.fillStyle = c.ink
-    ctx.font = 'bold 38px monospace'
-    ctx.fillText(displayName.slice(0, 28), 82, 400)
+    ctx.font = 'bold 42px monospace'
+    ctx.fillText(displayName.slice(0, 28), 70, 405)
 
+    ctx.fillStyle = c.accent
     ctx.font = '25px monospace'
-    ctx.fillText(`@${username}`.slice(0, 35), 82, 445)
+    ctx.fillText(`@${username}`.slice(0, 35), 70, 448)
+
+    ctx.fillStyle = c.ink
+    ctx.font = 'bold 20px monospace'
+    ctx.fillText(`${tierLabel}  ·  MEMBER #${String(userId || 'TOWN').slice(0, 8).toUpperCase()}`, 70, 490)
 
     // Member statistics.
-    const labelY = 530
-    const valueY = 650
-    const colX = [80, 365, 650]
-    const colW = 270
+    const labelY = 540
+    const valueY = 615
+    const colX = [60, 340, 620]
+    const colW = 220
 
-    const labels = ['DAYS JOINED', 'REPUTATION', 'CURRENT PET']
+    const labels = ['DAYS IN TOWN', 'REPUTATION', 'COMPANION']
     const values = [
       String(daysJoined ?? '—'),
       String(reputation),
@@ -226,7 +216,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
       ctx.strokeStyle = c.line
       ctx.lineWidth = 3
 
-      roundedRect(ctx, colX[i], labelY, colW, 62, 4)
+      roundedRect(ctx, colX[i], labelY, colW, 52, 8)
       ctx.fill()
       ctx.stroke()
 
@@ -237,10 +227,10 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
         ctx,
         label,
         colX[i] + colW / 2,
-        labelY + 38
+        labelY + 32
       )
 
-      roundedRect(ctx, colX[i], valueY, colW, 100, 4)
+      roundedRect(ctx, colX[i], valueY, colW, 95, 8)
       ctx.fill()
       ctx.stroke()
 
@@ -250,7 +240,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
         ctx,
         values[i].slice(0, 18),
         colX[i] + colW / 2,
-        valueY + 58
+        valueY + 55
       )
 
       // Draw the selected pet sprite in the current-pet column.
@@ -274,8 +264,8 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
 
             ctx.drawImage(
               sprite,
-              colX[i] + 92,
-              valueY + 65,
+              colX[i] + 67,
+              valueY + 52,
               86,
               86
             )
@@ -288,18 +278,18 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
     ctx.strokeStyle = c.line
     ctx.lineWidth = 2
     ctx.beginPath()
-    ctx.moveTo(80, 825)
-    ctx.lineTo(920, 825)
+    ctx.moveTo(60, 770)
+    ctx.lineTo(840, 770)
     ctx.stroke()
 
     ctx.fillStyle = c.ink
     ctx.font = 'bold 22px monospace'
-    ctx.fillText('MOST ACTIVE IN:', 82, 885)
+    ctx.fillText('YOUR DOWNTOWN', 65, 825)
 
     ctx.fillStyle = c.soft
     ctx.strokeStyle = c.line
 
-    roundedRect(ctx, 360, 846, 560, 64, 4)
+    roundedRect(ctx, 300, 790, 535, 64, 8)
     ctx.fill()
     ctx.stroke()
 
@@ -309,17 +299,20 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
     centerText(
       ctx,
       safeText(community, 'Choose your downtown'),
-      640,
-      886
+      568,
+      830
     )
 
     // Footer.
     ctx.fillStyle = c.ink
     ctx.font = 'bold 24px monospace'
-    ctx.fillText('TOWN MEMBER CARD', 82, 1240)
+    ctx.fillText('COLLECT YOUR CORNER OF TOWN', 65, 1070)
 
     ctx.font = '18px monospace'
-    ctx.fillText('Share your interests. Find your people.', 82, 1280)
+    ctx.fillText('A snapshot of your place in the community.', 65, 1105)
+    ctx.fillStyle = c.accent
+    ctx.font = 'bold 18px monospace'
+    ctx.fillText('TOWN.EXE  //  MEMBER EDITION', 65, 1145)
 
     function drawInitials(context, name, palette) {
   context.fillStyle = palette.accent
@@ -379,15 +372,13 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
 
   return (
     <fieldset className="profile-editor-section share-card-builder">
-      <legend>Download your profile card</legend>
+      <legend>Collectible member card</legend>
 
       <p className="widget-help">
-        Create a downloadable card with your profile photo, bio, username,
-        days joined, reputation, pet and most-active downtown. Change the
-        fields before exporting; the card is generated in your browser.
+        Your card rarity upgrades automatically with membership age: Standard (0–7 days), Rare (8–30 days), and Gold (31+ days). Preview and PNG use the same tier.
       </p>
 
-      <div className={`town-share-card town-share-card-${style}`}>
+      <div className={`town-share-card town-share-card-${tier}`}>
         <div className="town-share-card-inner">
           <div className="town-share-card-top">
             <div className="town-share-avatar">
@@ -399,13 +390,15 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
             </div>
 
             <div className="town-share-bio">
-              <strong>Bio</strong>
+              <strong>PLAYER PROFILE</strong>
               <p>{bio || 'A little about me…'}</p>
             </div>
           </div>
 
+          <div className="town-share-card-brand"><span>TOWN / COLLECTOR SERIES</span><strong>{tierLabel}</strong></div>
           <strong className="town-share-display-name">{displayName}</strong>
           <span className="town-share-username">@{username}</span>
+          <span className="town-share-card-edition">MEMBER EDITION · {memberDays} DAYS IN TOWN</span>
 
           <div className="town-share-labels">
             <span>Days joined</span>
@@ -420,7 +413,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
           </div>
 
           <div className="town-share-active">
-            <span>Most active in:</span>
+            <span>Your downtown:</span>
             <strong>{community || 'Your downtown'}</strong>
           </div>
 
@@ -437,15 +430,6 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
       </div>
 
       <div className="share-card-actions">
-        <label>
-          Card design
-          <select value={style} onChange={(e) => setStyle(e.target.value)}>
-            <option value="gold">Gold &amp; yellow (example)</option>
-            <option value="neon">Town neon</option>
-            <option value="paper">Light print</option>
-          </select>
-        </label>
-
         <label>
           Most active in
           <input
