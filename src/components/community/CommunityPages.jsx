@@ -239,6 +239,7 @@ export function CommunityPage({ slug, currentUserId }) {
   const [member, setMember] = useState(false)
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
+  const [uploadingIcon, setUploadingIcon] = useState(false)
   const [error, setError] = useState('')
 
   const load = async () => {
@@ -246,7 +247,7 @@ export function CommunityPage({ slug, currentUserId }) {
     setError('')
     const { data: communityData, error: communityError } = await supabase
       .from('communities')
-      .select('id,name,slug,description,rules,category,icon_url,created_at')
+      .select('id,name,slug,description,rules,category,icon_url,creator_id,created_at')
       .eq('slug', slug)
       .maybeSingle()
     if (communityError || !communityData) {
@@ -268,6 +269,44 @@ export function CommunityPage({ slug, currentUserId }) {
   }
 
   useEffect(() => { load(); window.dispatchEvent(new CustomEvent('town-pet-event', { detail: { kind: 'community-opened', label: slug } })) }, [slug, currentUserId])
+
+  const changeCommunityIcon = async event => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+    if (!file || !community || community.creator_id !== currentUserId) return
+    if (!['image/jpeg', 'image/png', 'image/webp', 'image/gif'].includes(file.type)) {
+      setError('Choose a JPG, PNG, WebP, or GIF image.')
+      return
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      setError('The image must be 5 MB or smaller.')
+      return
+    }
+    setUploadingIcon(true)
+    setError('')
+    try {
+      const extension = ({ 'image/jpeg': 'jpg', 'image/png': 'png', 'image/webp': 'webp', 'image/gif': 'gif' })[file.type]
+      const path = `${community.id}/icon-${Date.now()}.${extension}`
+      const { error: uploadError } = await supabase.storage.from('community-media').upload(path, file, {
+        cacheControl: '3600',
+        contentType: file.type,
+        upsert: false
+      })
+      if (uploadError) throw uploadError
+      const { data: publicData } = supabase.storage.from('community-media').getPublicUrl(path)
+      const iconUrl = publicData.publicUrl
+      const { error: updateError } = await supabase.from('communities')
+        .update({ icon_url: iconUrl })
+        .eq('id', community.id)
+        .eq('creator_id', currentUserId)
+      if (updateError) throw updateError
+      setCommunity(previous => ({ ...previous, icon_url: iconUrl }))
+    } catch (uploadError) {
+      setError(uploadError.message || 'Unable to update the downtown profile picture.')
+    } finally {
+      setUploadingIcon(false)
+    }
+  }
 
   const toggleMembership = async () => {
     if (!currentUserId || !community) return
@@ -294,8 +333,23 @@ export function CommunityPage({ slug, currentUserId }) {
       actions={<>{/* New post button */}{currentUserId ? <a className="button primary" href="#/create-post">New post</a> : <a className="button secondary" href="#/create-post">Sign in to post</a>}{slug === 'city-mumbai' && (<>{/* Section links */}<a className="button secondary" href={`#/library/${slug}`}>Library</a><a className="button secondary" href={`#/wiki/${slug}`}>Wiki</a><a className="button secondary" href={`#/updates/${slug}`}>Updates</a></>)}{currentUserId && (<button className={`button ${member ? 'secondary' : 'primary'}`} disabled={busy} onClick={toggleMembership}>{busy ? 'Working…' : member ? 'Leave downtown' : 'Join downtown'}</button>)}</>}
     >
       <div className="community-header">
-        <p>{community.description || 'No description yet.'}</p>
-        <span>Created {new Date(community.created_at).toLocaleDateString()}</span>
+        <div className="community-profile-identity">
+          <div className="community-profile-picture">
+            {community.icon_url
+              ? <img src={community.icon_url} alt={`${community.name} profile`} />
+              : <span aria-hidden="true">{(community.name || 'D').slice(0, 1).toUpperCase()}</span>}
+          </div>
+          <div className="community-profile-details">
+            <p>{community.description || 'No description yet.'}</p>
+            <span>Created {new Date(community.created_at).toLocaleDateString()}</span>
+          </div>
+        </div>
+        {community.creator_id === currentUserId && (
+          <label className="button secondary community-icon-upload">
+            {uploadingIcon ? 'Uploading…' : community.icon_url ? 'Change profile picture' : 'Add profile picture'}
+            <input type="file" accept="image/png,image/jpeg,image/webp,image/gif" onChange={changeCommunityIcon} disabled={uploadingIcon} aria-label="Change downtown profile picture" />
+          </label>
+        )}
       </div>
       {error && <div className="town-error">{error}</div>}
 
