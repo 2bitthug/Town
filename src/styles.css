@@ -2589,7 +2589,7 @@ body {
   --ps-panel: rgba(12, 12, 12, .94);
   background: #000 !important;
   color: #fff !important;
-  cursor: url('/town-cursor.png') 3 2, auto;
+  cursor: auto;
 }
 
 .ps2-shell * {
@@ -2601,7 +2601,7 @@ body {
 .ps2-shell input,
 .ps2-shell select,
 .ps2-shell textarea {
-  cursor: url('/town-cursor.png') 3 2, pointer;
+  cursor: pointer;
 }
 
 .ps2-shell,
@@ -3137,7 +3137,7 @@ body {
   border-radius: 16px;
   font-size: .82rem;
   line-height: 1.45;
-  cursor: url('/town-cursor.png') 3 2, pointer;
+  cursor: pointer;
 }
 
 .message.mine {
@@ -3232,7 +3232,7 @@ body {
   background: #111;
   color: #fff;
   font-size: 1.1rem;
-  cursor: url('/town-cursor.png') 3 2, pointer;
+  cursor: pointer;
 }
 
 .attachment-preview img,
@@ -5531,9 +5531,9 @@ textarea {
 .town-home-pet span{font-size:.82rem;color:#b8c9bc}
 @keyframes town-pet-breathe{0%,100%{transform:translateY(0)}50%{transform:translateY(-3px)}}
 
-/* User-selected pixel middle-finger cursor. Keep the image intentionally small. */
-html, body, #root, .ps2-shell { cursor: url('/town-cursor.png') 3 2, auto; }
-a, button, input[type="button"], input[type="submit"], select, summary, [role="button"] { cursor: url('/town-cursor.png') 3 2, pointer; }
+/* Use familiar system cursors for predictable, accessible interactions. */
+html, body, #root, .ps2-shell { cursor: auto; }
+a, button, input[type="button"], input[type="submit"], select, summary, [role="button"] { cursor: pointer; }
 .ps2-top-search { position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); z-index:5; display:inline-flex; align-items:center; justify-content:center; min-height:34px; padding:0 18px; border:1px solid #39ff14; color:#39ff14; background:#080b08; text-decoration:none; font:700 .75rem/1 monospace; letter-spacing:.12em; }
 .ps2-top-search:hover,.ps2-top-search.active { background:#39ff14; color:#050505; }
 @media(max-width:700px){.ps2-top-search{position:static;transform:none;margin-left:auto;margin-right:10px;min-height:30px;padding:0 10px}.ps2-topbar{gap:8px}}
@@ -5836,4 +5836,34 @@ a, button, input[type="button"], input[type="submit"], select, summary, [role="b
   .town-home-subhead { margin-top: 20px; line-height: 1.65; }
   .town-home-hero .town-hero-actions { width: 100%; flex-direction: column; }
   .town-home-hero .town-hero-actions .button { width: 100%; }
+}
+
+
+/* Public discovery, onboarding and mobile safety */
+.info-page .feature-text { max-width: 780px; line-height: 1.8; }
+.info-page .town-hero-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+.ps2-sidebar .ps2-nav a:focus-visible,
+.ps2-create-action:focus-visible,
+.ps2-top-search:focus-visible,
+.town-home-hero .button:focus-visible {
+  outline: 2px solid #39ff14;
+  outline-offset: 3px;
+}
+img, video, iframe { max-width: 100%; }
+@media (max-width: 760px) {
+  .ps2-topbar { gap: 10px; }
+  .ps2-brand-title { font-size: 1rem; }
+  .ps2-top-search { position: static; transform: none; min-height: 32px; padding: 0 10px; }
+  .ps2-top-actions { min-width: 0; }
+  .ps2-status { max-width: 120px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ps2-main { min-width: 0; }
+  .town-page { min-width: 0; }
+  .town-page-heading { align-items: flex-start; flex-wrap: wrap; }
+  .town-page-actions { flex-wrap: wrap; }
+  .town-directory-controls { grid-template-columns: minmax(0, 1fr); }
+  .community-grid { grid-template-columns: minmax(0, 1fr); }
+  .community-layout { grid-template-columns: minmax(0, 1fr); }
+  .feed-controls { grid-template-columns: minmax(0, 1fr); }
+  .feed-card { min-width: 0; }
+  .discussion-footer { flex-wrap: wrap; }
 }
