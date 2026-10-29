@@ -5937,7 +5937,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .town-home-page{max-width:1360px;padding-top:0}
 .town-home-layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(265px,.8fr);align-items:start;gap:16px}
 .town-home-main,.town-home-side-column{min-width:0;display:grid;gap:25px;align-content:start}
-.town-home-hero{position:relative;display:flex;min-height:320px;align-items:center;justify-content:flex-start;padding:clamp(24px,3.4vw,44px);overflow:hidden;border:1px solid #30353a;border-radius:14px;background-color:#0b0e12;background-image:linear-gradient(90deg,rgba(5,6,7,.94) 0%,rgba(5,6,7,.83) 37%,rgba(5,6,7,.34) 100%),url('/town-city-hero.jpg');background-size:cover;background-position:center 55%;box-shadow:none}
+.town-home-hero{position:relative;display:flex;min-height:320px;align-items:center;justify-content:flex-start;padding:clamp(24px,3.4vw,44px);overflow:hidden;border:1px solid #30353a;border-radius:14px;background-color:#0b0e12;background-image:linear-gradient(90deg,rgba(5,6,7,.94) 0%,rgba(5,6,7,.83) 37%,rgba(5,6,7,.34) 100%),url('/town-city-hero.svg');background-size:cover;background-position:center 55%;box-shadow:none}
 .town-home-hero::after{content:none}
 .town-home-copy{position:relative;z-index:1;max-width:660px}
 .town-home-hero .town-kicker{margin:0 0 15px;color:#c4d5cc;font-size:.65rem;letter-spacing:.14em}
