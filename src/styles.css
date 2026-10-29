@@ -6421,3 +6421,48 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .auth-shell input:focus {
   border-color: var(--town-accent, #A3DFC1) !important;
 }
+
+
+/* Final accent consistency: prevent legacy fixed-white text and neon chat borders overriding the theme. */
+.ps2-shell button,
+.ps2-shell .button,
+.ps2-shell .ps2-nav a,
+.ps2-shell .ps2-top-search,
+.ps2-shell .ps2-create-action,
+.ps2-shell input,
+.ps2-shell select,
+.ps2-shell textarea {
+  border-width: 1px !important;
+  border-style: solid !important;
+}
+.ps2-shell .button.primary *,
+.ps2-shell button.button.primary *,
+.ps2-shell .ps2-create-action * {
+  color: #0a0c0b !important;
+}
+.ps2-shell .button.primary:hover *,
+.ps2-shell .ps2-create-action:hover *,
+.ps2-shell .ps2-create-action.active * {
+  color: #080a09 !important;
+}
+.ps2-shell .message {
+  border-color: var(--accent-border) !important;
+  box-shadow: none !important;
+}
+.ps2-shell .message.mine {
+  border-color: var(--accent) !important;
+}
+.ps2-shell .pet-companion {
+  border-color: var(--accent-border) !important;
+  box-shadow: none !important;
+}
+.ps2-shell .town-home-pet:hover,
+.ps2-shell .pet-companion-panel header > button:hover {
+  border-color: var(--accent) !important;
+}
+.ps2-shell .pet-actions button:hover:not(:disabled),
+.ps2-shell .profile-pet-choice:hover,
+.ps2-shell .profile-color-choice:hover,
+.ps2-shell .profile-avatar-grid-compact button:hover {
+  border-color: var(--accent) !important;
+}
