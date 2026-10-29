@@ -2589,7 +2589,7 @@ body {
   --ps-panel: rgba(12, 12, 12, .94);
   background: #000 !important;
   color: #fff !important;
-  cursor: url('/town-cursor.png') 3 2, auto;
+  cursor: auto;
 }
 
 .ps2-shell * {
@@ -2601,7 +2601,7 @@ body {
 .ps2-shell input,
 .ps2-shell select,
 .ps2-shell textarea {
-  cursor: url('/town-cursor.png') 3 2, pointer;
+  cursor: pointer;
 }
 
 .ps2-shell,
@@ -3137,7 +3137,7 @@ body {
   border-radius: 16px;
   font-size: .82rem;
   line-height: 1.45;
-  cursor: url('/town-cursor.png') 3 2, pointer;
+  cursor: pointer;
 }
 
 .message.mine {
@@ -3232,7 +3232,7 @@ body {
   background: #111;
   color: #fff;
   font-size: 1.1rem;
-  cursor: url('/town-cursor.png') 3 2, pointer;
+  cursor: pointer;
 }
 
 .attachment-preview img,
