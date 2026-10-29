@@ -6510,3 +6510,84 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .town-home-side-card:focus-within {
   border-color: color-mix(in srgb, var(--town-accent, var(--accent, #A3DFC1)) 56%, #272c31) !important;
 }
+
+/* Lavender/member accent: make section and content-panel outlines consistently visible.
+   The chosen accent is resolved at runtime, so this follows each member's saved colour. */
+.ps2-shell {
+  --accent-border: color-mix(in srgb, var(--town-accent, var(--accent, #C6B8EC)) 58%, #272c31);
+  --town-accent-border: color-mix(in srgb, var(--town-accent, var(--accent, #C6B8EC)) 58%, #272c31);
+}
+.ps2-shell .town-page .town-home-hero,
+.ps2-shell .town-page .town-home-community-card,
+.ps2-shell .town-page .town-home-side-card,
+.ps2-shell .town-page .town-home-empty,
+.ps2-shell .town-page .town-home-side-empty,
+.ps2-shell .town-page .town-home-notice,
+.ps2-shell .town-page .town-principles li,
+.ps2-shell .town-page .town-principles span,
+.ps2-shell .town-page .town-directory-intro,
+.ps2-shell .town-page .town-global-search,
+.ps2-shell .town-page .town-state,
+.ps2-shell .town-page .town-empty,
+.ps2-shell .town-page .town-error,
+.ps2-shell .town-page .town-form,
+.ps2-shell .town-page .community-card,
+.ps2-shell .town-page .community-header,
+.ps2-shell .town-page .town-side-card,
+.ps2-shell .town-page .post-card,
+.ps2-shell .town-page .feed-card,
+.ps2-shell .town-page .discussion-post,
+.ps2-shell .town-page .comment-composer,
+.ps2-shell .town-page .reply-form,
+.ps2-shell .town-page .comment-item,
+.ps2-shell .town-page .chat-box,
+.ps2-shell .town-page .user-row,
+.ps2-shell .town-page .engagement-panel,
+.ps2-shell .town-page .profile-editor-section,
+.ps2-shell .town-page .profile-preview-card,
+.ps2-shell .town-page .growth-card,
+.ps2-shell .town-page .beta-intro,
+.ps2-shell .town-page .beta-report,
+.ps2-shell .town-page .town-global-results,
+.ps2-shell .town-page .town-global-result-group > a,
+.ps2-shell .town-page .saved-post-card,
+.ps2-shell .town-page .search-result,
+.ps2-shell .town-page .moderation-card,
+.ps2-shell .profile-editor-section,
+.ps2-shell .profile-preview-card,
+.ps2-shell .profile-editor-section fieldset,
+.ps2-shell .profile-avatar-popover,
+.ps2-shell .town-home-side-card,
+.ps2-shell .town-home-community-card,
+.ps2-shell .community-card,
+.ps2-shell .community-header,
+.ps2-shell .town-side-card,
+.ps2-shell .town-form,
+.ps2-shell .post-card,
+.ps2-shell .feed-card,
+.ps2-shell .discussion-post,
+.ps2-shell .comment-composer,
+.ps2-shell .reply-form,
+.ps2-shell .comment-item,
+.ps2-shell .chat-box,
+.ps2-shell .user-row,
+.ps2-shell .engagement-panel,
+.ps2-shell .growth-card,
+.ps2-shell .beta-intro,
+.ps2-shell .beta-report,
+.ps2-shell .town-global-search,
+.ps2-shell .town-directory-intro,
+.ps2-shell .town-state,
+.ps2-shell .town-empty,
+.ps2-shell .launch-summary,
+.ps2-shell .launch-notice {
+  border-color: var(--town-accent-border) !important;
+}
+.ps2-shell .town-page .town-home-community-card:hover,
+.ps2-shell .town-page .community-card:hover,
+.ps2-shell .town-page .post-card:hover,
+.ps2-shell .town-page .feed-card:hover,
+.ps2-shell .town-page .user-row:hover,
+.ps2-shell .town-page .town-global-result-group > a:hover {
+  border-color: var(--town-accent, var(--accent, #C6B8EC)) !important;
+}
