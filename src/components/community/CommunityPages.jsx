@@ -30,18 +30,123 @@ function Empty({ children }) {
 }
 
 export function TownHomePage() {
+  const [communities, setCommunities] = useState([])
+  const [posts, setPosts] = useState([])
+  const [loading, setLoading] = useState(true)
+  const [previewError, setPreviewError] = useState('')
+
+  useEffect(() => {
+    let active = true
+    const loadHomePreview = async () => {
+      if (!supabase) { setLoading(false); return }
+      try {
+        const { data: communityData, error: communityError } = await supabase
+          .from('communities')
+          .select('id,name,slug,description,category,icon_url,created_at')
+          .eq('status', 'active')
+          .eq('visibility', 'public')
+          .order('created_at', { ascending: false })
+          .limit(6)
+        if (communityError) throw communityError
+        const visibleCommunities = communityData || []
+        let recentPosts = []
+        if (visibleCommunities.length) {
+          const communityIds = visibleCommunities.map(item => item.id)
+          const { data: postData, error: postError } = await supabase
+            .from('posts')
+            .select('id,title,body,community_id,created_at')
+            .eq('status', 'published')
+            .in('community_id', communityIds)
+            .order('created_at', { ascending: false })
+            .limit(5)
+          if (postError) throw postError
+          const communityById = new Map(visibleCommunities.map(item => [item.id, item]))
+          recentPosts = (postData || []).map(post => ({ ...post, community: communityById.get(post.community_id) }))
+        }
+        if (active) {
+          setCommunities(visibleCommunities)
+          setPosts(recentPosts)
+          setPreviewError('')
+        }
+      } catch {
+        if (active) setPreviewError('Live previews are unavailable right now. Open the downtown directory to explore.')
+      } finally {
+        if (active) setLoading(false)
+      }
+    }
+    loadHomePreview()
+    return () => { active = false }
+  }, [])
+
   return (
     <section className="town-page town-home-page">
-      <div className="town-home-hero">
-        <p className="town-kicker">YOUR SPACE. YOUR CHOICES.</p>
-        <h1 className="town-home-headline">Your feed should be yours.</h1>
-        <p className="town-home-subhead">
-          Join communities, follow the conversations you care about, and choose how posts are sorted. No algorithm quietly rearranging your priorities.
-        </p>
-        <div className="town-hero-actions">
-          <a className="button primary" href="#/communities">Explore Communities</a>
-          <a className="button secondary" href="#/help">See How It Works</a>
+      <div className="town-home-layout">
+        <div className="town-home-main">
+          <section className="town-home-hero">
+            <div className="town-home-copy">
+              <p className="town-kicker">YOUR SPACE. YOUR CONVERSATIONS.</p>
+              <h1 className="town-home-headline">A place for better conversations.</h1>
+              <p className="town-home-subhead">
+                Join communities, follow the topics you care about, and choose how discussions are sorted. Your attention stays yours.
+              </p>
+              <div className="town-hero-actions">
+                <a className="button primary" href="#/communities">Explore downtowns <span aria-hidden="true">→</span></a>
+                <a className="button secondary" href="#/create-post">Create a post</a>
+              </div>
+            </div>
+            <span className="town-home-hero-caption">LOCAL VOICES · SHARED INTERESTS</span>
+          </section>
+
+          <section className="town-home-discover" aria-labelledby="town-home-discover-title">
+            <div className="town-home-section-heading">
+              <div><p className="eyebrow">FIND YOUR PEOPLE</p><h2 id="town-home-discover-title">Explore downtowns</h2></div>
+              <a className="town-home-text-link" href="#/communities">View all <span aria-hidden="true">→</span></a>
+            </div>
+            {previewError && <p className="town-home-notice" role="status">{previewError}</p>}
+            {loading && <div className="town-home-empty">Loading downtowns…</div>}
+            {!loading && !communities.length && <div className="town-home-empty">No public downtowns to preview yet. Check the directory again soon.</div>}
+            {!!communities.length && <div className="town-home-community-grid">
+              {communities.map((community, index) => (
+                <a className="town-home-community-card" href={`#/community/${community.slug}`} key={community.id}>
+                  <div className={`town-home-community-art tone-${index % 5}`}>
+                    {community.icon_url ? <img src={community.icon_url} alt="" loading="lazy" /> : <span aria-hidden="true">{(community.name || 'T').slice(0, 1).toUpperCase()}</span>}
+                  </div>
+                  <div className="town-home-community-copy">
+                    <span className="town-home-community-category">{community.category || 'Downtown'}</span>
+                    <h3>{community.name}</h3>
+                    <p>{community.description || 'A place to ask questions and share what you know.'}</p>
+                    <span className="town-home-card-link">Open downtown <span aria-hidden="true">→</span></span>
+                  </div>
+                </a>
+              ))}
+            </div>}
+          </section>
         </div>
+
+        <aside className="town-home-side-column" aria-label="Recent activity and Town guidance">
+          <section className="town-home-side-card">
+            <div className="town-home-section-heading compact">
+              <div><p className="eyebrow">LATEST ACTIVITY</p><h2>Recent conversations</h2></div>
+              <a className="town-home-text-link" href="#/feed" aria-label="View all conversations">View all</a>
+            </div>
+            {posts.map(post => (
+              <a className="town-home-discussion" href={`#/post/${post.id}`} key={post.id}>
+                <span className="town-home-discussion-community">{post.community?.name || 'Downtown'}</span>
+                <strong>{post.title}</strong>
+                {post.body && <span className="town-home-discussion-excerpt">{post.body}</span>}
+                <span className="town-home-discussion-meta">{post.created_at ? new Date(post.created_at).toLocaleDateString() : 'Recent post'} <span aria-hidden="true">↗</span></span>
+              </a>
+            ))}
+            {!loading && !posts.length && <div className="town-home-side-empty">No published discussions in the preview yet. Start with a downtown that interests you.</div>}
+            {loading && <div className="town-home-side-empty">Loading recent discussions…</div>}
+          </section>
+          <section className="town-home-side-card town-home-principle-card">
+            <p className="eyebrow">BUILT AROUND CHOICE</p>
+            <h2>Your feed, your rules.</h2>
+            <p>Choose a downtown and sort discussions by latest or most discussed. Town keeps the controls visible instead of hiding the ranking logic.</p>
+            <a className="town-home-text-link" href="#/help">How Town works <span aria-hidden="true">→</span></a>
+          </section>
+        </aside>
       </div>
     </section>
   )

@@ -1152,12 +1152,12 @@ function SavedPage() {
 }
 
 const PROFILE_COLORS = [
-  ['#39ff14', 'Neon green'],
-  ['#ff4fd8', 'Neon pink'],
-  ['#c9a7ff', 'Lavender'],
-  ['#ff9d3d', 'Orange'],
-  ['#ffe66d', 'Yellow'],
-  ['#f2f2f2', 'White']
+  ['#A3DFC1', 'Sage'],
+  ['#C6B8EC', 'Lavender'],
+  ['#9FC5EE', 'Blue'],
+  ['#D9A28F', 'Coral'],
+  ['#D8BA7B', 'Amber'],
+  ['#E6E8EB', 'Silver']
 ]
 
 const PROFILE_PETS = [
@@ -1197,7 +1197,7 @@ function SettingsPage({ currentUserId }) {
     bio: '',
     interests: '',
     avatar_id: DEFAULT_AVATAR_ID,
-    accent_color: '#39ff14',
+    accent_color: '#A3DFC1',
     pet_id: 'none',
     pet_name: 'Pixel',
     profile_sections: defaultSections
@@ -1240,7 +1240,7 @@ function SettingsPage({ currentUserId }) {
         setMessage(`Could not load profile: ${error.message}`)
       } else if (data) {
         setCreatedAt(data.created_at || fallbackCreatedAt)
-        localStorage.setItem(`town-accent:${currentUserId}`, PROFILE_COLORS.some(c => c[0] === data.accent_color) ? data.accent_color : '#39ff14')
+        localStorage.setItem(`town-accent:${currentUserId}`, PROFILE_COLORS.some(c => c[0] === data.accent_color) ? data.accent_color : '#A3DFC1')
         window.dispatchEvent(new CustomEvent('town-accent-change'))
         setProfile({
           username: data.username || '',
@@ -1248,7 +1248,7 @@ function SettingsPage({ currentUserId }) {
           bio: data.bio || '',
           interests: data.interests || '',
           avatar_id: PROFILE_AVATARS.some(a => a[0] === data.avatar_id) ? data.avatar_id : DEFAULT_AVATAR_ID,
-          accent_color: PROFILE_COLORS.some(c => c[0] === data.accent_color) ? data.accent_color : '#39ff14',
+          accent_color: PROFILE_COLORS.some(c => c[0] === data.accent_color) ? data.accent_color : '#A3DFC1',
           pet_id: PROFILE_PETS.some(p => p[0] === data.pet_id) ? data.pet_id : (localStorage.getItem(`town-pet:${currentUserId}`) || 'none'),
           pet_name: data.pet_name || (() => { try { return JSON.parse(localStorage.getItem(`town-pet-companion:${currentUserId}`) || '{}').name || 'Pixel' } catch { return 'Pixel' } })(),
           profile_sections: {
@@ -1300,7 +1300,7 @@ function SettingsPage({ currentUserId }) {
     [Boolean(profile.bio.trim()), 'Write a short bio'],
     [Boolean(profile.interests.trim()), 'Add some interests'],
     [Boolean(profile.avatar_id), 'Choose an avatar'],
-    [profile.accent_color !== '#39ff14', 'Choose an accent colour']
+    [profile.accent_color !== '#A3DFC1', 'Choose an accent colour']
   ]
   const completionCount = completionItems.filter(item => item[0]).length
   const completionPercent = Math.round((completionCount / completionItems.length) * 100)
@@ -1363,21 +1363,21 @@ function SettingsPage({ currentUserId }) {
           .engagement-panel h3{margin:0 0 7px;color:#f4eaff;font-size:1rem}
           .engagement-muted{color:#aaa1b7;font-size:.88rem;margin:0}
           .member-line{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-          .member-days{font-size:1.55rem;font-weight:700;color:var(--profile-accent,#39ff14)}
+          .member-days{font-size:1.55rem;font-weight:700;color:var(--profile-accent,#A3DFC1)}
           .badge-row,.suggestion-row{display:flex;gap:8px;flex-wrap:wrap}
-          .engagement-badge{padding:7px 10px;border:1px solid var(--profile-accent,#39ff14);border-radius:999px;background:#0d0b11;color:#f5eff8;font-size:.8rem}
+          .engagement-badge{padding:7px 10px;border:1px solid var(--profile-accent,#A3DFC1);border-radius:999px;background:#0d0b11;color:#f5eff8;font-size:.8rem}
           .engagement-badge.locked{opacity:.45;border-color:#4a4052}
           .completion-track{height:8px;background:#211a28;border-radius:999px;overflow:hidden;margin:10px 0}
-          .completion-fill{height:100%;background:var(--profile-accent,#39ff14);border-radius:inherit;transition:width .2s ease}
+          .completion-fill{height:100%;background:var(--profile-accent,#A3DFC1);border-radius:inherit;transition:width .2s ease}
           .suggestion-row span{padding:5px 8px;border:1px solid #40344a;border-radius:999px;color:#c8c0ce;font-size:.78rem}
           .profile-toggle-list{display:grid;gap:12px}
           .profile-toggle-list .profile-toggle{display:flex!important;align-items:center!important;gap:10px!important;width:100%!important;margin:0!important}
-          .profile-toggle-list .profile-toggle input[type="checkbox"]{width:18px!important;height:18px!important;min-width:18px!important;flex:0 0 18px!important;margin:0!important;accent-color:var(--profile-accent,#39ff14)}
+          .profile-toggle-list .profile-toggle input[type="checkbox"]{width:18px!important;height:18px!important;min-width:18px!important;flex:0 0 18px!important;margin:0!important;accent-color:var(--profile-accent,#A3DFC1)}
           .profile-toggle-list .profile-toggle span{display:block!important;margin:0!important}
           .profile-editor-compact{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
           .profile-editor-layout{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:16px;align-items:start;width:100%;min-width:0}
-          .profile-preview-card{min-width:0;max-width:190px;padding:12px;border:1px solid var(--profile-accent,#39ff14);border-radius:12px;background:#080808;display:flex;flex-direction:column;align-items:flex-start;gap:7px;overflow:hidden}
-          .profile-preview-avatar{width:54px;height:54px;flex:0 0 54px;border:1px solid var(--profile-accent,#39ff14);border-radius:9px;overflow:hidden;background:#050505}
+          .profile-preview-card{min-width:0;max-width:190px;padding:12px;border:1px solid var(--profile-accent,#A3DFC1);border-radius:12px;background:#080808;display:flex;flex-direction:column;align-items:flex-start;gap:7px;overflow:hidden}
+          .profile-preview-avatar{width:54px;height:54px;flex:0 0 54px;border:1px solid var(--profile-accent,#A3DFC1);border-radius:9px;overflow:hidden;background:#050505}
           .profile-preview-avatar img{display:block;width:100%;height:100%;object-fit:cover}
           .profile-preview-card strong,.profile-preview-card span,.profile-preview-card p{max-width:100%;overflow-wrap:anywhere;margin:0}
           .profile-editor-fields{display:grid;gap:12px;min-width:0;width:100%}
@@ -1386,18 +1386,18 @@ function SettingsPage({ currentUserId }) {
           .profile-editor-fields textarea{min-height:84px;resize:vertical}
           @media(max-width:620px){.profile-editor-layout{grid-template-columns:minmax(0,1fr)}.profile-preview-card{max-width:none;width:100%;box-sizing:border-box;display:grid;grid-template-columns:54px minmax(0,1fr);align-items:center}.profile-preview-card p,.profile-pet-preview{grid-column:1/-1}}
 
-          .profile-current-avatar{width:74px;height:74px;border-radius:18px;border:2px solid var(--profile-accent,#39ff14);background:#050505;display:grid;place-items:center;overflow:hidden;box-shadow:0 0 14px color-mix(in srgb,var(--profile-accent,#39ff14) 24%,transparent)}
+          .profile-current-avatar{width:74px;height:74px;border-radius:18px;border:2px solid var(--profile-accent,#A3DFC1);background:#050505;display:grid;place-items:center;overflow:hidden;box-shadow:0 0 14px color-mix(in srgb,var(--profile-accent,#A3DFC1) 24%,transparent)}
           .profile-current-avatar img{width:100%;height:100%;object-fit:cover}
           .profile-avatar-popover{margin-top:12px;padding:12px;border:1px solid #33283d;border-radius:14px;background:#09070c;max-height:300px;overflow:auto}
           .profile-avatar-grid-compact{display:grid;grid-template-columns:repeat(5,minmax(52px,1fr));gap:8px}
           .profile-avatar-grid-compact button{position:relative;min-height:58px;border:1px solid #33283d;border-radius:12px;background:#0e0b12;padding:5px;cursor:pointer}
-          .profile-avatar-grid-compact button.selected{border-color:var(--profile-accent,#39ff14);box-shadow:0 0 10px color-mix(in srgb,var(--profile-accent,#39ff14) 25%,transparent)}
+          .profile-avatar-grid-compact button.selected{border-color:var(--profile-accent,#A3DFC1);box-shadow:0 0 10px color-mix(in srgb,var(--profile-accent,#A3DFC1) 25%,transparent)}
           .profile-avatar-grid-compact img{width:48px;height:48px;display:block;margin:auto}
-          .profile-avatar-grid-compact button:focus-visible{outline:2px solid var(--profile-accent,#39ff14);outline-offset:2px}
+          .profile-avatar-grid-compact button:focus-visible{outline:2px solid var(--profile-accent,#A3DFC1);outline-offset:2px}
 .profile-avatar-grid-compact button{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;min-width:0;min-height:78px}
           .profile-avatar-grid-compact img{width:48px;height:48px;object-fit:contain}
           .profile-avatar-grid-compact small{font-size:10px;line-height:1.15;color:#ddd;text-align:center;overflow-wrap:anywhere}
-          .profile-avatar-grid-compact button.selected small{color:var(--profile-accent,#39ff14)}
+          .profile-avatar-grid-compact button.selected small{color:var(--profile-accent,#A3DFC1)}
           @media(max-width:760px){.engagement-grid{grid-template-columns:1fr}.profile-avatar-grid-compact{grid-template-columns:repeat(4,minmax(52px,1fr))}}
         `}</style>
 
@@ -1525,7 +1525,7 @@ function App() {
   const route = useHashRoute()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [canModerate, setCanModerate] = useState(false)
-  const [globalAccent, setGlobalAccent] = useState('#39ff14')
+  const [globalAccent, setGlobalAccent] = useState('#A3DFC1')
   useEffect(() => { setMobileNavOpen(false) }, [route])
   useEffect(() => {
     if (!mobileNavOpen) return
@@ -1540,7 +1540,7 @@ function App() {
     }
   }, [mobileNavOpen])
   useEffect(() => {
-    const syncAccent = () => setGlobalAccent(localStorage.getItem(session?.user?.id ? `town-accent:${session.user.id}` : 'town-accent') || '#39ff14')
+    const syncAccent = () => { const stored = localStorage.getItem(session?.user?.id ? `town-accent:${session.user.id}` : 'town-accent'); setGlobalAccent(PROFILE_COLORS.some(([value]) => value.toLowerCase() === (stored || '').toLowerCase()) ? stored : '#A3DFC1') }
     syncAccent()
     window.addEventListener('town-accent-change', syncAccent)
     return () => window.removeEventListener('town-accent-change', syncAccent)
@@ -1636,7 +1636,7 @@ function App() {
       <div className="ps2-brand">
         <div><p className="ps2-brand-title">TOWN</p></div>
       </div>
-      <a className={`ps2-top-search ${routeName === 'search' ? 'active' : ''}`} href="#/search" aria-label="Search Town">SEARCH</a>
+      <a className={`ps2-top-search ${routeName === 'search' ? 'active' : ''}`} href="#/search" aria-label="Search Town">⌕ Search Town…</a>
       <div className="ps2-top-actions">
         <div className="ps2-status">
           {session
