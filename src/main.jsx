@@ -1546,6 +1546,10 @@ function App() {
     return () => window.removeEventListener('town-accent-change', syncAccent)
   }, [session?.user?.id])
   useEffect(() => {
+    // Expose the saved member accent to the entire document, including the sign-in view.
+    document.documentElement.style.setProperty('--town-accent', globalAccent)
+  }, [globalAccent])
+  useEffect(() => {
     if (!supabase) { setChecking(false); return }
     supabase.auth.getSession().then(({ data }) => { setSession(data.session); setChecking(false) })
     const { data: listener } = supabase.auth.onAuthStateChange((_event, next) => setSession(next))

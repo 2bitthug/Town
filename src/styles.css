@@ -6130,3 +6130,294 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   .mobile-nav-toggle{padding:0 8px;font-size:.61rem}
 }
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.001ms!important}}
+
+
+/* Site-wide member accent binding. All interactive chrome derives from the saved profile colour. */
+:root {
+  --town-accent: #A3DFC1;
+  --accent: var(--town-accent);
+  --focus: var(--town-accent);
+  --success: var(--town-accent);
+  --town-accent-hover: color-mix(in srgb, var(--town-accent) 82%, white);
+  --town-accent-border: color-mix(in srgb, var(--town-accent) 48%, #303438);
+  --town-accent-faint: color-mix(in srgb, var(--town-accent) 12%, #0c0e10);
+}
+.ps2-shell {
+  --accent: var(--town-accent, #A3DFC1);
+  --profile-accent: var(--town-accent, #A3DFC1);
+  --accent-soft: color-mix(in srgb, var(--accent) 14%, #070809);
+  --accent-hover: color-mix(in srgb, var(--accent) 82%, white);
+  --accent-border: color-mix(in srgb, var(--accent) 48%, #303438);
+  --accent-faint: color-mix(in srgb, var(--accent) 12%, #0c0e10);
+}
+
+/* Button and control borders use a tinted version of the chosen colour, not a fixed neon colour. */
+.ps2-shell button,
+.ps2-shell .button,
+.ps2-shell .ps2-nav a,
+.ps2-shell .ps2-top-search,
+.ps2-shell .ps2-create-action,
+.ps2-shell input,
+.ps2-shell select,
+.ps2-shell textarea,
+.ps2-shell [role="button"] {
+  border-color: var(--accent-border) !important;
+  box-shadow: none !important;
+}
+.ps2-shell button:not(:disabled):hover,
+.ps2-shell .button:not(:disabled):hover,
+.ps2-shell .ps2-nav a:hover,
+.ps2-shell [role="button"]:hover {
+  border-color: var(--accent) !important;
+}
+.ps2-shell .button.primary,
+.ps2-shell button.button.primary,
+.ps2-shell .ps2-create-action,
+.auth-shell .button.primary,
+.auth-shell button.button.primary {
+  color: #0a0c0b !important;
+  background: var(--town-accent, var(--accent, #A3DFC1)) !important;
+  border-color: var(--town-accent, var(--accent, #A3DFC1)) !important;
+  box-shadow: none !important;
+}
+.ps2-shell .button.primary:hover:not(:disabled),
+.ps2-shell button.button.primary:hover:not(:disabled),
+.ps2-shell .ps2-create-action:hover,
+.ps2-shell .ps2-create-action.active,
+.auth-shell .button.primary:hover:not(:disabled) {
+  color: #080a09 !important;
+  background: var(--town-accent-hover, color-mix(in srgb, var(--town-accent, var(--accent)) 82%, white)) !important;
+  border-color: var(--town-accent-hover, color-mix(in srgb, var(--town-accent, var(--accent)) 82%, white)) !important;
+}
+.ps2-shell .button.secondary,
+.ps2-shell button.button.secondary,
+.ps2-shell .ps2-top-signout,
+.ps2-shell .mobile-nav-toggle,
+.auth-shell .button.secondary {
+  color: #e8ecea !important;
+  background: #111417 !important;
+  border: 1px solid var(--accent-border) !important;
+  box-shadow: none !important;
+}
+.ps2-shell .button.secondary:hover:not(:disabled),
+.ps2-shell button.button.secondary:hover:not(:disabled),
+.ps2-shell .ps2-top-signout:hover,
+.ps2-shell .mobile-nav-toggle:hover,
+.auth-shell .button.secondary:hover:not(:disabled) {
+  color: var(--town-accent, var(--accent)) !important;
+  background: var(--accent-faint, var(--town-accent-faint)) !important;
+  border-color: var(--town-accent, var(--accent)) !important;
+}
+.ps2-shell button:focus-visible,
+.ps2-shell a:focus-visible,
+.ps2-shell input:focus-visible,
+.ps2-shell select:focus-visible,
+.ps2-shell textarea:focus-visible,
+.auth-shell button:focus-visible,
+.auth-shell a:focus-visible,
+.auth-shell input:focus-visible {
+  outline: 2px solid var(--town-accent, var(--accent, #A3DFC1)) !important;
+  outline-offset: 3px !important;
+  box-shadow: none !important;
+}
+.ps2-shell input:focus,
+.ps2-shell select:focus,
+.ps2-shell textarea:focus,
+.auth-shell input:focus {
+  border-color: var(--town-accent, var(--accent, #A3DFC1)) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--town-accent, var(--accent)) 14%, transparent) !important;
+}
+
+/* The accent is repeated where it signals selection, navigation, or an action. */
+.ps2-shell .ps2-nav a.active {
+  color: #f0f5f2 !important;
+  background: color-mix(in srgb, var(--accent) 14%, #101312) !important;
+  border-color: var(--accent-border) !important;
+  text-shadow: none !important;
+}
+.ps2-shell .ps2-nav a.active::before {
+  background: var(--accent) !important;
+  box-shadow: none !important;
+}
+.ps2-shell .ps2-nav a.active .ps2-nav-index,
+.ps2-shell .ps2-nav a.active b,
+.ps2-shell .ps2-create-action span:first-child {
+  color: var(--accent) !important;
+}
+.ps2-shell .ps2-create-action,
+.ps2-shell .ps2-create-action:hover,
+.ps2-shell .ps2-create-action.active {
+  color: #0a0c0b !important;
+}
+.ps2-shell .ps2-create-action span:first-child,
+.ps2-shell .ps2-create-action:hover span:first-child,
+.ps2-shell .ps2-create-action.active span:first-child {
+  color: #0a0c0b !important;
+}
+.ps2-shell .ps2-top-search {
+  color: #cbd1ce !important;
+  background: #101315 !important;
+  border-color: var(--accent-border) !important;
+}
+.ps2-shell .ps2-top-search:hover,
+.ps2-shell .ps2-top-search.active {
+  color: #0a0c0b !important;
+  background: var(--accent) !important;
+  border-color: var(--accent) !important;
+}
+.ps2-shell .eyebrow,
+.ps2-shell .town-kicker,
+.ps2-shell .town-principles li strong,
+.ps2-shell .town-home-text-link,
+.ps2-shell .town-home-card-link,
+.ps2-shell .town-home-discussion-community,
+.ps2-shell .community-open,
+.ps2-shell .post-type,
+.ps2-shell .post-pin,
+.ps2-shell .post-pin-inline,
+.ps2-shell .discussion-meta span:first-child,
+.ps2-shell .feed-card-meta a,
+.ps2-shell .feed-principle strong,
+.ps2-shell .town-global-result-group h2,
+.ps2-shell .post-title-link:hover,
+.ps2-shell .comment-actions button:hover,
+.ps2-shell .discussion-link,
+.ps2-shell .beta-intro strong,
+.ps2-shell .beta-launch-status strong,
+.ps2-shell .launch-badge,
+.ps2-shell .launch-summary strong,
+.ps2-shell .growth-metrics strong,
+.ps2-shell .suggestion-list em,
+.ps2-shell .beta-context code,
+.ps2-shell .pet-saved-note,
+.ps2-shell .pet-progress progress {
+  color: var(--accent) !important;
+}
+.ps2-shell .town-home-text-link:hover,
+.ps2-shell .town-home-card-link:hover {
+  color: var(--accent-hover) !important;
+}
+.ps2-shell .town-home-hero .button.secondary {
+  border-color: var(--accent-border) !important;
+  color: #f0f2f1 !important;
+  background: rgba(6,8,9,.58) !important;
+}
+.ps2-shell .town-home-hero .button.secondary:hover:not(:disabled) {
+  color: var(--accent) !important;
+  border-color: var(--accent) !important;
+  background: rgba(6,8,9,.78) !important;
+}
+.ps2-shell .community-card:hover,
+.ps2-shell .post-card:hover,
+.ps2-shell .feed-card:hover,
+.ps2-shell .town-home-community-card:hover,
+.ps2-shell .user-row:hover,
+.ps2-shell .chat-select:hover,
+.ps2-shell .chat-select.selected {
+  border-color: color-mix(in srgb, var(--accent) 68%, #303438) !important;
+}
+.ps2-shell .feed-action,
+.ps2-shell .discussion-votes button,
+.ps2-shell .pet-actions button,
+.ps2-shell .message-reaction,
+.ps2-shell .message-actions,
+.ps2-shell .reaction-picker,
+.ps2-shell .pet-companion-panel,
+.ps2-shell .pet-progress,
+.ps2-shell .town-home-pet {
+  border-color: var(--accent-border) !important;
+  box-shadow: none !important;
+}
+.ps2-shell .feed-action.active,
+.ps2-shell .discussion-votes button.selected,
+.ps2-shell .discussion-votes button.selected.down,
+.ps2-shell .profile-color-choice.selected,
+.ps2-shell .profile-pet-choice.selected,
+.ps2-shell .profile-avatar-grid-compact button.selected,
+.ps2-shell .profile-pet-choice:focus-visible,
+.ps2-shell .profile-avatar-grid-compact button:focus-visible {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 72%, transparent) inset !important;
+}
+.ps2-shell .feed-action.active,
+.ps2-shell .discussion-votes button.selected,
+.ps2-shell .profile-pet-choice.selected small {
+  color: var(--accent) !important;
+}
+.ps2-shell .feed-principle {
+  border-color: color-mix(in srgb, var(--accent) 30%, #29332e) !important;
+  background: color-mix(in srgb, var(--accent) 5%, #0b0f0d) !important;
+}
+.ps2-shell .profile-current-avatar,
+.ps2-shell .profile-preview-avatar,
+.ps2-shell .profile-color-choice.selected,
+.ps2-shell .profile-avatar-grid-compact button.selected,
+.ps2-shell .profile-pet-preview,
+.ps2-shell .profile-pet-choice.selected,
+.ps2-shell .town-share-card-neon .town-share-card-inner,
+.ps2-shell .share-card-preview:not([data-style="paper"]),
+.ps2-shell .share-card-preview:not([data-style="paper"])>span {
+  border-color: var(--accent) !important;
+}
+.ps2-shell .profile-creature-trait,
+.ps2-shell .trophy-icon,
+.ps2-shell .town-share-card-inner .town-share-card-brand,
+.ps2-shell .town-share-card-inner .town-share-card-edition,
+.ps2-shell .town-share-card-inner .town-share-bio strong,
+.ps2-shell .town-share-card-inner .town-share-values strong {
+  color: var(--accent);
+}
+.ps2-shell .pet-companion-panel header small,
+.ps2-shell .pet-name-tag,
+.ps2-shell .pet-saved-note,
+.ps2-shell .pet-companion-panel .pet-chat-link {
+  color: var(--accent) !important;
+}
+.ps2-shell .pet-companion-panel progress,
+.ps2-shell .pet-progress progress,
+.ps2-shell input[type="checkbox"],
+.ps2-shell input[type="radio"],
+.ps2-shell input[type="range"] {
+  accent-color: var(--accent) !important;
+}
+.ps2-shell .launch-badge,
+.ps2-shell .launch-check.done,
+.ps2-shell .beta-check.done,
+.ps2-shell .beta-success,
+.ps2-shell .growth-success {
+  border-color: color-mix(in srgb, var(--accent) 50%, #303438) !important;
+}
+.ps2-shell .beta-check.done strong,
+.ps2-shell .growth-success {
+  color: var(--accent) !important;
+}
+.ps2-shell .town-hero,
+.ps2-shell .town-directory-intro,
+.ps2-shell .town-global-search,
+.ps2-shell .town-state,
+.ps2-shell .town-empty,
+.ps2-shell .town-error,
+.ps2-shell .town-form,
+.ps2-shell .launch-summary,
+.ps2-shell .launch-notice {
+  border-color: color-mix(in srgb, var(--accent) 22%, #282e32);
+}
+.ps2-shell .town-global-results,
+.ps2-shell .town-global-result-group>a:hover {
+  border-color: color-mix(in srgb, var(--accent) 32%, #303438) !important;
+}
+.auth-shell {
+  background: #050607 !important;
+}
+.auth-card {
+  border-color: color-mix(in srgb, var(--town-accent, #A3DFC1) 36%, #272c31) !important;
+  background: #0b0d0f !important;
+  box-shadow: none !important;
+}
+.auth-shell .eyebrow,
+.auth-shell .switch-auth {
+  color: var(--town-accent, #A3DFC1) !important;
+}
+.auth-shell input:focus {
+  border-color: var(--town-accent, #A3DFC1) !important;
+}
