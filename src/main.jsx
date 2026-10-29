@@ -1283,6 +1283,22 @@ function SettingsPage({ currentUserId }) {
     if (next) chooseAvatar(next[0])
   }
 
+  const chooseAccentColour = async (value) => {
+    // Apply the colour immediately so the settings page and the rest of Town update together.
+    setProfile(current => ({ ...current, accent_color: value }))
+    localStorage.setItem(`town-accent:${currentUserId}`, value)
+    document.documentElement.style.setProperty('--town-accent', value)
+    window.dispatchEvent(new CustomEvent('town-accent-change', { detail: value }))
+
+    // Keep the account preference in sync immediately; the main Save button still saves the rest
+    // of the profile form. The local preference remains active even if syncing fails temporarily.
+    if (supabase && currentUserId) {
+      const { error } = await supabase.from('profiles').update({ accent_color: value }).eq('id', currentUserId)
+      if (error) setMessage(`Accent applied on this device. Account sync failed: ${error.message}`)
+      else setMessage('Accent colour applied across Town.')
+    }
+  }
+
   const toggleSection = (key) => {
     setProfile(current => ({
       ...current,
@@ -1458,7 +1474,7 @@ function SettingsPage({ currentUserId }) {
 
         <fieldset className="profile-editor-section">
           <legend>Accent colour</legend>
-          <div className="profile-color-grid" role="group" aria-label="Profile accent colours">{PROFILE_COLORS.map(([value, label]) => <button type="button" key={value} className={`profile-color-choice ${profile.accent_color === value ? 'selected' : ''}`} style={{ '--choice-color': value }} aria-label={`${label}${profile.accent_color === value ? ', selected' : ''}`} aria-pressed={profile.accent_color === value} onClick={() => setProfile({ ...profile, accent_color: value })}><span aria-hidden="true" /><b>{label}</b></button>)}</div>
+          <div className="profile-color-grid" role="group" aria-label="Profile accent colours">{PROFILE_COLORS.map(([value, label]) => <button type="button" key={value} className={`profile-color-choice ${profile.accent_color === value ? 'selected' : ''}`} style={{ '--choice-color': value }} aria-label={`${label}${profile.accent_color === value ? ', selected' : ''}`} aria-pressed={profile.accent_color === value} onClick={() => chooseAccentColour(value)}><span aria-hidden="true" /><b>{label}</b></button>)}</div>
         </fieldset>
 
         <fieldset className="profile-editor-section">

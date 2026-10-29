@@ -6466,3 +6466,47 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .profile-avatar-grid-compact button:hover {
   border-color: var(--accent) !important;
 }
+
+
+/* Selected accent controls their own outline; section/card outlines use a muted tint of the site accent. */
+.ps2-shell .profile-color-choice.selected {
+  border-color: var(--choice-color) !important;
+  box-shadow: 0 0 0 1px var(--choice-color) inset !important;
+  background: color-mix(in srgb, var(--choice-color) 9%, #111417) !important;
+  color: #f3f5f4 !important;
+}
+.ps2-shell .profile-editor-section,
+.ps2-shell .engagement-panel,
+.ps2-shell .profile-preview-card,
+.ps2-shell .profile-editor-section fieldset,
+.ps2-shell .profile-avatar-popover,
+.ps2-shell .town-home-side-card,
+.ps2-shell .town-home-community-card,
+.ps2-shell .community-card,
+.ps2-shell .community-header,
+.ps2-shell .town-side-card,
+.ps2-shell .town-form,
+.ps2-shell .post-card,
+.ps2-shell .feed-card,
+.ps2-shell .discussion-post,
+.ps2-shell .comment-composer,
+.ps2-shell .reply-form,
+.ps2-shell .comment-item,
+.ps2-shell .chat-box,
+.ps2-shell .growth-card,
+.ps2-shell .beta-intro,
+.ps2-shell .beta-report,
+.ps2-shell .town-global-search,
+.ps2-shell .town-directory-intro,
+.ps2-shell .town-state,
+.ps2-shell .town-empty,
+.ps2-shell .launch-summary,
+.ps2-shell .launch-notice {
+  border-color: color-mix(in srgb, var(--town-accent, var(--accent, #A3DFC1)) 34%, #272c31) !important;
+}
+.ps2-shell .profile-editor-section:focus-within,
+.ps2-shell .engagement-panel:focus-within,
+.ps2-shell .profile-preview-card:focus-within,
+.ps2-shell .town-home-side-card:focus-within {
+  border-color: color-mix(in srgb, var(--town-accent, var(--accent, #A3DFC1)) 56%, #272c31) !important;
+}
