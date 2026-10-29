@@ -1572,8 +1572,7 @@ function App() {
   }, [session?.user?.id])
 
   if (checking) return <main className="auth-shell"><Loading label="Checking session…" /></main>
-  const publicRoutes = new Set(['home', 'feed', 'communities', 'community', 'post', 'search', 'about', 'help', 'terms', 'privacy', 'accessibility'])
-  if (!isSupabaseConfigured && !publicRoutes.has(route.split('/')[0])) return <Auth onLogin={() => window.location.reload()} />
+  if (!isSupabaseConfigured && route !== 'home') return <Auth onLogin={() => window.location.reload()} />
 
   const username = session?.user?.user_metadata?.username || session?.user?.email?.split('@')[0] || 'Guest'
   const signOut = async () => { await supabase.auth.signOut() }
@@ -1587,9 +1586,12 @@ function App() {
     return routeName === id
   }
 
-  const primaryNav = session
-    ? [['home', 'Home'], ['feed', 'Feed'], ['communities', 'Downtowns'], ['social', 'Chat']]
-    : [['home', 'Home'], ['feed', 'Feed'], ['communities', 'Downtowns'], ['search', 'Search']]
+  const primaryNav = [
+    ['home', 'Home'],
+    ['feed', 'Feed'],
+    ['communities', 'Downtowns'],
+    ['social', 'Chat']
+  ]
 
   const personalNav = [
     ['saved', 'Saved'],
@@ -1621,11 +1623,11 @@ function App() {
   else if (routeName === 'privacy') page = <LegalPage kind="privacy" />
   else if (routeName === 'accessibility') page = <LegalPage kind="accessibility" />
   else if (routeName === 'settings') page = <SettingsPage currentUserId={session?.user?.id} />
-  else if (routeName === 'about') page = <InfoPage title="About"><p className="feature-text">A general-purpose town built around downtowns and discussions.</p></InfoPage>
-  else if (routeName === 'help') page = <InfoPage title="Help"><p className="feature-text">Browse downtowns, search deliberately, and use transparent sorting to control what you see.</p></InfoPage>
+  else if (routeName === 'about') page = <InfoPage title="About Town"><p className="feature-text">Town is a community discussion platform built around downtowns: spaces for shared interests, local topics, questions, and conversations.</p><p className="feature-text">You can browse public discussions and choose how posts are sorted. Town’s goal is to make discovery deliberate and give people more control over what they see.</p><p className="feature-text">Town is an early-stage project. Features and community activity are still developing, and feedback helps shape what comes next.</p></InfoPage>
+  else if (routeName === 'help') page = <InfoPage title="How Town works"><p className="feature-text">1. Explore downtowns to find communities around topics you care about.</p><p className="feature-text">2. Open a downtown or post to read the conversation before creating an account.</p><p className="feature-text">3. Use the feed’s sorting controls—such as Latest or Most Discussed—to choose how posts are ordered.</p><p className="feature-text">4. Create an account when you want to participate by posting, commenting, joining, or voting.</p><p className="feature-text">Town is in early development. Public activity depends on the communities and members who contribute; we do not fabricate activity to make the site look busy.</p><div className="town-hero-actions"><a className="button primary" href="#/communities">Explore Communities</a><a className="button secondary" href="#/feed">Browse the feed</a></div></InfoPage>
   else page = <NotFoundPage />
 
-  if (!session && !publicRoutes.has(routeName)) return <Auth onLogin={() => window.location.reload()} />
+  if (routeName !== 'home' && !session) return <Auth onLogin={() => window.location.reload()} />
 
   return <div className="ps2-shell" style={{ '--accent': globalAccent, '--profile-accent': globalAccent }}>
     <div className="ps2-scanlines" aria-hidden="true" />
