@@ -7568,3 +7568,67 @@ body { background: var(--town-bg); color: var(--town-text); }
   }
   .ps2-shell .ps2-top-search { width: min(36vw, 440px); min-width: 210px; }
 }
+
+
+/* Definitive header overlap fix: search must participate in the grid, not overlay it. */
+.ps2-shell .ps2-topbar {
+  display: grid !important;
+  grid-template-columns: minmax(150px, 1fr) minmax(230px, 480px) minmax(max-content, 1fr) !important;
+  column-gap: clamp(12px, 2vw, 28px) !important;
+}
+.ps2-shell .ps2-brand { grid-column: 1; min-width: 0; }
+.ps2-shell .ps2-top-search {
+  position: static !important;
+  inset: auto !important;
+  transform: none !important;
+  justify-self: center !important;
+  align-self: center !important;
+  display: inline-flex !important;
+  width: min(100%, 480px) !important;
+  min-width: 0 !important;
+  max-width: 480px !important;
+  box-sizing: border-box !important;
+  margin: 0 !important;
+}
+.ps2-shell .ps2-top-actions {
+  grid-column: 3;
+  justify-self: end;
+  display: flex !important;
+  flex-wrap: nowrap !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 12px !important;
+  min-width: max-content !important;
+  margin: 0 !important;
+}
+.ps2-shell .ps2-status {
+  display: block !important;
+  flex: 0 0 auto !important;
+  max-width: none !important;
+  min-width: max-content !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+  text-overflow: clip !important;
+}
+.ps2-shell .ps2-user-link {
+  display: inline !important;
+  max-width: none !important;
+  overflow: visible !important;
+  white-space: nowrap !important;
+}
+.ps2-shell .ps2-top-signout { flex: 0 0 auto !important; white-space: nowrap !important; }
+@media (max-width: 1080px) and (min-width: 761px) {
+  .ps2-shell .ps2-topbar {
+    grid-template-columns: minmax(100px, 1fr) minmax(210px, 38vw) minmax(max-content, 1fr) !important;
+  }
+}
+@media (max-width: 760px) {
+  .ps2-shell .ps2-topbar {
+    grid-template-columns: 42px minmax(0, 1fr) auto !important;
+    column-gap: 10px !important;
+  }
+  .ps2-shell .ps2-top-search {
+    display: none !important;
+  }
+  .ps2-shell .ps2-top-actions { grid-column: 3; }
+}
