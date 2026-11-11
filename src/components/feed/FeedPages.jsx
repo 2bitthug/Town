@@ -26,7 +26,7 @@ export function FeedPage({ currentUserId }) {
     setLoading(true); setError('')
     try {
       const [{ data: rawPosts, error: pe }, { data: cs, error: ce }] = await Promise.all([
-        supabase.from('posts').select('id,community_id,topic_id,author_id,post_type,title,body,link_url,media_url,is_pinned,created_at').eq('status', 'published').order('created_at', { ascending: false }).limit(100),
+        supabase.from('posts').select('id,community_id,topic_id,author_id,post_type,title,body,link_url,media_url,is_pinned,accepted_answer_id,created_at').eq('status', 'published').order('created_at', { ascending: false }).limit(100),
         supabase.from('communities').select('id,name,slug,category').eq('status', 'active').eq('visibility', 'public').order('name')
       ])
       if (pe) throw pe; if (ce) throw ce
