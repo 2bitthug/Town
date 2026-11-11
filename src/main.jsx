@@ -768,12 +768,11 @@ function SocialSection({ currentUserId }) {
             const mine = m.sender_id === currentUserId
             const reply = getReply(m.reply_to_id)
             // Older messages stored attachment URLs in the body; keep them renderable.
-            const legacyAttachment = !m.attachment_url && /^Attachment:\\s*.+\\nhttps?:\\/\\//i.test(m.body || '')
-              ? { name: (m.body || '').split('\\n')[0].replace(/^Attachment:\\s*/i, ''), url: (m.body || '').split('\\n').slice(1).join('\\n').trim() }
-              : null
+            const legacyMatch = !m.attachment_url && (m.body || '').match(/^Attachment:\s*(.+)\n(https?:\/\/\S+)/i)
+            const legacyAttachment = legacyMatch ? { name: legacyMatch[1].trim(), url: legacyMatch[2].trim() } : null
             const attachmentUrl = m.attachment_url || legacyAttachment?.url
             const attachmentName = m.attachment_name || legacyAttachment?.name
-            const attachmentType = m.attachment_type || (attachmentName && /\\.(png|jpe?g|gif|webp|avif|bmp)$/i.test(attachmentName) ? 'image/*' : attachmentName && /\\.(mp4|webm|mov|m4v)$/i.test(attachmentName) ? 'video/*' : '')
+            const attachmentType = m.attachment_type || (attachmentName && /\.(png|jpe?g|gif|webp|avif|bmp)$/i.test(attachmentName) ? 'image/*' : attachmentName && /\.(mp4|webm|mov|m4v)$/i.test(attachmentName) ? 'video/*' : '')
             return <div id={`message-${m.id}`} key={m.id} className={`message-wrap ${mine ? 'mine' : ''}`}>
               {shouldShowTime(i) && <div className="message-time-label">{new Date(m.created_at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>}
               <div className={`message ${mine ? 'mine' : ''}`} onDoubleClick={() => { setOpenActions(openActions === m.id ? null : m.id); setReactionPicker(null) }}>
