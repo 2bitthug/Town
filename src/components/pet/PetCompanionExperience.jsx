@@ -35,8 +35,7 @@ export function PetCompanionExperience({ currentUserId }) {
   const [joinedCommunityIds,setJoinedCommunityIds] = useState([])
   const [posts,setPosts] = useState([])
   const [activeTab,setActiveTab] = useState('home')
-  const [emote,setEmote] = useState('wave')
-  const [emotePulse,setEmotePulse] = useState(0)
+  const [playKey,setPlayKey] = useState(0)
   const [refreshKey,setRefreshKey] = useState(0)
 
   const load = useCallback(async () => {
@@ -136,7 +135,7 @@ export function PetCompanionExperience({ currentUserId }) {
   }
   const addDecoration = key => saveCompanion({home_items:[...new Set([...safeArray(companion.home_items),key])]})
   const removeDecoration = key => saveCompanion({home_items:safeArray(companion.home_items).filter(x=>x!==key)})
-  const actEmote = value => {setEmote(value);setEmotePulse(x=>x+1);saveCompanion({active_emote:value})}
+  const playWithPet = () => setPlayKey(x=>x+1)
 
   if(loading) return <section className="pet-experience"><p className="eyebrow">COMPANION</p><h1>Your pet’s corner</h1><p role="status">Loading your companion…</p></section>
   if(error && !profile) return <section className="pet-experience"><h1>Your pet’s corner</h1><p className="pet-error" role="alert">{error}</p><button className="button secondary" onClick={load}>Try again</button></section>
@@ -151,13 +150,13 @@ export function PetCompanionExperience({ currentUserId }) {
     {activeTab==='home' && <div className="pet-exp-grid">
       <article className="pet-room">
         <div className="pet-room-sky" aria-label="Your pet’s decorated home">
-          <div className="pet-room-window" aria-hidden="true"><span className="pet-window-sun"/><span className="pet-window-cloud">☁</span><small>WINDOW</small></div><div className="pet-room-sign">PET HOME</div>
+          <div className="pet-room-sign">PET HOME</div>
           {safeArray(companion.home_items).map(k=><span className="pet-room-decoration" key={k}>{CATALOG.find(x=>x.key===k)?.emoji || '✦'}</span>)}
-          {profile.pet_id!=='none' ? <div key={emotePulse} className={`pet-room-character pet-emote-${emote}`} style={{filter:companion.color_id==='mint-coat'?'hue-rotate(55deg)':companion.color_id==='sunset-coat'?'hue-rotate(315deg)':'none'}}><img src={petSprite(profile.pet_id)} alt={selectedPet?.[1] || 'Your pet'}/><span className="pet-emote-bubble" aria-live="polite">{emote==='wave'?'👋':emote==='happy'?'♥':emote==='sparkle'?'✦':'…'}</span></div> : <div className="pet-room-empty">Choose a pet to move in.</div>}
+          {profile.pet_id!=='none' ? <div key={playKey} className={`pet-room-character ${playKey ? "pet-playing" : ""}`} style={{filter:companion.color_id==='mint-coat'?'hue-rotate(55deg)':companion.color_id==='sunset-coat'?'hue-rotate(315deg)':'none'}}><img src={petSprite(profile.pet_id)} alt={selectedPet?.[1] || 'Your pet'}/></div> : <div className="pet-room-empty">Choose a pet to move in.</div>}
           <div className="pet-room-floor"/>
         </div>
         <div className="pet-room-caption"><div><strong>{profile.pet_name || 'Pixel'} {companion.outfit_id==='stargazer-outfit'?'✦':''}</strong><span>{selectedPet?.[1] || 'No pet selected'} · always happy to see you</span></div><button className="button secondary" onClick={()=>setActiveTab('customize')}>Decorate home</button></div>
-        <div className="pet-emotes"><span>Make {profile.pet_name || "your pet"} react</span>{[['wave','👋 Wave',true],['happy','♡ Happy',true],['sparkle','✦ Sparkle',owned.has('helpful-sparkle')]].map(([id,label,available])=><button key={id} onClick={()=>actEmote(id)} disabled={saving||!available} title={available?'Use emote':'Unlock with 3 positive recognitions'}>{label}{!available?' · locked':''}</button>)}</div>
+        <div className="pet-emotes"><span>Give {profile.pet_name || "your pet"} something to do</span><button onClick={playWithPet} disabled={profile.pet_id==='none'}>▶ Make {profile.pet_name || "your pet"} jump across</button></div>
       </article>
       <article className="pet-progress-card"><p className="eyebrow">YOUR JOURNEY</p><h2>Progress that stays</h2><p>Membership milestones are based on time since joining—not daily visits.</p>{progress.map(x=><div className="pet-milestone" key={x.label}><span>{x.done?'✓':'○'} {x.label}</span><small>{x.detail}</small></div>)}<div className="pet-milestone"><span>Helpful community recognition</span><small>{unlocks.some(x=>x.reward_key==='helpful-sparkle')?'Reward unlocked':'Earned through positive feedback'}</small></div><a className="button secondary" href="#/reputation">View reputation</a></article>
     </div>}
