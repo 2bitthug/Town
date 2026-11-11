@@ -21,8 +21,8 @@ export function ModerationPage({ currentUserId }) {
       const commentIds = [...new Set((data || []).map(r => r.comment_id).filter(Boolean))]
       const communityIds = [...new Set((data || []).map(r => r.community_id).filter(Boolean))]
       const [{ data: posts }, { data: comments }, { data: communities }] = await Promise.all([
-        postIds.length ? supabase.from('posts').select('id,title,status').in('id', postIds) : Promise.resolve({ data: [] }),
-        commentIds.length ? supabase.from('comments').select('id,body,status').in('id', commentIds) : Promise.resolve({ data: [] }),
+        postIds.length ? supabase.from('posts').select('id,title,status,author_id').in('id', postIds) : Promise.resolve({ data: [] }),
+        commentIds.length ? supabase.from('comments').select('id,body,status,author_id').in('id', commentIds) : Promise.resolve({ data: [] }),
         communityIds.length ? supabase.from('communities').select('id,name,slug').in('id', communityIds) : Promise.resolve({ data: [] })
       ])
       const pm = new Map((posts || []).map(x => [x.id, x])), cm = new Map((comments || []).map(x => [x.id, x])), com = new Map((communities || []).map(x => [x.id, x]))
@@ -36,13 +36,19 @@ export function ModerationPage({ currentUserId }) {
   const act = async (report, action) => {
     setBusy(report.id)
     try {
-      const payload = { community_id: report.community_id, moderator_id: currentUserId, report_id: report.id, target_user_id: report.reported_user_id || null, post_id: report.post_id || null, comment_id: report.comment_id || null, action_type: action, reason: report.reason }
+      const targetUserId = report.reported_user_id || report.post?.author_id || report.comment?.author_id || null
+      const payload = { community_id: report.community_id, moderator_id: currentUserId, report_id: report.id, target_user_id: targetUserId, post_id: report.post_id || null, comment_id: report.comment_id || null, action_type: action, reason: report.reason }
       const { error: ae } = await supabase.from('moderation_audit').insert(payload); if (ae) throw ae
+      if (action === 'suspend_member') {
+        if (!targetUserId) throw new Error('The reported member could not be identified.')
+        const { error: suspensionError } = await supabase.from('member_suspensions').insert({ user_id: targetUserId, community_id: report.community_id, moderator_id: currentUserId, reason: report.reason, expires_at: new Date(Date.now() + 7 * 86400000).toISOString() })
+        if (suspensionError) throw suspensionError
+      }
       const status = action === 'dismiss' ? 'dismissed' : 'resolved'
       const { error: re } = await supabase.from('reports').update({ status, resolved_at: new Date().toISOString(), resolved_by: currentUserId }).eq('id', report.id)
       if (re) throw re
-      if (action === 'remove_post' && report.post_id) await supabase.from('posts').update({ status: 'removed' }).eq('id', report.post_id)
-      if (action === 'remove_comment' && report.comment_id) await supabase.from('comments').update({ status: 'removed' }).eq('id', report.comment_id)
+      if (action === 'remove_post' && report.post_id) { const { error: removeError } = await supabase.from('posts').update({ status: 'removed' }).eq('id', report.post_id); if (removeError) throw removeError }
+      if (action === 'remove_comment' && report.comment_id) { const { error: removeError } = await supabase.from('comments').update({ status: 'removed' }).eq('id', report.comment_id); if (removeError) throw removeError }
       await load()
     } catch (e) { alert(e.message || 'Moderation action failed.') } finally { setBusy('') }
   }
@@ -53,7 +59,7 @@ export function ModerationPage({ currentUserId }) {
     <p className="widget-help">Review reports from downtowns where you are a moderator or owner. Actions are recorded in the moderation log.</p>
     {!reports.length ? <div className="town-empty">No open reports.</div> : <div className="moderation-list">{reports.map(r => <article className="moderation-card" key={r.id}>
       <div><p className="eyebrow">{r.community?.name || 'DOWNTOWN'} · {r.status}</p><h3>{r.post ? r.post.title : 'Reported comment'}</h3><p>{r.comment ? r.comment.body : r.reason}</p><small>Reason: {r.reason}</small></div>
-      <div className="actions"><button className="button danger" disabled={busy === r.id} onClick={() => act(r, r.post_id ? 'remove_post' : 'remove_comment')}>{r.post_id ? 'Remove post' : 'Remove comment'}</button><button className="button secondary" disabled={busy === r.id} onClick={() => act(r, 'dismiss')}>Dismiss</button></div>
+      <div className="actions"><button className="button danger" disabled={busy === r.id} onClick={() => act(r, r.post_id ? 'remove_post' : 'remove_comment')}>{r.post_id ? 'Remove post' : 'Remove comment'}</button>{(r.reported_user_id || r.post?.author_id || r.comment?.author_id) && <><button className="button secondary" disabled={busy === r.id} onClick={() => act(r, 'warn_member')}>Warn member</button><button className="button danger" disabled={busy === r.id} onClick={() => act(r, 'suspend_member')}>Suspend 7 days</button></>}<button className="button secondary" disabled={busy === r.id} onClick={() => act(r, 'dismiss')}>Dismiss</button></div>
     </article>)}</div>}
     <section className="card moderation-audit"><div className="card-heading"><div><p className="eyebrow">ACCOUNTABILITY</p><h2>Recent moderation actions</h2></div></div>{!audit.length?<div className="town-empty">No moderation actions have been recorded.</div>:<div className="moderation-audit-list">{audit.map(item=><article key={item.id}><strong>{item.action_type.replaceAll('_',' ')}</strong><span>{item.reason}</span><time>{new Date(item.created_at).toLocaleString()}</time></article>)}</div>}</section>
   </Frame>
