@@ -7523,3 +7523,20 @@ body { background: var(--town-bg); color: var(--town-text); }
 @media (max-width: 760px) {
   .auth-card { padding: 25px 21px; border-radius: 13px; }
 }
+
+
+/* Restore the compact, centered search control from the previous header. */
+.ps2-shell .ps2-topbar {
+  grid-template-columns: 220px minmax(0, 1fr) 220px;
+}
+.ps2-shell .ps2-top-search {
+  width: min(40vw, 480px);
+  min-width: 230px;
+  max-width: 100%;
+  justify-self: center;
+  box-sizing: border-box;
+}
+@media (max-width: 760px) {
+  .ps2-shell .ps2-topbar { grid-template-columns: 42px minmax(0, 1fr) auto; }
+  .ps2-shell .ps2-top-search { width: auto; min-width: 0; justify-self: end; }
+}
