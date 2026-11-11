@@ -6712,3 +6712,29 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .public-profile-pet strong{
   color:#fffaf0;
 }
+
+/* Town achievement collectible cabinet */
+.achievement-count{display:inline-grid;place-items:center;min-width:58px;padding:10px 13px;border:1px solid color-mix(in srgb,var(--accent) 42%,#34303a);border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,rgba(10,10,12,.75));font:700 18px Georgia,serif}
+.achievement-section-label{margin:20px 0 11px;color:var(--accent);font:10px monospace;letter-spacing:1.4px}
+.achievement-collection{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
+.achievement-card{position:relative;display:flex;flex-direction:column;min-width:0;overflow:hidden;padding:15px;border:1px solid color-mix(in srgb,var(--accent) 35%,#34303a);border-radius:14px;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 13%,rgba(18,17,20,.94)),rgba(8,9,11,.94));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 8px 24px rgba(0,0,0,.18)}
+.achievement-card:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 15%,rgba(255,255,255,.055) 42%,transparent 66%);opacity:.75}
+.achievement-card.is-locked{filter:saturate(.45);border-style:dashed;background:linear-gradient(145deg,rgba(28,28,31,.8),rgba(9,10,12,.92))}
+.achievement-card-top,.achievement-card-footer{position:relative;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.achievement-tier,.achievement-serial,.achievement-card-footer{font:9px monospace;letter-spacing:1px;color:color-mix(in srgb,var(--accent) 78%,#fff)}
+.achievement-serial{opacity:.65}
+.achievement-art{position:relative;display:flex;align-items:center;justify-content:center;gap:16px;min-height:86px;margin:12px 0 9px;border:1px solid color-mix(in srgb,var(--accent) 27%,transparent);border-radius:10px;background:radial-gradient(ellipse at center,color-mix(in srgb,var(--accent) 19%,transparent),transparent 72%),rgba(255,255,255,.018)}
+.achievement-art strong{display:grid;place-items:center;width:57px;height:57px;border:2px solid color-mix(in srgb,var(--accent) 70%,#fff);border-radius:50%;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 36%,#171719),#090a0b);box-shadow:0 0 22px color-mix(in srgb,var(--accent) 22%,transparent),inset 0 0 12px rgba(255,255,255,.08);font:700 20px Georgia,serif;color:#fff8e8;text-shadow:0 1px 10px color-mix(in srgb,var(--accent) 75%,transparent)}
+.achievement-laurel{color:var(--accent);font-size:19px;opacity:.9}
+.achievement-card-copy{position:relative;min-height:72px}
+.achievement-card-copy h3{margin:0 0 5px;font:700 16px Georgia,serif}
+.achievement-card-copy p{margin:0;color:#b9b4bd;font-size:11px;line-height:1.5}
+.achievement-earned,.achievement-progress{position:relative;display:grid;gap:6px;margin-top:auto;padding:10px 0 9px;border-top:1px solid rgba(255,255,255,.1)}
+.achievement-earned span,.achievement-progress span{font:9px monospace;letter-spacing:.8px;color:var(--accent)}
+.achievement-earned strong,.achievement-progress b{font-size:11px;font-weight:600}
+.achievement-progress-track{height:5px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.1)}
+.achievement-progress-track i{display:block;height:100%;border-radius:99px;background:var(--accent);box-shadow:0 0 10px color-mix(in srgb,var(--accent) 60%,transparent)}
+.achievement-progress small{font-size:10px;color:#9c96a0}
+.achievement-card-footer{margin-top:8px;padding-top:8px;border-top:1px solid rgba(255,255,255,.08);font-size:8px;opacity:.8}
+.tier-rare .achievement-art strong,.tier-epic .achievement-art strong,.tier-legendary .achievement-art strong{box-shadow:0 0 25px color-mix(in srgb,var(--accent) 38%,transparent),inset 0 0 14px rgba(255,255,255,.12)}
+@media(max-width:700px){.achievement-collection{grid-template-columns:1fr}.achievement-card-copy{min-height:0}}
