@@ -696,7 +696,14 @@ function SocialSection({ currentUserId }) {
     const { error: uploadError } = await supabase.storage.from('chat-media').upload(path, file, { upsert: false })
     if (uploadError) { setError(`File upload failed: ${uploadError.message}${uploadError.statusCode ? ` (HTTP ${uploadError.statusCode})` : ''}. Check the chat-media bucket and Storage policies in Supabase.`); return }
     const { data: publicData } = supabase.storage.from('chat-media').getPublicUrl(path)
-    const { data: inserted, error: e } = await supabase.from('messages').insert({ sender_id: currentUserId, receiver_id: selected.id, body: 'Attachment: ' + file.name + '\n' + publicData.publicUrl }).select('id,sender_id,receiver_id,body,created_at').single()
+    const { data: inserted, error: e } = await supabase.from('messages').insert({
+      sender_id: currentUserId,
+      receiver_id: selected.id,
+      body: '',
+      attachment_url: publicData.publicUrl,
+      attachment_name: file.name,
+      attachment_type: file.type || 'application/octet-stream'
+    }).select('id,sender_id,receiver_id,body,created_at,delivery_status,attachment_url,attachment_name,attachment_type').single()
     if (e) setError(`The file uploaded, but sending the attachment message failed: ${e.message}${e.code ? ` (code ${e.code})` : ''}`)
     else if (inserted) setMessages(prev => [...prev, inserted])
   }
@@ -760,11 +767,18 @@ function SocialSection({ currentUserId }) {
           {chatLoading ? <Loading label="Loading chat…" /> : <div className="messages">{filteredMessages.map((m, i) => {
             const mine = m.sender_id === currentUserId
             const reply = getReply(m.reply_to_id)
+            // Older messages stored attachment URLs in the body; keep them renderable.
+            const legacyAttachment = !m.attachment_url && /^Attachment:\\s*.+\\nhttps?:\\/\\//i.test(m.body || '')
+              ? { name: (m.body || '').split('\\n')[0].replace(/^Attachment:\\s*/i, ''), url: (m.body || '').split('\\n').slice(1).join('\\n').trim() }
+              : null
+            const attachmentUrl = m.attachment_url || legacyAttachment?.url
+            const attachmentName = m.attachment_name || legacyAttachment?.name
+            const attachmentType = m.attachment_type || (attachmentName && /\\.(png|jpe?g|gif|webp|avif|bmp)$/i.test(attachmentName) ? 'image/*' : attachmentName && /\\.(mp4|webm|mov|m4v)$/i.test(attachmentName) ? 'video/*' : '')
             return <div id={`message-${m.id}`} key={m.id} className={`message-wrap ${mine ? 'mine' : ''}`}>
               {shouldShowTime(i) && <div className="message-time-label">{new Date(m.created_at).toLocaleString([], { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</div>}
               <div className={`message ${mine ? 'mine' : ''}`} onDoubleClick={() => { setOpenActions(openActions === m.id ? null : m.id); setReactionPicker(null) }}>
                 {reply && <div className="message-reply"><strong>{reply.sender_id === currentUserId ? 'You' : selected.username}</strong><span>{reply.body}</span></div>}
-                {m.attachment_url ? <div className="attachment-preview">{m.attachment_type?.startsWith('image/') ? <img src={m.attachment_url} alt={m.attachment_name || 'Shared image'} /> : m.attachment_type?.startsWith('video/') ? <video controls src={m.attachment_url} /> : <a href={m.attachment_url} target="_blank" rel="noreferrer">{m.attachment_name || 'Open file'}</a>}</div> : <span>{m.body}</span>}
+                {attachmentUrl ? <div className="attachment-preview">{attachmentType.startsWith('image/') || attachmentType === 'image/*' ? <a href={attachmentUrl} target="_blank" rel="noreferrer"><img src={attachmentUrl} alt={attachmentName || 'Shared image'} loading="lazy" /></a> : attachmentType.startsWith('video/') || attachmentType === 'video/*' ? <video controls preload="metadata" src={attachmentUrl} /> : <a href={attachmentUrl} target="_blank" rel="noreferrer">{attachmentName || 'Open file'}</a>}</div> : <span>{m.body}</span>}
                 {m.edited_at && <em className="edited-label">edited</em>}
                 <div className="message-meta">
                   {m.delivery_status && mine && (
