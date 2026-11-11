@@ -207,3 +207,8 @@ create trigger town_check_comment_suspension before insert on public.comments fo
 drop trigger if exists town_check_message_suspension on public.messages;
 create trigger town_check_message_suspension before insert on public.messages for each row execute function public.enforce_town_member_suspension();
 revoke all on function public.enforce_town_member_suspension() from public,anon,authenticated;
+
+
+alter table public.town_notifications drop constraint if exists town_notifications_kind_check;
+alter table public.town_notifications add constraint town_notifications_kind_check
+ check (kind in ('comment','reply','answer_accepted','post_vote','community_event','moderator_warning','moderator_suspension'));
