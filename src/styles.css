@@ -7369,3 +7369,49 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
   .ps2-shell .ps2-status { max-width: 28vw; }
   .ps2-shell .ps2-top-signout { padding-inline: 9px; font-size: .58rem; }
 }
+
+
+/* Focused UX fixes: conversation workspace, reputation layout and page states. */
+.ps2-shell .social-layout {
+  grid-template-columns: minmax(250px, .78fr) minmax(0, 1.55fr);
+  align-items: start;
+  gap: 18px;
+}
+.ps2-shell .social-layout > :first-child { min-width: 0; }
+.ps2-shell .chat-box {
+  min-width: 0;
+  min-height: min(72vh, 760px);
+  position: sticky;
+  top: 88px;
+  border-color: var(--town-border);
+  border-radius: var(--town-radius-lg);
+}
+.ps2-shell .chat-header { align-items: center; gap: 12px; background: var(--town-surface-raised); }
+.ps2-shell .messages { min-height: 320px; max-height: none; height: min(52vh, 560px); }
+.ps2-shell .chat-compose { background: var(--town-surface-raised); }
+.ps2-shell .chat-compose input { min-height: 44px; }
+.ps2-shell .reputation-page { gap: 20px; }
+.ps2-shell .reputation-grid {
+  grid-template-columns: minmax(250px, .8fr) minmax(0, 1.5fr);
+  align-items: start;
+}
+.ps2-shell .reputation-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.ps2-shell .achievement-collection { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.ps2-shell .reputation-loading { max-width: 760px; padding: clamp(22px, 4vw, 36px); }
+.ps2-shell .reputation-loading h1 { margin: 0 0 10px; }
+.ps2-shell .reputation-loading .status { margin: 0 0 16px; }
+.ps2-shell .moderation-card { align-items: flex-start; border-color: var(--town-border); border-radius: var(--town-radius-md); background: var(--town-surface); }
+.ps2-shell .moderation-card .actions { flex: 0 0 auto; }
+.ps2-shell .saved-post-card { align-items: flex-start; }
+@media (max-width: 1000px) {
+  .ps2-shell .reputation-grid { grid-template-columns: 1fr; }
+  .ps2-shell .chat-box { position: static; min-height: 540px; }
+}
+@media (max-width: 850px) {
+  .ps2-shell .social-layout { grid-template-columns: 1fr; }
+  .ps2-shell .messages { height: 360px; min-height: 240px; }
+}
+@media (max-width: 560px) {
+  .ps2-shell .achievement-collection { grid-template-columns: 1fr; }
+  .ps2-shell .reputation-stat-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
