@@ -106,9 +106,11 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
   )
   const avatar = avatarUrl(profile.avatar_id)
 
-  const memberDays = Number(daysJoined) || 0
-  const tier = memberDays >= 31 ? 'gold' : memberDays >= 8 ? 'red' : 'standard'
+  const parsedDays = daysJoined === null || daysJoined === undefined || daysJoined === '' ? null : Number(daysJoined)
+  const memberDays = Number.isFinite(parsedDays) && parsedDays >= 0 ? Math.floor(parsedDays) : null
+  const tier = memberDays !== null && memberDays >= 31 ? 'gold' : memberDays !== null && memberDays >= 8 ? 'red' : 'standard'
   const tierLabel = tier === 'gold' ? 'GOLD MEMBER' : tier === 'red' ? 'RARE MEMBER' : 'NEW MEMBER'
+  const daysDisplay = memberDays === null ? '—' : String(memberDays)
   const colors = tier === 'gold'
     ? { bg: '#090a0d', ink: '#fff4c6', accent: '#f5c451', line: '#8b6725', soft: '#17140d' }
     : tier === 'red'
@@ -251,7 +253,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
 
     const labels = ['DAYS IN TOWN', 'REPUTATION', 'COMPANION']
     const values = [
-      String(daysJoined ?? '—'),
+      daysDisplay,
       String(reputation),
       petName,
     ]
@@ -278,10 +280,14 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
         labelY + 32
       )
 
+      // Reset the fill colour before painting the value panel. The previous
+      // label colour otherwise filled the panel and made the value invisible.
+      ctx.fillStyle = c.soft
       roundedRect(ctx, colX[i], valueY, colW, 95, 8)
       ctx.fill()
       ctx.stroke()
 
+      ctx.fillStyle = c.ink
       ctx.font = 'bold 32px monospace'
 
       centerText(
@@ -455,7 +461,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
           </div>
 
           <div className="town-share-values">
-            <strong>{daysJoined ?? '—'}</strong>
+            <strong>{daysDisplay}</strong>
             <strong>{reputation}</strong>
             <strong>{petName}</strong>
           </div>
