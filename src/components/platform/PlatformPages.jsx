@@ -48,11 +48,60 @@ export function SavedPostsPage({ currentUserId }) {
 }
 
 export function UserProfilePage({ userId }) {
-  const [profile,setProfile]=useState(null), [stats,setStats]=useState({posts:0,comments:0,reputation:0}), [loading,setLoading]=useState(true), [error,setError]=useState('')
-  useEffect(()=>{(async()=>{setLoading(true); const [{data:p,error:pe},{data:posts},{data:comments}]=await Promise.all([supabase.from('profiles').select('*').eq('id',userId).maybeSingle(),supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',userId).neq('status','removed'),supabase.from('comments').select('id',{count:'exact',head:true}).eq('author_id',userId).neq('status','removed')]); if(pe)setError(pe.message); setProfile(p); setStats({posts:posts?.length||0,comments:comments?.length||0,reputation:p?.reputation_score||0});setLoading(false)})()},[userId])
-  if(loading)return <Frame title="Profile"><State>Loading…</State></Frame>
-  if(error||!profile)return <Frame title="Profile"><ErrorBox>{error||'Profile not found.'}</ErrorBox></Frame>
-  return <Frame title={profile.display_name||profile.username} eyebrow={`@${profile.username}`}><div className="public-profile"><div className="public-profile-main"><div className="public-avatar"><img src={avatarUrl(profile.avatar_id)} alt={`${profile.display_name||profile.username} avatar`} /></div><div><h2>{profile.display_name||profile.username}</h2><p className="profile-joined">Member since {new Date(profile.created_at).toLocaleDateString()}</p>{profile.bio&&<p>{profile.bio}</p>}{profile.pet_id&&profile.pet_id!=='none'&&<span className="profile-pet-preview" aria-label={`Selected pet: ${profile.pet_id}`}>{({lion:'🦁',cat:'🐈',dog:'🐕',fox:'🦊',rabbit:'🐇',bear:'🐻',wolf:'🐺',owl:'🦉',penguin:'🐧',frog:'🐸',turtle:'🐢',deer:'🦌',panda:'🐼',tiger:'🐯',raccoon:'🦝',hedgehog:'🦔',duck:'🦆',squirrel:'🐿️'})[profile.pet_id]||'🐾'}</span>}</div></div><div className="profile-stat-grid"><div><strong>{stats.posts}</strong><span>Posts</span></div><div><strong>{stats.comments}</strong><span>Comments</span></div><div><strong>{stats.reputation}</strong><span>Reputation</span></div><div><strong>{profile.interests?.length||0}</strong><span>Interests</span></div></div>{Array.isArray(profile.interests)&&profile.interests.length>0&&<div><p className="eyebrow">INTERESTS</p><div className="profile-interest-list">{profile.interests.map(x=><span className="profile-interest-chip" key={x}>{x}</span>)}</div></div>}</div></Frame>
+  const [profile,setProfile]=useState(null)
+  const [stats,setStats]=useState({posts:0,comments:0,reputation:0})
+  const [loading,setLoading]=useState(true)
+  const [error,setError]=useState('')
+  useEffect(()=>{
+    let active=true
+    ;(async()=>{
+      setLoading(true);setError('')
+      const [profileResult,postsResult,commentsResult]=await Promise.all([
+        supabase.from('profiles').select('*').eq('id',userId).maybeSingle(),
+        supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',userId).neq('status','removed'),
+        supabase.from('comments').select('id',{count:'exact',head:true}).eq('author_id',userId).neq('status','removed')
+      ])
+      if(!active)return
+      if(profileResult.error){setError(profileResult.error.message);setLoading(false);return}
+      if(postsResult.error||commentsResult.error){setError((postsResult.error||commentsResult.error).message);setLoading(false);return}
+      const p=profileResult.data
+      setProfile(p)
+      setStats({posts:postsResult.count??0,comments:commentsResult.count??0,reputation:p?.reputation_score??0})
+      setLoading(false)
+    })()
+    return()=>{active=false}
+  },[userId])
+  if(loading)return <Frame title="Member profile"><State>Loading…</State></Frame>
+  if(error||!profile)return <Frame title="Member profile"><ErrorBox>{error||'Profile not found.'}</ErrorBox></Frame>
+  const displayName=profile.display_name?.trim()||profile.username
+  const interests=Array.isArray(profile.interests)?profile.interests:(typeof profile.interests==='string'?profile.interests.split(/[,;]+/).map(x=>x.trim()).filter(Boolean):[])
+  const petNames={lion:'Lion',cat:'Cat',dog:'Dog',fox:'Fox',rabbit:'Rabbit',bear:'Bear',wolf:'Wolf',owl:'Owl',penguin:'Penguin',frog:'Frog',turtle:'Turtle',deer:'Deer',panda:'Panda',tiger:'Tiger',raccoon:'Raccoon',hedgehog:'Hedgehog',duck:'Duck',squirrel:'Squirrel'}
+  const hasPet=Boolean(profile.pet_id&&profile.pet_id!=='none'&&petNames[profile.pet_id])
+  return <Frame title="Member profile" eyebrow={`@${profile.username}`}>
+    <div className="public-profile">
+      <section className="public-profile-hero">
+        <div className="public-profile-main">
+          <div className="public-avatar"><img src={avatarUrl(profile.avatar_id)} alt="" /></div>
+          <div className="public-profile-identity">
+            <h2>{displayName}</h2>
+            <p className="profile-joined">Member since {new Date(profile.created_at).toLocaleDateString()}</p>
+            {profile.bio&&<p className="public-profile-bio">{profile.bio}</p>}
+          </div>
+        </div>
+        {hasPet&&<div className="public-profile-pet">
+          <img src={`/pets/${profile.pet_id}.svg`} alt={petNames[profile.pet_id]} />
+          <div><span>COMPANION</span><strong>{profile.pet_name?.trim()||petNames[profile.pet_id]}</strong><small>{petNames[profile.pet_id]}</small></div>
+        </div>}
+      </section>
+      <div className="profile-stat-grid">
+        <div><strong>{stats.posts.toLocaleString()}</strong><span>Posts published</span></div>
+        <div><strong>{stats.comments.toLocaleString()}</strong><span>Comments made</span></div>
+        <div><strong>{stats.reputation.toLocaleString()}</strong><span>Reputation points</span></div>
+        <div><strong>{interests.length.toLocaleString()}</strong><span>Interests</span></div>
+      </div>
+      {interests.length>0&&<section className="public-profile-interests"><p className="eyebrow">INTERESTS</p><div className="profile-interest-list">{interests.map((x,i)=><span className="profile-interest-chip" key={`${x}-${i}`}>{x}</span>)}</div></section>}
+    </div>
+  </Frame>
 }
 
 export function CommunityManagePage({ communityId, currentUserId }) {
