@@ -270,6 +270,42 @@ export function CommunityPage({ slug, currentUserId }) {
 
   useEffect(() => { load(); window.dispatchEvent(new CustomEvent('town-pet-event', { detail: { kind: 'community-opened', label: slug } })) }, [slug, currentUserId])
 
+  // Record foreground time in each downtown for members who have not published posts.
+  useEffect(() => {
+    if (!currentUserId || !community?.id || !supabase) return
+    let cancelled = false
+    const recordTime = async () => {
+      if (cancelled || document.visibilityState !== 'visible') return
+      const { data: existing, error: readError } = await supabase
+        .from('community_time_spent')
+        .select('seconds_spent')
+        .eq('user_id', currentUserId)
+        .eq('community_id', community.id)
+        .maybeSingle()
+      if (readError) {
+        if (readError.code !== '42P01') console.warn('Could not read downtown time:', readError.message)
+        return
+      }
+      const { error: writeError } = await supabase
+        .from('community_time_spent')
+        .upsert({
+          user_id: currentUserId,
+          community_id: community.id,
+          seconds_spent: (existing?.seconds_spent || 0) + 15,
+          updated_at: new Date().toISOString()
+        }, { onConflict: 'user_id,community_id' })
+      if (writeError) console.warn('Could not record downtown time:', writeError.message)
+    }
+    const timer = window.setInterval(recordTime, 15000)
+    const onVisible = () => { if (document.visibilityState === 'visible') recordTime() }
+    document.addEventListener('visibilitychange', onVisible)
+    return () => {
+      cancelled = true
+      window.clearInterval(timer)
+      document.removeEventListener('visibilitychange', onVisible)
+    }
+  }, [currentUserId, community?.id])
+
   const changeCommunityIcon = async event => {
     const file = event.target.files?.[0]
     event.target.value = ''
