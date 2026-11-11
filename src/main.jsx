@@ -753,7 +753,7 @@ function SocialSection({ currentUserId }) {
     <div className="social-layout">
       <div>
         <h3 className="subheading">Search results</h3>
-        <div className="user-list">{users.map(u => <div className="user-row" key={u.id}><div><strong>{u.username}</strong><span>Public profile</span></div><button className="button secondary" onClick={() => connect(u.id)}>Connect</button></div>)}{!users.length && <EmptyState title={query.trim().length < 2 ? 'No search yet.' : 'No matching users.'}>{query.trim().length < 2 ? 'Enter at least 2 characters to find another username.' : 'Try a different username or spelling.'}</EmptyState>}</div>
+        <div className="user-list">{users.map(u => <div className="user-row" key={u.id}><div><strong>{u.username}</strong><span>Public profile</span></div><button className="button secondary" onClick={() => connect(u.id)}>Connect</button></div>)}{!users.length && query.trim().length >= 2 && <EmptyState title="No matching users.">Try a different username or spelling.</EmptyState>}</div>
         <h3 className="subheading">Incoming requests</h3>
         <div className="user-list">{pending.map(c => <div className="user-row" key={c.id}><div><strong>{c.sender.username}</strong><span>Wants to connect</span></div><div className="actions"><button className="button secondary" onClick={() => respondToRequest(c.id, 'accepted')}>Accept</button><button className="button secondary" onClick={() => respondToRequest(c.id, 'rejected')}>Decline</button></div></div>)}{!pending.length && <EmptyState title="No pending requests.">New incoming connection requests will appear here.</EmptyState>}</div>
         <h3 className="subheading">Connections</h3>
