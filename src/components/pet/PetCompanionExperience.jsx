@@ -41,6 +41,10 @@ export function PetCompanionExperience({ currentUserId }) {
     if (!currentUserId) return
     setLoading(true); setError(''); setNotice('')
     try {
+      const {error:rewardError}=await supabase.rpc('refresh_pet_rewards')
+      if (rewardError) throw rewardError
+      const {error:souvenirError}=await supabase.rpc('sync_pet_community_souvenirs')
+      if (souvenirError) throw souvenirError
       const [p,c,u,s,m] = await Promise.all([
         supabase.from('profiles').select('pet_id,pet_name,created_at,interests').eq('id',currentUserId).single(),
         supabase.from('pet_companions').select('*').eq('user_id',currentUserId).maybeSingle(),
