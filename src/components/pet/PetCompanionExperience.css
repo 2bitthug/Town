@@ -2,3 +2,40 @@
 .pet-catalog-actions{display:flex;align-items:center;gap:8px;margin-left:auto}.pet-catalog-actions .button{padding:6px 9px;font-size:.75rem}
 
 .pet-room-sign{position:absolute;right:18px;top:18px;padding:7px 10px;border:1px solid #596b5e;border-radius:5px;background:#17221c;color:#c6d6c9;font-size:9px;letter-spacing:1.6px}.pet-room-character img{display:block;width:128px;height:128px;image-rendering:pixelated;object-fit:contain}.pet-room-character.pet-playing{animation:pet-jump-across 1.65s cubic-bezier(.42,0,.58,1) both}@keyframes pet-idle{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}@keyframes pet-jump-across{0%{left:8%;transform:translateY(0) scaleX(1)}12%{transform:translateY(0) scaleX(1)}28%{transform:translateY(-68px) scaleX(1)}42%{transform:translateY(0) scaleX(1)}52%{transform:translateY(-5px) scaleX(-1)}66%{left:42%;transform:translateY(-76px) scaleX(-1)}82%{left:76%;transform:translateY(-25px) scaleX(1)}100%{left:calc(92% - 128px);transform:translateY(0) scaleX(1)}}.pet-emotes button{background:#17251d;border:1px solid var(--accent-border,#596b5e);color:#e5f1e8;border-radius:8px;padding:9px 13px;cursor:pointer}.pet-emotes button:disabled{opacity:.45;cursor:not-allowed}@media(prefers-reduced-motion:reduce){.pet-room-character,.pet-room-character.pet-playing{animation:none}}
+/* Pet home: designed furnishings rather than floating emoji labels */
+.pet-room-sky{background:linear-gradient(180deg,#1c3433 0%,#20302e 62%,#27372e 100%)}
+.pet-room-decoration{position:absolute;z-index:1;display:block;right:auto;bottom:34px;font-size:0}
+.pet-decor-reading-nook{left:9%;width:112px;height:38px;border-radius:48% 48% 12px 12px;background:linear-gradient(180deg,#668c79 0 18%,#3b5d4b 19% 100%);border:2px solid #9ab69a;box-shadow:0 7px 0 #17251e}
+.pet-decor-reading-nook:before{content:"";position:absolute;left:12px;right:12px;top:-15px;height:19px;border-radius:9px 9px 4px 4px;background:linear-gradient(90deg,#b7d0b7,#7d9e85);border:2px solid #d0dfc9}
+.pet-decor-reading-nook:after{content:"";position:absolute;left:12px;right:12px;bottom:-9px;height:8px;border-left:5px solid #a5b49b;border-right:5px solid #a5b49b}
+.pet-decor-reading-nook span{display:none}
+.pet-decor-toy-ball{left:29%;bottom:39px;width:27px;height:27px;border-radius:50%;background:radial-gradient(circle at 30% 25%,#fff1a8 0 7%,#f4c64d 30%,#d87b36 78%);border:2px solid #ffdc75;box-shadow:0 4px 0 #17251e;animation:pet-ball-roll 4s ease-in-out infinite}
+.pet-decor-toy-ball:after{content:"";position:absolute;inset:4px;border:2px solid rgba(255,255,255,.6);border-radius:50%}
+.pet-decor-toy-ball span{display:none}
+@keyframes pet-ball-roll{0%,100%{transform:translateX(0) rotate(0)}50%{transform:translateX(18px) rotate(180deg)}}
+.pet-catalog{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.pet-catalog>div{align-items:flex-start;min-height:112px;padding:14px;background:linear-gradient(145deg,#141d19,#0e1311);border-color:#35483b;border-radius:12px}
+.pet-catalog-icon{display:grid;place-items:center;flex:0 0 42px;width:42px;height:42px;border-radius:12px;background:color-mix(in srgb,var(--item-color) 16%,#111);border:1px solid color-mix(in srgb,var(--item-color) 50%,#344238);font-size:23px}
+.pet-catalog>div>div{gap:5px}
+.pet-catalog>div>div strong{color:#eef5ef}
+.pet-catalog>div>div small{color:#c2d3c5}
+.pet-catalog p{color:#8fa096;line-height:1.4}
+.pet-catalog .locked{opacity:1;filter:saturate(.7)}
+.pet-catalog .locked .pet-catalog-icon{filter:grayscale(.65);opacity:.75}
+.pet-catalog .unlocked{border-color:#607d60;background:linear-gradient(145deg,#19251d,#101713)}
+.pet-catalog-actions{flex-wrap:wrap;justify-content:flex-end}
+.pet-souvenir-grid{grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.pet-collectible-card{display:grid;grid-template-columns:116px minmax(0,1fr);min-height:190px;overflow:hidden;border:1px solid #657b5e;border-radius:13px;background:#111a15;box-shadow:0 7px 18px rgba(0,0,0,.2)}
+.pet-collectible-art{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:12px;background:radial-gradient(circle at 50% 40%,#526f49,#253b2d 65%,#17251d);border-right:1px solid #64785b}
+.pet-collectible-stamp{display:grid;place-items:center;width:76px;height:76px;border:2px solid #e2d39a;border-radius:50%;color:#f5e9b8;text-align:center;font:700 12px/1.25 monospace;letter-spacing:1px;box-shadow:inset 0 0 0 4px rgba(230,215,157,.18),0 0 18px rgba(226,211,154,.15)}
+.pet-collectible-mark{position:absolute;top:10px;right:12px;color:#f5e3a5;font-size:16px}
+.pet-collectible-art small{color:#d3dfc7;font:9px monospace;letter-spacing:1px;text-align:center}
+.pet-collectible-info{display:flex;flex-direction:column;align-items:flex-start;padding:15px;gap:7px}
+.pet-collectible-kicker{color:#9dbb91;font:9px monospace;letter-spacing:1.5px}
+.pet-collectible-info strong{font-size:1.05rem;color:#f0f4e9}
+.pet-collectible-info p{margin:0;color:#aab8ac;font-size:.8rem;line-height:1.45}
+.pet-collectible-meta{display:flex;justify-content:space-between;gap:12px;width:100%;margin-top:auto;padding-top:8px;border-top:1px solid #304033;font:9px monospace;color:#91a18f}
+.pet-collectible-meta b{color:#dce6d6}
+.pet-collectible-info>a{color:#c9d99b;font-size:.8rem;text-decoration:none}
+.pet-collected-state{display:inline-flex;align-items:center;gap:5px;padding:7px 10px;border:1px solid #526c50;border-radius:8px;background:#17251b;color:#b8d9a7;font-size:.78rem;white-space:nowrap}
+@media(max-width:760px){.pet-catalog{grid-template-columns:minmax(0,1fr)}.pet-collectible-card{grid-template-columns:94px minmax(0,1fr)}.pet-collectible-stamp{width:66px;height:66px;font-size:10px}}
