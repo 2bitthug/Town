@@ -31,6 +31,7 @@ export function PetCompanionExperience({ currentUserId }) {
   const [unlocks,setUnlocks] = useState([])
   const [souvenirs,setSouvenirs] = useState([])
   const [communities,setCommunities] = useState([])
+  const [joinedCommunityIds,setJoinedCommunityIds] = useState([])
   const [posts,setPosts] = useState([])
   const [activeTab,setActiveTab] = useState('home')
   const [emote,setEmote] = useState('wave')
@@ -57,6 +58,7 @@ export function PetCompanionExperience({ currentUserId }) {
       setUnlocks(u.data || [])
       setSouvenirs(s.data || [])
       const joined = (m.data || []).map(x=>x.communities).filter(Boolean)
+      setJoinedCommunityIds((m.data || []).map(x=>x.community_id))
       if (joined.length) setCommunities(joined)
       else {
         const {data,error:communityError}=await supabase.from('communities').select('id,name,slug,description,category').eq('status','active').eq('visibility','public').limit(6)
@@ -160,7 +162,7 @@ export function PetCompanionExperience({ currentUserId }) {
       <article className="pet-panel"><h2>Home decorations</h2><p>Place unlocked items in your pet’s room.</p>{CATALOG.filter(x=>x.type==='decoration'||x.type==='toy').map(item=>{const got=owned.has(item.key)||item.key==='toy-ball',placed=safeArray(companion.home_items).includes(item.key);return <div className="pet-home-item" key={item.key}><span>{item.emoji}</span><div><strong>{item.label}</strong><small>{got?'Available to place':item.source}</small></div><button className="button secondary" disabled={!got||saving} onClick={()=>placed?removeDecoration(item.key):addDecoration(item.key)}>{placed?'Remove':'Place'}</button></div>})}</article>
     </div>}
     {activeTab==='souvenirs' && <article className="pet-panel"><h2>Souvenir shelf</h2><p>Keep a memento of the downtowns you join. Each item shows where it came from.</p>{souvenirs.length ? <div className="pet-souvenir-grid">{souvenirs.map(s=><div key={s.id} className="pet-souvenir"><span>🎟️</span><strong>{s.communities?.name || 'Town community'}</strong><small>From <a href={s.communities?.slug? `#/community/${s.communities.slug}`:'#/communities'}>{s.communities?.name || 'a downtown'}</a></small><small>Collected {new Date(s.collected_at).toLocaleDateString()}</small></div>)}</div>:<div className="pet-empty">No souvenirs yet. Explore a downtown below and collect your first keepsake.</div>}</article>}
-    {activeTab==='discover' && <div className="pet-discovery-grid"><article className="pet-panel"><h2>Downtowns to explore</h2>{communities.length?communities.map(c=><div className="pet-discovery-item" key={c.id}><div><strong>{c.name}</strong><small>{c.category || 'Community'} · {c.description || 'A place to meet and exchange ideas.'}</small></div><div className="pet-inline-actions"><a className="button secondary" href={`#/community/${c.slug}`}>Explore</a><button className="button secondary" disabled={saving} onClick={()=>collectFromCommunity(c.id)}>Join / collect</button></div></div>):<p>No public downtowns are available yet.</p>}</article><article className="pet-panel"><h2>Conversations worth a look</h2>{posts.length?posts.map(p=><div className="pet-discovery-item" key={p.id}><div><strong>{p.title}</strong><small>{p.communities?.name || 'Town discussion'} · {(p.body||'').slice(0,120)}</small></div><a className="button secondary" href={`#/post/${p.id}`}>Read</a></div>):<p>No published discussions to recommend yet.</p>}</article></div>}
+    {activeTab==='discover' && <div className="pet-discovery-grid"><article className="pet-panel"><h2>Downtowns to explore</h2>{communities.length?communities.map(c=><div className="pet-discovery-item" key={c.id}><div><strong>{c.name}</strong><small>{c.category || 'Community'} · {c.description || 'A place to meet and exchange ideas.'}</small></div><div className="pet-inline-actions"><a className="button secondary" href={`#/community/${c.slug}`}>Explore</a>{joinedCommunityIds.includes(c.id)?<button className="button secondary" disabled={saving} onClick={()=>collectFromCommunity(c.id)}>Collect souvenir</button>:<a className="button secondary" href={`#/community/${c.slug}`}>Join downtown</a>}</div></div>):<p>No public downtowns are available yet.</p>}</article><article className="pet-panel"><h2>Conversations worth a look</h2>{posts.length?posts.map(p=><div className="pet-discovery-item" key={p.id}><div><strong>{p.title}</strong><small>{p.communities?.name || 'Town discussion'} · {(p.body||'').slice(0,120)}</small></div><a className="button secondary" href={`#/post/${p.id}`}>Read</a></div>):<p>No published discussions to recommend yet.</p>}</article></div>}
     <p className="pet-footnote">Town companion is optional. No streaks, decay, illness or inactivity penalties. Rewards are permanent once earned.</p>
   </section>
 }
