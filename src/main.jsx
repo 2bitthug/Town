@@ -1570,10 +1570,18 @@ function App() {
     }
   }, [mobileNavOpen])
   useEffect(() => {
-    const syncAccent = () => { const stored = localStorage.getItem(session?.user?.id ? `town-accent:${session.user.id}` : 'town-accent'); setGlobalAccent(PROFILE_COLORS.some(([value]) => value.toLowerCase() === (stored || '').toLowerCase()) ? stored : '#A3DFC1') }
+    const resolveAccent = (candidate) => PROFILE_COLORS.find(([value]) => value.toLowerCase() === String(candidate || '').toLowerCase())?.[0] || '#A3DFC1'
+    const syncAccent = (event) => {
+      const stored = localStorage.getItem(session?.user?.id ? `town-accent:${session.user.id}` : 'town-accent')
+      setGlobalAccent(resolveAccent(event?.detail || stored))
+    }
     syncAccent()
     window.addEventListener('town-accent-change', syncAccent)
-    return () => window.removeEventListener('town-accent-change', syncAccent)
+    window.addEventListener('storage', syncAccent)
+    return () => {
+      window.removeEventListener('town-accent-change', syncAccent)
+      window.removeEventListener('storage', syncAccent)
+    }
   }, [session?.user?.id])
   useEffect(() => {
     // Apply the selected member accent to the shared design tokens used by components.
@@ -1583,6 +1591,9 @@ function App() {
     root.style.setProperty('--profile-accent', globalAccent)
     root.style.setProperty('--focus', globalAccent)
     root.style.setProperty('--success', globalAccent)
+    root.style.setProperty('--town-accent', globalAccent)
+    document.querySelector('.ps2-shell')?.style.setProperty('--accent', globalAccent)
+    document.querySelector('.ps2-shell')?.style.setProperty('--profile-accent', globalAccent)
   }, [globalAccent])
   useEffect(() => {
     if (!supabase) { setChecking(false); return }
