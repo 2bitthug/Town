@@ -7001,3 +7001,231 @@ html, body { background: #050507; }
 @media (prefers-reduced-motion: reduce) {
   .ps2-shell :is(button, .button, a.button, .profile-color-choice, .profile-pet-choice) { transition: none; }
 }
+
+
+/* Town editorial refinement — clearer hierarchy, quieter surfaces, stronger wayfinding */
+:root {
+  --town-ink: #f3f0e9;
+  --town-muted: #a5a3a0;
+  --town-line: rgba(255,255,255,.105);
+  --town-surface: #101114;
+  --town-surface-raised: #15171b;
+}
+.ps2-shell .town-page {
+  width: min(100% - 48px, 1240px);
+  max-width: 1240px;
+  padding: 24px 0 64px;
+  color: var(--town-ink);
+}
+.ps2-shell .town-page-heading { margin-bottom: 28px; align-items: center; }
+.ps2-shell .town-page-heading h1 {
+  max-width: 760px;
+  font-size: clamp(2rem, 4vw, 3.25rem);
+  letter-spacing: -.055em;
+  line-height: 1.04;
+  text-wrap: balance;
+}
+.ps2-shell .town-page .eyebrow,
+.ps2-shell .town-page .town-kicker {
+  color: var(--accent, #00e5ff);
+  letter-spacing: .12em;
+}
+.ps2-shell .town-page .button {
+  min-height: 44px;
+  border-radius: 9px;
+  padding-inline: 16px;
+  font-weight: 700;
+}
+.ps2-shell .town-page .button.primary {
+  background: var(--accent, #287bff);
+  color: #050609;
+  border: 1px solid var(--accent, #287bff);
+  box-shadow: none;
+}
+.ps2-shell .town-page .button.secondary {
+  background: #17191d;
+  border: 1px solid var(--town-line);
+  color: #e8e6e0;
+}
+.ps2-shell .town-page :is(input, select, textarea) {
+  min-height: 46px;
+  border-radius: 9px;
+  background: #0c0e11;
+  border: 1px solid var(--town-line);
+  color: var(--town-ink);
+}
+.ps2-shell .town-page :is(input, select, textarea):focus-visible,
+.ps2-shell .town-page :is(a, button):focus-visible {
+  outline: 2px solid var(--accent, #287bff);
+  outline-offset: 3px;
+  box-shadow: none;
+}
+.ps2-shell .town-page .town-home-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 28px;
+  align-items: start;
+}
+.ps2-shell .town-home-hero {
+  position: relative;
+  min-height: 330px;
+  display: flex;
+  align-items: center;
+  overflow: hidden;
+  padding: clamp(26px, 5vw, 54px);
+  border: 1px solid color-mix(in srgb, var(--accent, #287bff) 42%, rgba(255,255,255,.12));
+  border-radius: 18px;
+  background:
+    linear-gradient(105deg, rgba(8,10,14,.98) 0%, rgba(12,15,20,.96) 66%, rgba(17,20,27,.92) 100%);
+  box-shadow: inset 0 1px rgba(255,255,255,.05), 0 18px 48px rgba(0,0,0,.22);
+}
+.ps2-shell .town-home-hero::after {
+  content: "";
+  position: absolute;
+  width: 300px;
+  height: 300px;
+  right: -115px;
+  top: -100px;
+  border: 1px solid color-mix(in srgb, var(--accent, #287bff) 38%, transparent);
+  border-radius: 50%;
+  box-shadow: 0 0 0 28px color-mix(in srgb, var(--accent, #287bff) 5%, transparent),
+              0 0 0 58px color-mix(in srgb, var(--accent, #287bff) 3%, transparent);
+  pointer-events: none;
+}
+.ps2-shell .town-home-copy { position: relative; z-index: 1; max-width: 690px; }
+.ps2-shell .town-home-headline {
+  max-width: 650px;
+  font-size: clamp(2.5rem, 5.4vw, 4.5rem);
+  letter-spacing: -.065em;
+  line-height: .98;
+  text-wrap: balance;
+}
+.ps2-shell .town-home-subhead {
+  max-width: 590px;
+  color: #b7b8bb;
+  font-size: 1rem;
+  line-height: 1.7;
+}
+.ps2-shell .town-home-hero-caption {
+  position: absolute;
+  right: 22px;
+  bottom: 18px;
+  color: #777b82;
+  font-size: .62rem;
+  letter-spacing: .14em;
+}
+.ps2-shell .town-home-discover { margin-top: 34px; }
+.ps2-shell .town-home-section-heading { margin-bottom: 16px; align-items: end; }
+.ps2-shell .town-home-section-heading h2 { font-size: 1.45rem; letter-spacing: -.035em; }
+.ps2-shell .town-home-community-grid { grid-template-columns: repeat(2, minmax(0,1fr)); gap: 12px; }
+.ps2-shell .town-home-community-card,
+.ps2-shell .community-card,
+.ps2-shell .feed-card,
+.ps2-shell .post-card,
+.ps2-shell .town-home-side-card,
+.ps2-shell .town-side-card {
+  background: var(--town-surface);
+  border: 1px solid var(--town-line);
+  border-radius: 13px;
+  box-shadow: none;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.ps2-shell .town-home-community-card {
+  display: grid;
+  grid-template-columns: 58px minmax(0,1fr);
+  gap: 14px;
+  padding: 16px;
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
+.ps2-shell .town-home-community-card:hover,
+.ps2-shell .community-card:hover,
+.ps2-shell .feed-card:hover,
+.ps2-shell .post-card:hover {
+  border-color: color-mix(in srgb, var(--accent, #287bff) 55%, rgba(255,255,255,.16));
+  background: var(--town-surface-raised);
+  transform: translateY(-1px);
+}
+.ps2-shell .town-home-community-art {
+  width: 58px;
+  height: 58px;
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--accent, #287bff) 14%, #17191e);
+  color: var(--accent, #287bff);
+}
+.ps2-shell .town-home-community-art span { font-size: 1.35rem; }
+.ps2-shell .town-home-community-copy h3 { margin: 5px 0 6px; font-size: 1rem; letter-spacing: -.02em; }
+.ps2-shell .town-home-community-copy p { color: var(--town-muted); font-size: .82rem; line-height: 1.5; }
+.ps2-shell .town-home-card-link,
+.ps2-shell .town-home-text-link,
+.ps2-shell .community-open,
+.ps2-shell .feed-card-meta a,
+.ps2-shell .post-type { color: var(--accent, #287bff); }
+.ps2-shell .town-home-side-column { gap: 14px; }
+.ps2-shell .town-home-side-card { padding: 19px; }
+.ps2-shell .town-home-discussion { padding: 14px 0; border-color: var(--town-line); }
+.ps2-shell .town-home-discussion strong { font-size: .91rem; line-height: 1.4; }
+.ps2-shell .town-home-discussion-excerpt { color: var(--town-muted); line-height: 1.5; }
+.ps2-shell .town-home-principle-card {
+  background: color-mix(in srgb, var(--accent, #287bff) 8%, #101114);
+  border-color: color-mix(in srgb, var(--accent, #287bff) 28%, rgba(255,255,255,.1));
+}
+.ps2-shell .town-home-principle-card h2 { letter-spacing: -.035em; }
+.ps2-shell .town-directory-intro {
+  display: flex; justify-content: space-between; align-items: center; gap: 16px;
+  margin: -4px 0 18px; color: var(--town-muted); font-size: .9rem;
+}
+.ps2-shell .community-grid { gap: 12px; }
+.ps2-shell .community-card { padding: 19px; }
+.ps2-shell .community-card-icon {
+  border-radius: 11px;
+  background: color-mix(in srgb, var(--accent, #287bff) 12%, #17191e);
+  color: var(--accent, #287bff);
+}
+.ps2-shell .community-card h2,
+.ps2-shell .feed-card h2 { letter-spacing: -.025em; }
+.ps2-shell .community-header,
+.ps2-shell .town-form,
+.ps2-shell .town-state,
+.ps2-shell .town-empty,
+.ps2-shell .town-error,
+.ps2-shell .feed-principle,
+.ps2-shell .discussion-post,
+.ps2-shell .comment-composer,
+.ps2-shell .reply-form,
+.ps2-shell .comment-item {
+  background: var(--town-surface);
+  border-color: var(--town-line);
+  box-shadow: none;
+}
+.ps2-shell .feed-principle { border-left: 3px solid var(--accent, #287bff); }
+.ps2-shell .feed-principle strong { color: var(--accent, #287bff); }
+.ps2-shell .feed-card { padding: 22px; }
+.ps2-shell .feed-card h2 { font-size: 1.3rem; }
+.ps2-shell .feed-action { background: #17191d; border-color: var(--town-line); }
+.ps2-shell .feed-action.active { color: var(--accent, #287bff); border-color: var(--accent, #287bff); }
+.ps2-shell .post-pin-inline { color: var(--accent, #287bff); }
+@media (max-width: 980px) {
+  .ps2-shell .town-page .town-home-layout { grid-template-columns: minmax(0,1fr) 280px; gap: 18px; }
+}
+@media (max-width: 760px) {
+  .ps2-shell .town-page { width: min(100% - 32px, 1240px); padding-top: 16px; }
+  .ps2-shell .town-page .town-home-layout { grid-template-columns: 1fr; }
+  .ps2-shell .town-home-side-column { grid-template-columns: 1fr 1fr; }
+  .ps2-shell .town-home-hero { min-height: 300px; }
+}
+@media (max-width: 560px) {
+  .ps2-shell .town-page { width: min(100% - 24px, 1240px); padding-bottom: 40px; }
+  .ps2-shell .town-home-hero { min-height: 330px; padding: 24px 20px; }
+  .ps2-shell .town-home-headline { font-size: clamp(2.35rem, 12vw, 3.25rem); }
+  .ps2-shell .town-home-hero-caption { left: 20px; right: auto; }
+  .ps2-shell .town-home-community-grid,
+  .ps2-shell .town-home-side-column,
+  .ps2-shell .community-grid { grid-template-columns: 1fr; }
+  .ps2-shell .town-directory-intro { align-items: flex-start; flex-direction: column; }
+  .ps2-shell .town-page-heading h1 { font-size: clamp(1.9rem, 9vw, 2.6rem); }
+  .ps2-shell .feed-card { padding: 17px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ps2-shell .town-page * { scroll-behavior: auto !important; transition-duration: .01ms !important; animation-duration: .01ms !important; }
+}
