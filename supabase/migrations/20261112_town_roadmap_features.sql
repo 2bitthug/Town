@@ -138,3 +138,19 @@ do $$ begin
 end $$;
 
 revoke all on function public.notify_post_comment() from public,anon,authenticated;
+
+
+create or replace function public.notify_community_event()
+returns trigger language plpgsql security definer set search_path = '' as $$
+begin
+ insert into public.town_notifications(user_id,actor_id,kind,community_id,title,body,href)
+ select m.user_id,new.created_by,'community_event',new.community_id,'New downtown event: '||new.title,left(coalesce(new.description,''),180),
+        '#/community/'||c.slug
+ from public.community_memberships m
+ join public.communities c on c.id=new.community_id
+ where m.community_id=new.community_id and m.user_id<>new.created_by;
+ return new;
+end; $$;
+drop trigger if exists town_notify_community_event on public.community_events;
+create trigger town_notify_community_event after insert on public.community_events for each row execute function public.notify_community_event();
+revoke all on function public.notify_community_event() from public,anon,authenticated;
