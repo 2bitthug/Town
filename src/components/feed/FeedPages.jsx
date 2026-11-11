@@ -19,7 +19,7 @@ async function loadStats(ids) {
 
 export function FeedPage({ currentUserId }) {
   const [posts, setPosts] = useState([]), [communities, setCommunities] = useState([]), [joinedIds, setJoinedIds] = useState(new Set())
-  const [sort, setSort] = useState(() => localStorage.getItem(SORT_KEY) || 'latest'), [communityFilter, setCommunityFilter] = useState('all'), [joinedOnly, setJoinedOnly] = useState(false), [query, setQuery] = useState('')
+  const [sort, setSort] = useState(() => localStorage.getItem(SORT_KEY) || 'latest'), [communityFilter, setCommunityFilter] = useState('all'), [joinedOnly, setJoinedOnly] = useState(false), [query, setQuery] = useState(''), [postType, setPostType] = useState('all')
   const [loading, setLoading] = useState(true), [error, setError] = useState(''), [busyVote, setBusyVote] = useState(null), [saved, setSaved] = useState(new Set())
 
   const load = async () => {
@@ -52,6 +52,7 @@ export function FeedPage({ currentUserId }) {
     const needle = query.trim().toLowerCase()
     const result = posts.filter(post => {
       if (communityFilter !== 'all' && post.community_id !== communityFilter) return false
+      if (postType !== 'all' && post.post_type !== postType) return false
       if (joinedOnly && !joinedIds.has(post.community_id)) return false
       return !needle || `${post.title} ${post.body} ${post.community?.name || ''} ${post.author?.username || ''}`.toLowerCase().includes(needle)
     })
@@ -61,7 +62,7 @@ export function FeedPage({ currentUserId }) {
       if (sort === 'viewed') return Number(b.stats.view_count) - Number(a.stats.view_count) || new Date(b.created_at) - new Date(a.created_at)
       return new Date(b.created_at) - new Date(a.created_at)
     })
-  }, [posts, communityFilter, joinedOnly, joinedIds, query, sort])
+  }, [posts, communityFilter, joinedOnly, joinedIds, query, sort, postType])
 
   const vote = async (post, value) => {
     if (!currentUserId || busyVote) return
@@ -83,10 +84,10 @@ export function FeedPage({ currentUserId }) {
   }
 
   return <PageFrame title="Your town, sorted by you." actions={<a className="button primary" href="#/communities">Browse downtowns</a>}>
-    <div className="feed-controls"><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search posts…" aria-label="Search posts" /><select value={communityFilter} onChange={e => setCommunityFilter(e.target.value)} aria-label="Filter by downtown"><option value="all">All downtowns</option>{communities.map(c => <option value={c.id} key={c.id}>{c.name}</option>)}</select><select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select><label className="feed-check"><input type="checkbox" checked={joinedOnly} onChange={e => setJoinedOnly(e.target.checked)} /> Joined only</label></div>
+    <div className="feed-controls"><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search posts…" aria-label="Search posts" /><select value={communityFilter} onChange={e => setCommunityFilter(e.target.value)} aria-label="Filter by downtown"><option value="all">All downtowns</option>{communities.map(c => <option value={c.id} key={c.id}>{c.name}</option>)}</select><select value={postType} onChange={e => setPostType(e.target.value)} aria-label="Filter by post type"><option value="all">All post types</option><option value="question">Questions</option><option value="discussion">Discussions</option><option value="link">Links</option><option value="media">Media</option></select><select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select><label className="feed-check"><input type="checkbox" checked={joinedOnly} onChange={e => setJoinedOnly(e.target.checked)} /> Joined only</label></div>
     {error && <div className="town-error">{error}<button className="button secondary" onClick={load}>Retry</button></div>}
     {loading && <div className="town-state">Loading the town feed…</div>}
-    {!loading && !visiblePosts.length && <Empty>{posts.length ? <><p>No posts match these filters.</p><div className="feed-empty-actions"><button className="button secondary" onClick={() => { setCommunityFilter('all'); setJoinedOnly(false); setQuery('') }}>Clear filters</button><a className="button secondary" href="#/communities">Explore downtowns</a></div></> : <><p>There are no published posts to show yet. Town won’t invent activity to fill the feed.</p><div className="feed-empty-actions"><a className="button primary" href="#/communities">Find a downtown</a><a className="button secondary" href="#/create-post">Start a discussion</a></div></>}</Empty>}
+    {!loading && !visiblePosts.length && <Empty>{posts.length ? <><p>No posts match these filters.</p><div className="feed-empty-actions"><button className="button secondary" onClick={() => { setCommunityFilter('all'); setJoinedOnly(false); setQuery(''); setPostType('all') }}>Clear filters</button><a className="button secondary" href="#/communities">Explore downtowns</a></div></> : <><p>There are no published posts to show yet. Town won’t invent activity to fill the feed.</p><div className="feed-empty-actions"><a className="button primary" href="#/communities">Find a downtown</a><a className="button secondary" href="#/create-post">Start a discussion</a></div></>}</Empty>}
     <div className="feed-list">{visiblePosts.map(post => { const author = post.author?.display_name || post.author?.username || 'Town member'; const score = Number(post.stats.upvote_score || 0); return <article
       className="feed-card feed-card-clickable"
       key={post.id}
@@ -105,7 +106,7 @@ export function FeedPage({ currentUserId }) {
       }}
     >
       <div className="feed-card-meta"><a href={`#/community/${post.community?.slug || ''}`}>{post.community?.name || 'Downtown'}</a><span>·</span><span>{post.community?.category || 'General'}</span>{post.is_pinned && <span className="post-pin-inline">PINNED</span>}</div>
-      <h2>{post.title}</h2>{post.body && <p>{post.body}</p>}
+      <div className="feed-post-heading"><span className={`post-type-pill post-type-${post.post_type}`}>{post.post_type === 'question' ? 'QUESTION' : (post.post_type || 'DISCUSSION').toUpperCase()}</span>{post.post_type === 'question' && <span className="question-answer-state">{post.accepted_answer_id ? 'Answered' : 'Open question'}</span>}</div><h2>{post.title}</h2>{post.body && <p>{post.body}</p>}
       <div className="feed-card-footer"><span>by {author} · {age(post.created_at)}</span><div className="feed-stats"><button className={`feed-action ${post.myVote === 1 ? 'active' : ''}`} disabled={busyVote === post.id} onClick={() => vote(post, 1)}>▲ {score}</button><button className={`feed-action ${post.myVote === -1 ? 'down' : ''}`} disabled={busyVote === post.id} onClick={() => vote(post, -1)}>▼</button><span>{post.stats.comment_count} comments</span><span>{post.stats.view_count} views</span><button className={`feed-action ${saved.has(post.id) ? 'active' : ''}`} onClick={() => toggleSave(post)}>{saved.has(post.id) ? 'Saved' : 'Save'}</button></div></div>
     </article> })}</div>
   </PageFrame>
