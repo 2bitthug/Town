@@ -7346,3 +7346,26 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
     animation-iteration-count: 1 !important; transition-duration: .01ms !important;
   }
 }
+
+
+/* Final accessibility and narrow-screen safeguards. */
+.ps2-shell .ps2-nav a,
+.ps2-shell .ps2-create-action,
+.ps2-shell .ps2-top-signout,
+.ps2-shell .feed-action {
+  min-height: 44px;
+}
+.ps2-shell :is(button,a,input,textarea,select):focus-visible {
+  outline: 2px solid var(--town-accent);
+  outline-offset: 3px;
+}
+.ps2-shell .ps2-topbar :focus-visible,
+.ps2-shell .ps2-sidebar :focus-visible { outline-color: var(--town-accent); }
+.ps2-shell .ps2-main > * { min-width: 0; }
+.ps2-shell img, .ps2-shell video, .ps2-shell iframe { max-width: 100%; }
+@media (max-width: 420px) {
+  .ps2-shell .ps2-topbar { padding-inline: 12px; gap: 8px; }
+  .ps2-shell .ps2-brand-title { letter-spacing: .14em; }
+  .ps2-shell .ps2-status { max-width: 28vw; }
+  .ps2-shell .ps2-top-signout { padding-inline: 9px; font-size: .58rem; }
+}
