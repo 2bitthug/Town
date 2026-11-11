@@ -82,7 +82,6 @@ export function FeedPage({ currentUserId }) {
   }
 
   return <PageFrame title="Your town, sorted by you." actions={<a className="button primary" href="#/communities">Browse downtowns</a>}>
-    <div className="feed-principle"><strong>No hidden ranking.</strong><span>Choose the sort and downtowns. The platform does not decide what deserves your attention.</span></div>
     <div className="feed-controls"><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search posts…" aria-label="Search posts" /><select value={communityFilter} onChange={e => setCommunityFilter(e.target.value)} aria-label="Filter by downtown"><option value="all">All downtowns</option>{communities.map(c => <option value={c.id} key={c.id}>{c.name}</option>)}</select><select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select><label className="feed-check"><input type="checkbox" checked={joinedOnly} onChange={e => setJoinedOnly(e.target.checked)} /> Joined only</label></div>
     {error && <div className="town-error">{error}<button className="button secondary" onClick={load}>Retry</button></div>}
     {loading && <div className="town-state">Loading the town feed…</div>}
