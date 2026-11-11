@@ -2,9 +2,9 @@
 .pet-catalog-actions{display:flex;align-items:center;gap:8px;margin-left:auto}.pet-catalog-actions .button{padding:6px 9px;font-size:.75rem}
 
 .pet-room-character{transform-origin:center bottom}
-.pet-emote-wave{animation:pet-wave-action 1.15s ease-in-out both,pet-float 3s 1.15s ease-in-out infinite}
-.pet-emote-happy{animation:pet-happy-action .8s ease-in-out both,pet-float 3s .8s ease-in-out infinite}
-.pet-emote-sparkle{animation:pet-sparkle-action 1s ease-in-out both,pet-float 3s 1s ease-in-out infinite}
+.pet-emote-wave{animation:pet-wave-action 1.15s ease-in-out both}
+.pet-emote-happy{animation:pet-happy-action .8s ease-in-out both}
+.pet-emote-sparkle{animation:pet-sparkle-action 1s ease-in-out both}
 .pet-emote-bubble{display:grid;place-items:center;min-width:32px;height:32px;padding:0 5px;border:1px solid #e7d49a;border-radius:50%;background:#fff4d8;color:#b66b32;box-shadow:0 3px 0 #8b744e;font-size:18px;animation:pet-bubble-pop .45s cubic-bezier(.2,1.5,.5,1) both}
 .pet-emote-wave .pet-emote-bubble{animation:pet-bubble-pop .45s cubic-bezier(.2,1.5,.5,1) both,pet-bubble-wave .6s .35s ease-in-out 2}
 .pet-emote-sparkle .pet-emote-bubble{color:#a77bdb;background:#f4eaff;border-color:#c7a7ee}
