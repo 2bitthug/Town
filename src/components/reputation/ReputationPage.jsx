@@ -22,39 +22,51 @@ export function ReputationPage({ currentUserId }) {
     let active = true
     async function load() {
       setLoading(true); setError('')
-      // Award anything already earned before reading the collection. The database
-      // function is idempotent, so refreshing this page never duplicates awards.
-      const syncRes = await supabase.rpc('sync_my_badges')
-      const [profileRes, eventsRes, badgesRes, catalogRes, postsRes, commentsRes, votesRes, helpfulPostsRes, helpfulCommentsRes, communitiesRes, createdCommunitiesRes, moderatorRes] = await Promise.all([
-        supabase.from('profiles').select('id,username,reputation_score,created_at,bio,interests').eq('id', currentUserId).single(),
-        supabase.from('reputation_events').select('id,event_type,points,post_id,comment_id,created_at').eq('user_id', currentUserId).order('created_at', { ascending: false }).limit(50),
-        supabase.from('user_badges').select('badge_id,awarded_at').eq('user_id', currentUserId).order('awarded_at', { ascending: false }),
-        supabase.from('badges').select('id,slug,name,description,icon,criteria,tier,category').order('created_at'),
-        supabase.from('posts').select('id', { count: 'exact', head: true }).eq('author_id', currentUserId).eq('status', 'published'),
-        supabase.from('comments').select('id', { count: 'exact', head: true }).eq('author_id', currentUserId).eq('status', 'published'),
-        supabase.from('post_votes').select('post_id', { count: 'exact', head: true }).eq('user_id', currentUserId),
-        supabase.from('post_votes').select('post_id,posts!inner(author_id)', { count: 'exact', head: true }).eq('posts.author_id', currentUserId).eq('value', 1),
-        supabase.from('comment_votes').select('comment_id,comments!inner(author_id)', { count: 'exact', head: true }).eq('comments.author_id', currentUserId).eq('value', 1),
-        supabase.from('community_memberships').select('community_id', { count: 'exact', head: true }).eq('user_id', currentUserId),
-        supabase.from('communities').select('id', { count: 'exact', head: true }).eq('creator_id', currentUserId).eq('status', 'active'),
-        supabase.from('community_memberships').select('community_id').eq('user_id', currentUserId).in('role', ['moderator','admin']).limit(1)
-      ])
-      if (!active) return
-      if (profileRes.error) { setError(profileRes.error.message); setLoading(false); return }
-      if (catalogRes.error || badgesRes.error) { setError((catalogRes.error || badgesRes.error).message); setLoading(false); return }
-      if (syncRes.error) console.warn('Badge sync could not complete:', syncRes.error.message)
-      setProfile(profileRes.data)
-      const joinedAt = profileRes.data?.created_at ? new Date(profileRes.data.created_at) : null
-      setDaysJoined(joinedAt && !Number.isNaN(joinedAt.getTime()) ? Math.max(0, Math.floor((Date.now() - joinedAt.getTime()) / 86400000)) : null)
-      setEvents(eventsRes.data || [])
-      const earned = new Map((badgesRes.data || []).map(x => [x.badge_id, x.awarded_at]))
-      setBadges((catalogRes.data || []).map(b => ({ ...b, awarded_at: earned.get(b.id) || null })))
-      setStats({
-        posts: postsRes.count || 0, comments: commentsRes.count || 0, votes: votesRes.count || 0,
-        helpful: (helpfulPostsRes.count || 0) + (helpfulCommentsRes.count || 0),
-        communities: communitiesRes.count || 0
-      })
-      setLoading(false)
+      let timeoutId
+      try {
+        // Badge sync is best-effort; it must never prevent the profile from loading.
+        const syncPromise = supabase.rpc('sync_my_badges')
+        const requests = Promise.all([
+          supabase.from('profiles').select('id,username,reputation_score,created_at,bio,interests').eq('id', currentUserId).single(),
+          supabase.from('reputation_events').select('id,event_type,points,post_id,comment_id,created_at').eq('user_id', currentUserId).order('created_at', { ascending: false }).limit(50),
+          supabase.from('user_badges').select('badge_id,awarded_at').eq('user_id', currentUserId).order('awarded_at', { ascending: false }),
+          supabase.from('badges').select('id,slug,name,description,icon,criteria,tier,category').order('created_at'),
+          supabase.from('posts').select('id', { count: 'exact', head: true }).eq('author_id', currentUserId).eq('status', 'published'),
+          supabase.from('comments').select('id', { count: 'exact', head: true }).eq('author_id', currentUserId).eq('status', 'published'),
+          supabase.from('post_votes').select('post_id', { count: 'exact', head: true }).eq('user_id', currentUserId),
+          supabase.from('post_votes').select('post_id,posts!inner(author_id)', { count: 'exact', head: true }).eq('posts.author_id', currentUserId).eq('value', 1),
+          supabase.from('comment_votes').select('comment_id,comments!inner(author_id)', { count: 'exact', head: true }).eq('comments.author_id', currentUserId).eq('value', 1),
+          supabase.from('community_memberships').select('community_id', { count: 'exact', head: true }).eq('user_id', currentUserId),
+          supabase.from('communities').select('id', { count: 'exact', head: true }).eq('creator_id', currentUserId).eq('status', 'active'),
+          supabase.from('community_memberships').select('community_id').eq('user_id', currentUserId).in('role', ['moderator','admin']).limit(1)
+        ])
+        const results = await Promise.race([
+          requests,
+          new Promise((_, reject) => { timeoutId = window.setTimeout(() => reject(new Error('This is taking longer than expected. Check your connection and try again.')), 15000) })
+        ])
+        const [profileRes, eventsRes, badgesRes, catalogRes, postsRes, commentsRes, votesRes, helpfulPostsRes, helpfulCommentsRes, communitiesRes] = results
+        if (!active) return
+        const failed = results.find(result => result?.error)
+        if (failed) throw failed.error
+        const syncRes = await Promise.race([syncPromise, new Promise(resolve => window.setTimeout(() => resolve({ error: null }), 2500))])
+        if (syncRes?.error) console.warn('Badge sync could not complete:', syncRes.error.message)
+        setProfile(profileRes.data)
+        const joinedAt = profileRes.data?.created_at ? new Date(profileRes.data.created_at) : null
+        setDaysJoined(joinedAt && !Number.isNaN(joinedAt.getTime()) ? Math.max(0, Math.floor((Date.now() - joinedAt.getTime()) / 86400000)) : null)
+        setEvents(eventsRes.data || [])
+        const earned = new Map((badgesRes.data || []).map(x => [x.badge_id, x.awarded_at]))
+        setBadges((catalogRes.data || []).map(b => ({ ...b, awarded_at: earned.get(b.id) || null })))
+        setStats({
+          posts: postsRes.count || 0, comments: commentsRes.count || 0, votes: votesRes.count || 0,
+          helpful: (helpfulPostsRes.count || 0) + (helpfulCommentsRes.count || 0),
+          communities: communitiesRes.count || 0
+        })
+      } catch (loadError) {
+        if (active) setError(loadError?.message || 'Unable to load your contribution profile.')
+      } finally {
+        window.clearTimeout(timeoutId)
+        if (active) setLoading(false)
+      }
     }
     if (currentUserId) load()
     return () => { active = false }
@@ -90,8 +102,8 @@ export function ReputationPage({ currentUserId }) {
     </article>
   }
 
-  if (loading) return <section className="card"><p className="status">Loading contribution profile…</p></section>
-  if (error) return <section className="card"><p className="status error">{error}</p></section>
+  if (loading) return <section className="card reputation-loading"><p className="eyebrow">CONTRIBUTION</p><h1>Loading your reputation…</h1><p className="status" role="status" aria-live="polite">Fetching your contribution history and achievements.</p></section>
+  if (error) return <section className="card reputation-loading"><p className="eyebrow">CONTRIBUTION</p><h1>Reputation unavailable</h1><p className="status error" role="alert">{error}</p><button className="button secondary" type="button" onClick={() => window.location.reload()}>Reload reputation</button></section>
 
   return <div className="reputation-page">
     <section className="reputation-hero card">
