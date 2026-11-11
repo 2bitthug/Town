@@ -20,7 +20,7 @@ async function loadStats(ids) {
 export function FeedPage({ currentUserId }) {
   const [posts, setPosts] = useState([]), [communities, setCommunities] = useState([]), [joinedIds, setJoinedIds] = useState(new Set())
   const [sort, setSort] = useState(() => localStorage.getItem(SORT_KEY) || 'latest'), [communityFilter, setCommunityFilter] = useState('all'), [joinedOnly, setJoinedOnly] = useState(false), [query, setQuery] = useState('')
-  const [loading, setLoading] = useState(true), [error, setError] = useState(''), [busyVote, setBusyVote] = useState(null), [saved, setSaved] = useState(new Set()), [blockedIds, setBlockedIds] = useState(new Set())
+  const [loading, setLoading] = useState(true), [error, setError] = useState(''), [busyVote, setBusyVote] = useState(null), [saved, setSaved] = useState(new Set())
 
   const load = async () => {
     setLoading(true); setError('')
@@ -42,7 +42,7 @@ export function FeedPage({ currentUserId }) {
       if (pre) throw pre; if (me) throw me; if (ve) throw ve; if (se) throw se; if (be) throw be
       const pm = new Map((profiles || []).map(p => [p.id, p])), cm = new Map((cs || []).map(c => [c.id, c])), sm = new Map((stats || []).map(s => [s.post_id, s])), vm = new Map((votes || []).map(v => [v.post_id, v.value]))
       setPosts(rows.filter(post => !(blocks || []).some(block => block.blocked_id === post.author_id)).map(post => ({ ...post, author: pm.get(post.author_id), community: cm.get(post.community_id), stats: sm.get(post.id) || { comment_count: 0, upvote_score: 0, view_count: 0 }, myVote: vm.get(post.id) || 0 })))
-      setCommunities(cs || []); setJoinedIds(new Set((memberships || []).map(m => m.community_id))); setSaved(new Set((saves || []).map(s => s.post_id))); setBlockedIds(new Set((blocks || []).map(b => b.blocked_id)))
+      setCommunities(cs || []); setJoinedIds(new Set((memberships || []).map(m => m.community_id))); setSaved(new Set((saves || []).map(s => s.post_id)))
     } catch (err) { setError(err.message || 'Unable to load the town feed.') } finally { setLoading(false) }
   }
   useEffect(() => { load() }, [currentUserId])
