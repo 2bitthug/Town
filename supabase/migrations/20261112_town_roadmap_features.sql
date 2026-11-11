@@ -124,3 +124,17 @@ begin
 end; $$;
 revoke all on function public.block_town_member(uuid) from public,anon;
 grant execute on function public.block_town_member(uuid) to authenticated;
+
+-- Saved-post assignment must remain scoped to the owning member.
+drop policy if exists "Members update their saved posts" on public.saved_posts;
+create policy "Members update their saved posts" on public.saved_posts
+for update to authenticated using ((select auth.uid())=user_id) with check ((select auth.uid())=user_id);
+
+-- Keep the answer reference constrained to a comment row.
+do $$ begin
+ if not exists(select 1 from pg_constraint where conname='posts_accepted_answer_id_fkey') then
+  alter table public.posts add constraint posts_accepted_answer_id_fkey foreign key(accepted_answer_id) references public.comments(id) on delete set null;
+ end if;
+end $$;
+
+revoke all on function public.notify_post_comment() from public,anon,authenticated;
