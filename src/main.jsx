@@ -15,6 +15,7 @@ import { PublicLaunchPage } from './components/launch/PublicLaunchPage'
 import { GrowthPage } from './components/growth/GrowthPage'
 import { ShareProfileCard } from './components/profile/ShareProfileCard'
 import { PetCompanionExperience } from './components/pet/PetCompanionExperience'
+import { NotificationsPage } from './components/notifications/NotificationsPage'
 
 const LEGACY_SOURCES = {
   pokemon: (name) => `https://pokeapi.co/api/v2/pokemon/${encodeURIComponent(name.toLowerCase())}`,
@@ -1654,6 +1655,7 @@ function App() {
 
   const personalNav = [
     ['saved', 'Saved'],
+    ['notifications', 'Notifications'],
     ['settings', 'Settings'],
     ['reputation', 'Reputation'],
     ['profile', 'Profile'],
@@ -1671,6 +1673,7 @@ function App() {
   else if (routeName === 'search') page = <SearchPage currentUserId={session?.user?.id} />
   else if (routeName === 'social') page = <SocialSection currentUserId={session?.user?.id} />
   else if (routeName === 'saved') page = <SavedPostsPage currentUserId={session?.user?.id} />
+  else if (routeName === 'notifications') page = <NotificationsPage currentUserId={session?.user?.id} />
   else if (routeName === 'profile' && routeParam) page = <UserProfilePage userId={routeParam} />
   else if (routeName === 'community-manage' && routeParam) page = <CommunityManagePage communityId={routeParam} currentUserId={session?.user?.id} />
   else if (routeName === 'reputation') page = <ReputationPage currentUserId={session?.user?.id} />
