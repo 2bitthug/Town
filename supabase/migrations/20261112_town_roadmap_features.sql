@@ -154,3 +154,56 @@ end; $$;
 drop trigger if exists town_notify_community_event on public.community_events;
 create trigger town_notify_community_event after insert on public.community_events for each row execute function public.notify_community_event();
 revoke all on function public.notify_community_event() from public,anon,authenticated;
+
+
+create table if not exists public.member_suspensions (
+ id uuid primary key default gen_random_uuid(),
+ user_id uuid not null references auth.users(id) on delete cascade,
+ community_id uuid references public.communities(id) on delete cascade,
+ moderator_id uuid references auth.users(id) on delete set null,
+ reason text not null default '',
+ starts_at timestamptz not null default now(),
+ expires_at timestamptz,
+ created_at timestamptz not null default now(),
+ check(expires_at is null or expires_at>starts_at)
+);
+create index if not exists member_suspensions_active_idx on public.member_suspensions(user_id,expires_at);
+alter table public.member_suspensions enable row level security;
+drop policy if exists "Moderators can create member suspensions" on public.member_suspensions;
+create policy "Moderators can create member suspensions" on public.member_suspensions for insert to authenticated
+with check (moderator_id=(select auth.uid()) and exists(
+ select 1 from public.community_memberships m where m.community_id=member_suspensions.community_id
+ and m.user_id=(select auth.uid()) and m.role in ('owner','moderator','admin')
+));
+drop policy if exists "Moderators can read suspensions in their downtowns" on public.member_suspensions;
+create policy "Moderators can read suspensions in their downtowns" on public.member_suspensions for select to authenticated
+using (exists(select 1 from public.community_memberships m where m.community_id=member_suspensions.community_id
+ and m.user_id=(select auth.uid()) and m.role in ('owner','moderator','admin')));
+grant select,insert on public.member_suspensions to authenticated;
+
+create or replace function public.enforce_town_member_suspension()
+returns trigger language plpgsql security definer set search_path = '' as $$
+declare uid uuid:=auth.uid(); target_community uuid;
+begin
+ if uid is null then return new; end if;
+ if tg_table_name='posts' then target_community:=new.community_id;
+ elsif tg_table_name='comments' then select community_id into target_community from public.posts where id=new.post_id;
+ elsif tg_table_name='messages' then
+  if exists(select 1 from public.member_suspensions s where s.user_id=uid and s.starts_at<=now() and (s.expires_at is null or s.expires_at>now())) then
+   raise exception 'Your Town account is temporarily suspended from posting and messaging.';
+  end if;
+  return new;
+ end if;
+ if exists(select 1 from public.member_suspensions s where s.user_id=uid and s.starts_at<=now()
+   and (s.expires_at is null or s.expires_at>now()) and (s.community_id is null or s.community_id=target_community)) then
+  raise exception 'Your account is currently suspended from contributing in this downtown.';
+ end if;
+ return new;
+end; $$;
+drop trigger if exists town_check_post_suspension on public.posts;
+create trigger town_check_post_suspension before insert on public.posts for each row execute function public.enforce_town_member_suspension();
+drop trigger if exists town_check_comment_suspension on public.comments;
+create trigger town_check_comment_suspension before insert on public.comments for each row execute function public.enforce_town_member_suspension();
+drop trigger if exists town_check_message_suspension on public.messages;
+create trigger town_check_message_suspension before insert on public.messages for each row execute function public.enforce_town_member_suspension();
+revoke all on function public.enforce_town_member_suspension() from public,anon,authenticated;
