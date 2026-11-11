@@ -8,12 +8,65 @@ const safeText = (value, fallback = '') =>
 export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
   const [reputation, setReputation] = useState(0)
   const [status, setStatus] = useState('')
-  const [community, setCommunity] = useState(
-    profile.most_active_community || profile.primary_community || ''
-  )
+  const [community, setCommunity] = useState('')
+  const [communitySource, setCommunitySource] = useState('')
   const [bio, setBio] = useState(profile.bio || '')
   const [showPet, setShowPet] = useState(true)
   const [showAvatar, setShowAvatar] = useState(true)
+
+  useEffect(() => {
+    let active = true
+    const resolveHomeDowntown = async () => {
+      if (!userId || !supabase) return
+      try {
+        // Primary rule: the downtown containing the member's largest number of published posts.
+        const { data: authoredPosts, error: postsError } = await supabase
+          .from('posts')
+          .select('community_id')
+          .eq('author_id', userId)
+          .eq('status', 'published')
+          .not('community_id', 'is', null)
+        if (postsError) throw postsError
+        const postCounts = new Map()
+        for (const post of authoredPosts || []) {
+          postCounts.set(post.community_id, (postCounts.get(post.community_id) || 0) + 1)
+        }
+        let winnerId = [...postCounts.entries()].sort((a, b) => b[1] - a[1])[0]?.[0] || null
+        let source = winnerId ? 'Most posts' : ''
+
+        // Fallback: only when there are no published posts in any downtown, use recorded active time.
+        if (!winnerId) {
+          const { data: timeRows, error: timeError } = await supabase
+            .from('community_time_spent')
+            .select('community_id,seconds_spent')
+            .eq('user_id', userId)
+            .order('seconds_spent', { ascending: false })
+            .limit(1)
+          if (timeError && timeError.code !== '42P01') throw timeError
+          winnerId = timeRows?.[0]?.community_id || null
+          source = winnerId ? 'Most time spent' : ''
+        }
+        if (!winnerId) {
+          if (active) { setCommunity(''); setCommunitySource('') }
+          return
+        }
+        const { data: downtown, error: downtownError } = await supabase
+          .from('communities')
+          .select('name')
+          .eq('id', winnerId)
+          .maybeSingle()
+        if (downtownError) throw downtownError
+        if (active) {
+          setCommunity(downtown?.name || '')
+          setCommunitySource(source)
+        }
+      } catch (error) {
+        console.warn('Could not determine member downtown:', error)
+      }
+    }
+    resolveHomeDowntown()
+    return () => { active = false }
+  }, [userId])
 
   useEffect(() => {
     let active = true
@@ -293,7 +346,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
 
     centerText(
       ctx,
-      safeText(community, 'Choose your downtown'),
+      safeText(community, 'Explore a downtown to establish your home'),
       568,
       830
     )
@@ -409,7 +462,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
 
           <div className="town-share-active">
             <span>Your downtown:</span>
-            <strong>{community || 'Your downtown'}</strong>
+            <strong>{community || 'Not established yet'}</strong>
           </div>
 
           {showPet && (
@@ -425,14 +478,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
       </div>
 
       <div className="share-card-actions">
-        <label>
-          Most active in
-          <input
-            value={community}
-            onChange={(e) => setCommunity(e.target.value)}
-            placeholder="Downtown name"
-          />
-        </label>
+        <p className="widget-help">Your downtown is selected automatically from your published posts. If you have not posted in any downtown, Town uses your recorded active time there. {communitySource && `Currently selected by: ${communitySource}.`}</p>
 
         <label>
           Bio on card
