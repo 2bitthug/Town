@@ -30,7 +30,7 @@ function Empty({ children }) {
 }
 
 export function TownHomePage() {
-  const [communities, setCommunities] = useState([]), [joinedIds, setJoinedIds] = useState(new Set())
+  const [communities, setCommunities] = useState([])
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const [previewError, setPreviewError] = useState('')
@@ -153,7 +153,7 @@ export function TownHomePage() {
 }
 
 export function CommunitiesPage({ currentUserId }) {
-  const [communities, setCommunities] = useState([])
+  const [communities, setCommunities] = useState([]), [joinedIds, setJoinedIds] = useState(new Set())
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
   const [sort, setSort] = useState('latest')
