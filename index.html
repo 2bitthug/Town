@@ -3,11 +3,63 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Town — downtowns, discussions, deliberate discovery, and contribution." />
-    <title>Town</title>
+    <meta name="description" content="Town is a community discussion platform built around downtowns: spaces for shared interests, local topics, questions, and thoughtful conversations." />
+    <meta name="robots" content="index, follow, max-image-preview:large" />
+    <meta name="theme-color" content="#08090b" />
+    <link rel="canonical" href="https://town-snowy.vercel.app/" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Town" />
+    <meta property="og:title" content="Town — A place for better conversations" />
+    <meta property="og:description" content="Join communities, explore public discussions, ask questions, and choose how conversations are sorted. Your attention stays yours." />
+    <meta property="og:url" content="https://town-snowy.vercel.app/" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Town — A place for better conversations" />
+    <meta name="twitter:description" content="Explore downtowns, shared interests, questions, and thoughtful conversations on Town." />
+    <title>Town — A place for better conversations</title>
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        "name": "Town",
+        "url": "https://town-snowy.vercel.app/",
+        "description": "A community discussion platform built around downtowns, shared interests, questions, and conversations."
+      }
+    </script>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <main>
+        <header>
+          <p>TOWN</p>
+          <h1>A place for better conversations.</h1>
+          <p>Town is a community discussion platform built around downtowns: spaces for shared interests, local topics, questions, and conversations.</p>
+        </header>
+        <section aria-labelledby="how-town-works">
+          <h2 id="how-town-works">How Town works</h2>
+          <p>Explore public downtowns, read published discussions, ask questions, and take part in conversations with other members.</p>
+          <ul>
+            <li><strong>Explore downtowns:</strong> Find communities organised around topics and shared interests.</li>
+            <li><strong>Browse discussions:</strong> Read public posts and follow conversations across communities.</li>
+            <li><strong>Choose your feed:</strong> Use available sorting controls, including Latest and Most Discussed, to decide how discussions are ordered.</li>
+            <li><strong>Contribute:</strong> Create an account when you are ready to join communities, publish posts, comment, or vote.</li>
+          </ul>
+        </section>
+        <nav aria-label="Explore Town">
+          <h2>Explore Town</h2>
+          <ul>
+            <li><a href="/#/communities">Explore public downtowns</a></li>
+            <li><a href="/#/feed">Browse the discussion feed</a></li>
+            <li><a href="/#/about">About Town</a></li>
+            <li><a href="/#/help">How Town works</a></li>
+            <li><a href="/#/privacy">Privacy</a></li>
+            <li><a href="/#/terms">Terms</a></li>
+          </ul>
+        </nav>
+        <footer>
+          <p>Town is an early-stage community platform. Public content depends on contributions from its members.</p>
+        </footer>
+      </main>
+    </div>
     <script type="module" src="/src/main.jsx"></script>
   </body>
 </html>
