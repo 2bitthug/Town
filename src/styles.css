@@ -7415,3 +7415,65 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
   .ps2-shell .achievement-collection { grid-template-columns: 1fr; }
   .ps2-shell .reputation-stat-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
 }
+
+
+/* Roadmap features: questions, notification centre, saved collections, events and moderation audit. */
+.ps2-shell .accepted-answer {
+  border: 1px solid color-mix(in srgb, var(--town-accent) 58%, var(--town-border));
+  background: color-mix(in srgb, var(--town-accent) 7%, var(--town-surface));
+}
+.ps2-shell .accepted-answer-label { color: var(--town-accent); font-size: .7rem; font-weight: 800; letter-spacing: .1em; }
+.ps2-shell .accepted-answer-action { color: var(--town-accent); border-color: var(--town-accent); }
+.ps2-shell .notification-toolbar,.ps2-shell .notification-actions,.ps2-shell .saved-collection-filters {
+  display:flex;align-items:center;flex-wrap:wrap;gap:8px;
+}
+.ps2-shell .notification-toolbar { justify-content:space-between; margin: 0 0 16px; }
+.ps2-shell .notification-list,.ps2-shell .moderation-audit-list { display:grid;gap:10px; }
+.ps2-shell .notification-item {
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:16px 18px;border:1px solid var(--town-border);border-radius:var(--town-radius-md);
+  background:var(--town-surface);
+}
+.ps2-shell .notification-item.is-unread { border-left:3px solid var(--town-accent); background:var(--town-surface-raised); }
+.ps2-shell .notification-copy { min-width:0;display:grid;gap:5px; }
+.ps2-shell .notification-copy strong { color:var(--town-text); }
+.ps2-shell .notification-copy p { margin:0;color:var(--town-muted); }
+.ps2-shell .segmented-control { display:flex;gap:4px;padding:4px;border:1px solid var(--town-border);border-radius:9px;background:var(--town-surface); }
+.ps2-shell .segmented-control button,.ps2-shell .saved-collection-filters button {
+  min-height:36px;padding:0 12px;border:1px solid transparent;border-radius:7px;background:transparent;color:var(--town-muted);
+}
+.ps2-shell .segmented-control button.active,.ps2-shell .saved-collection-filters button.active {
+  color:var(--town-text);border-color:var(--town-border-strong);background:var(--town-surface-raised);
+}
+.ps2-shell .saved-collection-tools { display:grid;gap:14px;margin-bottom:18px; }
+.ps2-shell .saved-collection-create { display:flex;align-items:end;flex-wrap:wrap;gap:10px;padding:16px;border:1px solid var(--town-border);border-radius:var(--town-radius-md);background:var(--town-surface); }
+.ps2-shell .saved-collection-create label { flex-basis:100%;font-size:.75rem;color:var(--town-muted); }
+.ps2-shell .saved-collection-create input { flex:1;min-width:180px; }
+.ps2-shell .saved-collection-select { display:flex;align-items:center;gap:10px;margin-top:12px;color:var(--town-muted);font-size:.8rem; }
+.ps2-shell .saved-collection-select select { max-width:220px;min-height:38px; }
+.ps2-shell .community-events { margin-top:20px; }
+.ps2-shell .community-event-form { display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-bottom:18px; }
+.ps2-shell .community-event-form label { display:grid;gap:6px;color:var(--town-muted);font-size:.8rem; }
+.ps2-shell .community-event-form label:nth-child(4) { grid-column:1/-1; }
+.ps2-shell .community-event-form button { justify-self:start; }
+.ps2-shell .community-event-list { display:grid;gap:10px; }
+.ps2-shell .community-event-item {
+ display:grid;grid-template-columns:58px minmax(0,1fr) auto;align-items:center;gap:14px;
+ padding:14px;border:1px solid var(--town-border);border-radius:var(--town-radius-md);background:var(--town-surface);
+}
+.ps2-shell .community-event-date { display:grid;place-items:center;align-content:center;min-height:58px;border-radius:8px;background:var(--town-surface-raised);color:var(--town-accent); }
+.ps2-shell .community-event-date strong { font-size:1.25rem; }
+.ps2-shell .community-event-item h3,.ps2-shell .community-event-item p { margin:0 0 4px; }
+.ps2-shell .community-event-item p,.ps2-shell .community-event-item span { color:var(--town-muted);font-size:.82rem; }
+.ps2-shell .moderation-audit { margin-top:24px; }
+.ps2-shell .moderation-audit-list article { display:grid;grid-template-columns:minmax(130px,.6fr) minmax(0,1.5fr) auto;gap:12px;padding:12px 0;border-bottom:1px solid var(--town-border); }
+.ps2-shell .moderation-audit-list span,.ps2-shell .moderation-audit-list time { color:var(--town-muted);font-size:.82rem; }
+@media(max-width:650px) {
+ .ps2-shell .notification-item { align-items:flex-start;flex-direction:column; }
+ .ps2-shell .community-event-form { grid-template-columns:1fr; }
+ .ps2-shell .community-event-form label:nth-child(4) { grid-column:auto; }
+ .ps2-shell .community-event-item { grid-template-columns:50px minmax(0,1fr); }
+ .ps2-shell .community-event-item > button { grid-column:2;justify-self:start; }
+ .ps2-shell .moderation-audit-list article { grid-template-columns:1fr;gap:4px; }
+ .ps2-shell .saved-collection-select { align-items:flex-start;flex-direction:column; }
+}
