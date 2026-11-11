@@ -25,7 +25,7 @@ export function ReputationPage({ currentUserId }) {
       let timeoutId
       try {
         // Badge sync is best-effort; it must never prevent the profile from loading.
-        const syncPromise = supabase.rpc('sync_my_badges')
+        const syncPromise = Promise.resolve(supabase.rpc('sync_my_badges')).catch(error => ({ error }))
         const requests = Promise.all([
           supabase.from('profiles').select('id,username,reputation_score,created_at,bio,interests').eq('id', currentUserId).single(),
           supabase.from('reputation_events').select('id,event_type,points,post_id,comment_id,created_at').eq('user_id', currentUserId).order('created_at', { ascending: false }).limit(50),
