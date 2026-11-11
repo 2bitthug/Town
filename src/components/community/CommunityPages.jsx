@@ -30,7 +30,7 @@ function Empty({ children }) {
 }
 
 export function TownHomePage() {
-  const [communities, setCommunities] = useState([])
+  const [communities, setCommunities] = useState([]), [joinedIds, setJoinedIds] = useState(new Set())
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
   const [previewError, setPreviewError] = useState('')
@@ -171,11 +171,21 @@ export function CommunitiesPage({ currentUserId }) {
       .eq('visibility', 'public')
       .order('created_at', { ascending: false })
     if (fetchError) setError(fetchError.message)
-    setCommunities(data || [])
+    const ids=(data||[]).map(item=>item.id)
+    const [{data:memberships},{data:posts},{data:joined}]=await Promise.all([
+      ids.length?supabase.from('community_memberships').select('community_id').in('community_id',ids):Promise.resolve({data:[]}),
+      ids.length?supabase.from('posts').select('community_id').in('community_id',ids).eq('status','published'):Promise.resolve({data:[]}),
+      currentUserId?supabase.from('community_memberships').select('community_id').eq('user_id',currentUserId):Promise.resolve({data:[]})
+    ])
+    const memberCounts=new Map(),postCounts=new Map()
+    ;(memberships||[]).forEach(row=>memberCounts.set(row.community_id,(memberCounts.get(row.community_id)||0)+1))
+    ;(posts||[]).forEach(row=>postCounts.set(row.community_id,(postCounts.get(row.community_id)||0)+1))
+    setCommunities((data||[]).map(item=>({...item,member_count:memberCounts.get(item.id)||0,post_count:postCounts.get(item.id)||0})))
+    setJoinedIds(new Set((joined||[]).map(row=>row.community_id)))
     setLoading(false)
   }
 
-  useEffect(() => { load() }, [])
+  useEffect(() => { load() }, [currentUserId])
 
   const categories = useMemo(() => ['All', ...Array.from(new Set(communities.map(c => c.category).filter(Boolean))).sort()], [communities])
 
@@ -186,8 +196,10 @@ export function CommunitiesPage({ currentUserId }) {
       const matchesCategory = category === 'All' || c.category === category
       return matchesQuery && matchesCategory
     })
-    if (sort === 'latest') return result
-    return [...result].sort((a, b) => a.name.localeCompare(b.name))
+    if (sort === 'members') return [...result].sort((a,b)=>b.member_count-a.member_count)
+    if (sort === 'active') return [...result].sort((a,b)=>b.post_count-a.post_count)
+    if (sort === 'name') return [...result].sort((a,b)=>a.name.localeCompare(b.name))
+    return result
   }, [communities, query, category, sort])
   const curated = useMemo(() => {
     if (showAll || query.trim() || category !== 'All') return filtered
@@ -207,7 +219,9 @@ export function CommunitiesPage({ currentUserId }) {
           {categories.map(item => <option key={item}>{item}</option>)}
         </select>
         <select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort downtowns">
-          <option value="latest">Latest</option>
+          <option value="latest">Recently created</option>
+          <option value="members">Most members</option>
+          <option value="active">Most active</option>
           <option value="name">Name</option>
         </select>
       </div>
@@ -223,7 +237,7 @@ export function CommunitiesPage({ currentUserId }) {
               <div className="community-card-topline"><span>{community.category}</span></div>
               <h2>{community.name}</h2>
               <p>{community.description || 'A downtown in the town.'}</p>
-              <span className="community-open">Open downtown →</span>
+              <div className="community-discovery-stats"><span>{community.member_count} members</span><span>{community.post_count} discussions</span></div><span className="community-open">{joinedIds.has(community.id) ? 'Joined downtown →' : 'Explore downtown →'}</span>
             </div>
           </a>
         ))}
