@@ -13,7 +13,7 @@ export function ReputationPage({ currentUserId }) {
   const [profile, setProfile] = useState(null)
   const [events, setEvents] = useState([])
   const [badges, setBadges] = useState([])
-  const [stats, setStats] = useState({ posts: 0, comments: 0, votes: 0, helpful: 0, communities: 0 })
+  const [stats, setStats] = useState({ posts: 0, comments: 0, votes: 0, helpful: 0, communities: 0, createdCommunities: 0, isModerator: false })
   const [daysJoined, setDaysJoined] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -25,7 +25,7 @@ export function ReputationPage({ currentUserId }) {
       // Award anything already earned before reading the collection. The database
       // function is idempotent, so refreshing this page never duplicates awards.
       const syncRes = await supabase.rpc('sync_my_badges')
-      const [profileRes, eventsRes, badgesRes, catalogRes, postsRes, commentsRes, votesRes, helpfulPostsRes, helpfulCommentsRes, communitiesRes] = await Promise.all([
+      const [profileRes, eventsRes, badgesRes, catalogRes, postsRes, commentsRes, votesRes, helpfulPostsRes, helpfulCommentsRes, communitiesRes, createdCommunitiesRes, moderatorRes] = await Promise.all([
         supabase.from('profiles').select('id,username,reputation_score,created_at,bio,interests').eq('id', currentUserId).single(),
         supabase.from('reputation_events').select('id,event_type,points,post_id,comment_id,created_at').eq('user_id', currentUserId).order('created_at', { ascending: false }).limit(50),
         supabase.from('user_badges').select('badge_id,awarded_at').eq('user_id', currentUserId).order('awarded_at', { ascending: false }),
@@ -35,7 +35,9 @@ export function ReputationPage({ currentUserId }) {
         supabase.from('post_votes').select('post_id', { count: 'exact', head: true }).eq('user_id', currentUserId),
         supabase.from('post_votes').select('post_id,posts!inner(author_id)', { count: 'exact', head: true }).eq('posts.author_id', currentUserId).eq('value', 1),
         supabase.from('comment_votes').select('comment_id,comments!inner(author_id)', { count: 'exact', head: true }).eq('comments.author_id', currentUserId).eq('value', 1),
-        supabase.from('community_memberships').select('community_id', { count: 'exact', head: true }).eq('user_id', currentUserId)
+        supabase.from('community_memberships').select('community_id', { count: 'exact', head: true }).eq('user_id', currentUserId),
+        supabase.from('communities').select('id', { count: 'exact', head: true }).eq('creator_id', currentUserId).eq('status', 'active'),
+        supabase.from('community_memberships').select('community_id').eq('user_id', currentUserId).in('role', ['moderator','admin']).limit(1)
       ])
       if (!active) return
       if (profileRes.error) { setError(profileRes.error.message); setLoading(false); return }
@@ -82,7 +84,7 @@ export function ReputationPage({ currentUserId }) {
       <div className="achievement-card-top"><span className="achievement-tier">{tierLabels[badge.tier] || 'COLLECTIBLE'}</span><span className="achievement-serial">{badge.category?.toUpperCase()}</span></div>
       <div className="achievement-art"><span className="achievement-laurel">✦</span><strong>{badgeSymbols[badge.slug] || '★'}</strong><span className="achievement-laurel">✦</span></div>
       <div className="achievement-card-copy"><h3>{badge.name}</h3><p>{badge.description}</p></div>
-      {locked ? <div className="achievement-progress"><div><span>UNLOCK CONDITION</span><b>{badge.criteria || 'Keep contributing'}</b></div><div className="achievement-progress-track"><i style={{ width: `${percent}%` }} /></div><small>{['community-builder','trusted-moderator'].includes(badge.slug) ? 'Earned through community roles' : `${Math.min(value,target)} / ${target}`}</small></div>
+      {locked ? <div className="achievement-progress"><div><span>UNLOCK CONDITION</span><b>{badge.criteria || 'Keep contributing'}</b></div><div className="achievement-progress-track"><i style={{ width: `${percent}%` }} /></div><small>{['community-builder','trusted-moderator'].includes(badge.slug) ? (badge.slug === 'community-builder' ? 'Create a downtown' : 'Become a downtown moderator') : `${Math.min(value,target)} / ${target}`}</small></div>
       : <div className="achievement-earned"><span>✓ VERIFIED TOWN ACHIEVEMENT</span><strong>Collected {new Date(badge.awarded_at).toLocaleDateString()}</strong></div>}
       <div className="achievement-card-footer"><span>TOWN • MEMBER COLLECTION</span><span>{locked ? 'NOT YET EARNED' : 'OWNED'}</span></div>
     </article>
