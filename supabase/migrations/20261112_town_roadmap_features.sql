@@ -212,3 +212,23 @@ revoke all on function public.enforce_town_member_suspension() from public,anon,
 alter table public.town_notifications drop constraint if exists town_notifications_kind_check;
 alter table public.town_notifications add constraint town_notifications_kind_check
  check (kind in ('comment','reply','answer_accepted','post_vote','community_event','moderator_warning','moderator_suspension'));
+
+
+create or replace function public.notify_member_moderation(p_user_id uuid,p_kind text,p_community_id uuid,p_reason text)
+returns void language plpgsql security definer set search_path = '' as $$
+declare uid uuid:=auth.uid(); community_name text;
+begin
+ if uid is null then raise exception 'Authentication required'; end if;
+ if p_kind not in ('moderator_warning','moderator_suspension') then raise exception 'Invalid moderation notice'; end if;
+ if not exists(select 1 from public.community_memberships m where m.community_id=p_community_id and m.user_id=uid and m.role in ('owner','moderator','admin')) then
+  raise exception 'Moderator access required';
+ end if;
+ select name into community_name from public.communities where id=p_community_id;
+ insert into public.town_notifications(user_id,actor_id,kind,community_id,title,body,href)
+ values(p_user_id,uid,p_kind,p_community_id,
+   case when p_kind='moderator_warning' then 'A moderator issued a warning' else 'A moderator suspended your contributions for 7 days' end,
+   coalesce(nullif(p_reason,''),'Review the downtown rules and contact a moderator if you have questions.')||' · '||coalesce(community_name,'Downtown'),
+   '#/help');
+end; $$;
+revoke all on function public.notify_member_moderation(uuid,text,uuid,text) from public,anon;
+grant execute on function public.notify_member_moderation(uuid,text,uuid,text) to authenticated;
