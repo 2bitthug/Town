@@ -39,12 +39,42 @@ export function SearchPage({ currentUserId }) {
 }
 
 export function SavedPostsPage({ currentUserId }) {
-  const [items, setItems] = useState([]), [loading, setLoading] = useState(true), [error, setError] = useState('')
-  const load = async () => { if (!currentUserId) return; setLoading(true); const { data, error: e } = await supabase.from('saved_posts').select('post_id,created_at').eq('user_id',currentUserId).order('created_at',{ascending:false}); if (e) { setError(e.message); setLoading(false); return } const ids=(data||[]).map(x=>x.post_id); if(!ids.length){setItems([]);setLoading(false);return} const {data:posts,error:pe}=await supabase.from('posts').select('id,title,body,community_id,created_at,status').in('id',ids).neq('status','removed'); if(pe)setError(pe.message); const map=new Map((posts||[]).map(p=>[p.id,p])); setItems((data||[]).map(s=>({...s,post:map.get(s.post_id)})).filter(x=>x.post)); setLoading(false) }
+  const [items,setItems]=useState([]),[collections,setCollections]=useState([]),[selected,setSelected]=useState('all'),[newName,setNewName]=useState(''),[loading,setLoading]=useState(true),[error,setError]=useState('')
+  const load=async()=>{
+    if(!currentUserId)return
+    setLoading(true);setError('')
+    const [{data:saves,error:se},{data:groups,error:ge}]=await Promise.all([
+      supabase.from('saved_posts').select('post_id,created_at,collection_id').eq('user_id',currentUserId).order('created_at',{ascending:false}),
+      supabase.from('saved_collections').select('id,name').eq('user_id',currentUserId).order('name')
+    ])
+    if(se||ge){setError((se||ge).message);setLoading(false);return}
+    const ids=(saves||[]).map(x=>x.post_id)
+    const {data:posts,error:pe}=ids.length?await supabase.from('posts').select('id,title,body,community_id,created_at,status').in('id',ids).neq('status','removed'):{data:[],error:null}
+    if(pe)setError(pe.message)
+    const map=new Map((posts||[]).map(p=>[p.id,p]))
+    setItems((saves||[]).map(s=>({...s,post:map.get(s.post_id)})).filter(x=>x.post))
+    setCollections(groups||[]);setLoading(false)
+  }
   useEffect(()=>{load()},[currentUserId])
-  const remove = async id => { await supabase.from('saved_posts').delete().eq('post_id',id).eq('user_id',currentUserId); load() }
-  if (loading) return <Frame title="Saved posts"><State>Loading…</State></Frame>
-  return <Frame title="Saved posts" actions={<a className="button primary" href="#/feed">Browse feed</a>}>{error && <ErrorBox>{error}</ErrorBox>}{!items.length ? <Empty>You haven't saved any posts yet.</Empty> : <div className="saved-post-list">{items.map(({post})=><article className="saved-post-card" key={post.id}><div><p className="eyebrow">SAVED · {ago(post.created_at)}</p><h2><a href={`#/post/${post.id}`}>{post.title}</a></h2><p>{post.body || 'No body text.'}</p></div><button className="button secondary" onClick={()=>remove(post.id)}>Unsave</button></article>)}</div>}</Frame>
+  const createCollection=async e=>{
+    e.preventDefault();const name=newName.trim();if(!name)return
+    const {error:e1}=await supabase.from('saved_collections').insert({user_id:currentUserId,name})
+    if(e1){setError(e1.message);return}setNewName('');await load()
+  }
+  const assign=async(postId,collectionId)=>{
+    const {error:e1}=await supabase.from('saved_posts').update({collection_id:collectionId||null}).eq('post_id',postId).eq('user_id',currentUserId)
+    if(e1)setError(e1.message);else setItems(rows=>rows.map(row=>row.post_id===postId?{...row,collection_id:collectionId||null}:row))
+  }
+  const remove=async id=>{const {error:e1}=await supabase.from('saved_posts').delete().eq('post_id',id).eq('user_id',currentUserId);if(e1)setError(e1.message);else setItems(rows=>rows.filter(x=>x.post_id!==id))}
+  const visible=items.filter(x=>selected==='all'||(selected==='uncategorised'?!x.collection_id:x.collection_id===selected))
+  if(loading)return <Frame title="Saved posts"><State>Loading…</State></Frame>
+  return <Frame title="Saved posts" actions={<a className="button primary" href="#/feed">Browse feed</a>}>
+    {error&&<ErrorBox>{error}</ErrorBox>}
+    <div className="saved-collection-tools"><form className="saved-collection-create" onSubmit={createCollection}><label htmlFor="saved-collection-name">New collection</label><input id="saved-collection-name" value={newName} onChange={e=>setNewName(e.target.value)} placeholder="e.g. Read later" maxLength={60} required/><button className="button secondary">Create collection</button></form>
+      <div className="saved-collection-filters"><button className={selected==='all'?'active':''} onClick={()=>setSelected('all')}>All saved ({items.length})</button><button className={selected==='uncategorised'?'active':''} onClick={()=>setSelected('uncategorised')}>Uncategorised</button>{collections.map(group=><button className={selected===group.id?'active':''} key={group.id} onClick={()=>setSelected(group.id)}>{group.name}</button>)}</div>
+    </div>
+    {!visible.length?<Empty>{items.length?'No saved posts in this collection.':'You haven’t saved any posts yet. Save useful discussions from the feed to find them here.'}</Empty>:<div className="saved-post-list">{visible.map(({post,collection_id})=><article className="saved-post-card" key={post.id}><div><p className="eyebrow">SAVED · {ago(post.created_at)}</p><h2><a href={`#/post/${post.id}`}>{post.title}</a></h2><p>{post.body||'No body text.'}</p><label className="saved-collection-select">Collection<select value={collection_id||''} onChange={e=>assign(post.id,e.target.value)}><option value="">Uncategorised</option>{collections.map(group=><option value={group.id} key={group.id}>{group.name}</option>)}</select></label></div><button className="button secondary" onClick={()=>remove(post.id)}>Unsave</button></article>)}</div>}
+  </Frame>
 }
 
 export function UserProfilePage({ userId }) {
