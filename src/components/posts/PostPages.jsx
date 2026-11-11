@@ -103,6 +103,15 @@ export function PostPage({ postId, currentUserId }) {
   }
   useEffect(() => { load() }, [postId, currentUserId])
   const grouped = useMemo(() => { const map = new Map(); comments.forEach(c => map.set(c.id, { ...c, children: [] })); const roots = []; map.forEach(c => { if (c.parent_id && map.has(c.parent_id)) map.get(c.parent_id).children.push(c); else roots.push(c) }); return roots }, [comments])
+  const blockAuthor = async () => {
+    if (!post?.author_id || post.author_id === currentUserId) return
+    if (!confirm('Block this member? Their connection with you will be removed.')) return
+    setBusy(true)
+    const { error: blockError } = await supabase.rpc('block_town_member', { p_blocked_id: post.author_id })
+    if (blockError) alert(blockError.message)
+    else window.location.hash = '#/feed'
+    setBusy(false)
+  }
   const acceptAnswer = async commentId => {
     if (!post || currentUserId !== post.author_id) return
     setBusy(true)
@@ -117,7 +126,7 @@ export function PostPage({ postId, currentUserId }) {
   if (loading) return <Frame title="Loading discussion…"><State>Loading…</State></Frame>
   if (error || !post) return <Frame title="Discussion unavailable"><ErrorBox message={error || 'Post not found.'} retry={load} /></Frame>
   const canEdit = currentUserId === post.author_id
-  return <Frame eyebrow={post.community?.name || 'DISCUSSION'} title={post.title} actions={<><a className="button secondary" href={`#/community/${post.community?.slug}`}>Back to downtown</a>{canEdit && <button className="button secondary" onClick={() => { setEditing(true); setEditTitle(post.title); setEditBody(post.body || '') }}>Edit</button>}{currentUserId && !canEdit && <button className="button secondary" onClick={() => setReporting(true)}>Report</button>}</>}>
+  return <Frame eyebrow={post.community?.name || 'DISCUSSION'} title={post.title} actions={<><a className="button secondary" href={`#/community/${post.community?.slug}`}>Back to downtown</a>{canEdit && <button className="button secondary" onClick={() => { setEditing(true); setEditTitle(post.title); setEditBody(post.body || '') }}>Edit</button>}{currentUserId && !canEdit && <><button className="button secondary" onClick={() => setReporting(true)}>Report</button><button className="button secondary" onClick={blockAuthor} disabled={busy}>Block member</button></>}</>}>
     <article className="discussion-post">
       <div className="discussion-meta"><span>{post.post_type === 'question' ? 'QUESTION' : post.post_type}</span>{post.topic?.name && <span>· {post.topic.name}</span>}<span>· by {post.author?.display_name || post.author?.username || 'Town member'}</span><span>· {ago(post.created_at)}</span></div>
       {editing ? <form className="town-form" onSubmit={savePost}><label>Title<input value={editTitle} onChange={e => setEditTitle(e.target.value)} maxLength={160} required /></label><label>Body<textarea value={editBody} onChange={e => setEditBody(e.target.value)} maxLength={10000} /></label><div className="town-form-actions"><button className="button primary" disabled={busy}>Save changes</button><button type="button" className="button secondary" onClick={() => setEditing(false)}>Cancel</button><button type="button" className="button danger" onClick={deletePost}>Delete post</button></div></form> : <><div className="discussion-body">{post.body && <p>{post.body}</p>}{post.link_url && <a className="discussion-link" href={post.link_url} target="_blank" rel="noreferrer">Open linked resource →</a>}{post.media_url && <img className="discussion-media" src={post.media_url} alt="Post media" />}</div></>}
