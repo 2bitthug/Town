@@ -14,8 +14,8 @@ const CATALOG = [
   {key:'sunset-coat',type:'color',label:'Sunset coat',detail:'Warm sunset tones',source:'5 positive community recognitions',color:'#df9a78'},
   {key:'reading-nook',type:'decoration',label:'Cloud-soft pet bed',detail:'A proper resting spot for your companion',source:'30 days as a Town member',emoji:'🛏️'},
   {key:'stargazer-outfit',type:'outfit',label:'Stargazer outfit',detail:'A little outfit for big ideas',source:'90 days as a Town member',emoji:'✨'},
-  {key:'helpful-sparkle',type:'emote',label:'Helpful sparkle',detail:'A grateful sparkle emote',source:'3 positive community recognitions',emoji:'✦'},
-  {key:'friendly-trick',type:'trick',label:'Friendly wave',detail:'Your pet learns a friendly trick',source:'10 positive community recognitions',emoji:'👋'},
+  {key:'helpful-sparkle',type:'badge',label:'Community appreciation badge',detail:'A permanent badge recognising the positive feedback you have earned',source:'3 positive community recognitions',emoji:'♥'},
+  {key:'friendly-trick',type:'trick',label:'Victory hop',detail:'A special celebratory move for your companion',source:'10 positive community recognitions',emoji:'★'},
   {key:'welcome-wave',type:'trick',label:'Hello wave',detail:'Your pet’s first trick',source:'Welcome gift',emoji:'👋'},
   {key:'toy-ball',type:'toy',label:'Play ball',detail:'A bright ball your pet can chase around its room',source:'Welcome gift',emoji:'⚽'}
 ]
@@ -92,7 +92,7 @@ export function PetCompanionExperience({ currentUserId }) {
   const savePet = async (patch={}) => {
     setSaving(true);setError('');setNotice('')
     try {
-      const nextProfile={...profile,...patch}
+      const nextProfile={...profile,...patch,pet_name:String(patch.pet_name ?? profile.pet_name ?? '').trim().slice(0,20) || 'Pixel'}
       const {error:pError}=await supabase.from('profiles').update({pet_id:nextProfile.pet_id,pet_name:(nextProfile.pet_name||'Pixel').trim().slice(0,20)||'Pixel'}).eq('id',currentUserId)
       if(pError) throw pError
       setProfile(nextProfile)
