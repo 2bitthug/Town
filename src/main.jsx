@@ -1738,7 +1738,7 @@ function App() {
             </a>
           })}
           {canModerate && <a className={isActive('moderation') ? 'active' : ''} href="#/moderation">
-            <span className="ps2-nav-index">08</span>
+            <span className="ps2-nav-index">{String(personalNav.length + 5).padStart(2, '0')}</span>
             <span>Moderation</span>
             {isActive('moderation') && <b>▶</b>}
           </a>}
