@@ -1,3 +1,47 @@
+-- Create pet persistence tables if this repository is deployed into a fresh Supabase project.
+alter table public.profiles add column if not exists pet_id text not null default 'none';
+alter table public.profiles add column if not exists pet_name text not null default 'Pixel';
+create table if not exists public.pet_companions (
+ user_id uuid primary key references auth.users(id) on delete cascade,
+ selected_pet text not null default 'none',
+ pet_name text not null default 'Pixel' check (char_length(pet_name) between 1 and 20),
+ color_id text not null default 'default',
+ outfit_id text not null default 'none',
+ home_items jsonb not null default '[]'::jsonb,
+ active_emote text not null default 'wave',
+ updated_at timestamptz not null default now()
+);
+create table if not exists public.pet_unlocks (
+ id uuid primary key default gen_random_uuid(),
+ user_id uuid not null references auth.users(id) on delete cascade,
+ reward_key text not null,
+ reward_type text not null check (reward_type in ('color','outfit','toy','decoration','trick','emote')),
+ source text not null,
+ unlocked_at timestamptz not null default now(),
+ unique(user_id,reward_key)
+);
+create table if not exists public.pet_souvenirs (
+ id uuid primary key default gen_random_uuid(),
+ user_id uuid not null references auth.users(id) on delete cascade,
+ community_id uuid not null references public.communities(id) on delete cascade,
+ souvenir_key text not null default 'community-member',
+ collected_at timestamptz not null default now(),
+ unique(user_id,community_id,souvenir_key)
+);
+alter table public.pet_companions enable row level security;
+alter table public.pet_unlocks enable row level security;
+alter table public.pet_souvenirs enable row level security;
+drop policy if exists "Users manage their own pet companion" on public.pet_companions;
+create policy "Users manage their own pet companion" on public.pet_companions
+ for all to authenticated using ((select auth.uid())=user_id)
+ with check ((select auth.uid())=user_id);
+drop policy if exists "Users read their pet unlocks" on public.pet_unlocks;
+create policy "Users read their pet unlocks" on public.pet_unlocks
+ for select to authenticated using ((select auth.uid())=user_id);
+drop policy if exists "Users read their pet souvenirs" on public.pet_souvenirs;
+create policy "Users read their pet souvenirs" on public.pet_souvenirs
+ for select to authenticated using ((select auth.uid())=user_id);
+
 -- Town pet progression: server-derived membership/reputation rewards and joined-community souvenirs.
 -- This migration extends the companion tables created by the initial pet rollout.
 create or replace function public.sync_pet_community_souvenirs()
