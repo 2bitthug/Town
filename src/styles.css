@@ -6846,3 +6846,93 @@ select:focus {
   .user-row:hover,
   .list-item:hover { transition: none; }
 }
+
+
+/* Settings: tint the actual section surfaces with the member's selected accent.
+   These rules intentionally target the settings fieldsets/panels themselves, not just
+   their borders or controls. Keep the base near-black translucent for legibility. */
+.ps2-shell .profile-settings-form {
+  --settings-glass-accent: var(--town-accent, var(--profile-accent, var(--accent, #A3DFC1)));
+  --settings-glass-fill: color-mix(in srgb, var(--settings-glass-accent) 13%, rgba(10, 11, 14, .88));
+  --settings-glass-edge: color-mix(in srgb, var(--settings-glass-accent) 43%, rgba(255,255,255,.12));
+}
+.ps2-shell .profile-settings-form .profile-editor-section,
+.ps2-shell .profile-settings-form .engagement-panel,
+.ps2-shell .profile-settings-form .profile-preview-card,
+.ps2-shell .profile-settings-form .profile-editor-section fieldset {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  border: 1px solid var(--settings-glass-edge) !important;
+  border-radius: 15px !important;
+  background:
+    linear-gradient(135deg,
+      color-mix(in srgb, var(--settings-glass-accent) 19%, transparent) 0%,
+      color-mix(in srgb, var(--settings-glass-accent) 7%, transparent) 48%,
+      rgba(8, 10, 12, .72) 100%) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255,255,255,.10),
+    inset 0 0 28px color-mix(in srgb, var(--settings-glass-accent) 7%, transparent),
+    0 10px 26px rgba(0,0,0,.20) !important;
+  -webkit-backdrop-filter: blur(18px) saturate(135%);
+  backdrop-filter: blur(18px) saturate(135%);
+}
+.ps2-shell .profile-settings-form .profile-editor-section::before,
+.ps2-shell .profile-settings-form .engagement-panel::before,
+.ps2-shell .profile-settings-form .profile-preview-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: linear-gradient(115deg, rgba(255,255,255,.075), transparent 38%, transparent 72%, color-mix(in srgb, var(--settings-glass-accent) 8%, transparent));
+}
+.ps2-shell .profile-settings-form .profile-editor-section legend,
+.ps2-shell .profile-settings-form .engagement-panel h3 {
+  color: var(--settings-glass-accent) !important;
+}
+.ps2-shell .profile-settings-form .engagement-panel .member-days,
+.ps2-shell .profile-settings-form .engagement-badge:not(.locked),
+.ps2-shell .profile-settings-form .completion-fill {
+  color: var(--settings-glass-accent) !important;
+  border-color: color-mix(in srgb, var(--settings-glass-accent) 52%, transparent) !important;
+}
+.ps2-shell .profile-settings-form .engagement-badge {
+  background: color-mix(in srgb, var(--settings-glass-accent) 10%, rgba(10,11,14,.65)) !important;
+  border: 1px solid color-mix(in srgb, var(--settings-glass-accent) 32%, rgba(255,255,255,.1)) !important;
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+}
+.ps2-shell .profile-settings-form .profile-editor-section input:not([type="checkbox"]),
+.ps2-shell .profile-settings-form .profile-editor-section textarea,
+.ps2-shell .profile-settings-form .profile-editor-section select {
+  background: color-mix(in srgb, var(--settings-glass-accent) 7%, rgba(5,7,9,.78)) !important;
+  border-color: color-mix(in srgb, var(--settings-glass-accent) 38%, rgba(255,255,255,.12)) !important;
+}
+.ps2-shell .profile-settings-form .profile-current-avatar,
+.ps2-shell .profile-settings-form .profile-color-choice,
+.ps2-shell .profile-settings-form .profile-pet-choice,
+.ps2-shell .profile-settings-form .profile-avatar-grid-compact > button,
+.ps2-shell .profile-settings-form .profile-avatar-popover {
+  background: color-mix(in srgb, var(--settings-glass-accent) 10%, rgba(9,11,13,.76)) !important;
+  border-color: color-mix(in srgb, var(--settings-glass-accent) 35%, rgba(255,255,255,.12)) !important;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.07), 0 8px 20px rgba(0,0,0,.16) !important;
+  -webkit-backdrop-filter: blur(14px) saturate(130%);
+  backdrop-filter: blur(14px) saturate(130%);
+}
+.ps2-shell .profile-settings-form .profile-color-choice.selected,
+.ps2-shell .profile-settings-form .profile-pet-choice.selected,
+.ps2-shell .profile-settings-form .profile-avatar-grid-compact > button.selected {
+  background: color-mix(in srgb, var(--settings-glass-accent) 20%, rgba(9,11,13,.76)) !important;
+  border-color: var(--settings-glass-accent) !important;
+  box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--settings-glass-accent) 35%, transparent), 0 0 18px color-mix(in srgb, var(--settings-glass-accent) 14%, transparent) !important;
+}
+.ps2-shell .profile-settings-form .profile-editor-section .button.secondary {
+  background: color-mix(in srgb, var(--settings-glass-accent) 12%, rgba(9,11,13,.75)) !important;
+  border-color: color-mix(in srgb, var(--settings-glass-accent) 48%, rgba(255,255,255,.1)) !important;
+}
+@media (prefers-reduced-transparency: reduce) {
+  .ps2-shell .profile-settings-form .profile-editor-section,
+  .ps2-shell .profile-settings-form .engagement-panel,
+  .ps2-shell .profile-settings-form .profile-preview-card { -webkit-backdrop-filter: none; backdrop-filter: none; }
+}
