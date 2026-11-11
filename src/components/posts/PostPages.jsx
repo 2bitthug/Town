@@ -61,13 +61,19 @@ function Comment({ comment, children, currentUserId, communityId, onChanged, acc
     if (!error) { setEditing(false); onChanged() } else alert(error.message)
     setBusy(false)
   }
+  const blockMember = async () => {
+    if (!comment.author_id || comment.author_id === currentUserId) return
+    if (!confirm('Block this member? Their connection with you will be removed.')) return
+    const { error } = await supabase.rpc('block_town_member', { p_blocked_id: comment.author_id })
+    if (error) alert(error.message); else onChanged()
+  }
   const remove = async () => { if (!confirm('Delete this comment?')) return; const { error } = await supabase.from('comments').update({ status: 'removed' }).eq('id', comment.id).eq('author_id', currentUserId); if (!error) onChanged(); else alert(error.message) }
   const accepted = acceptedAnswerId === comment.id
   return <article className={`comment-item ${accepted ? 'accepted-answer' : ''}`}>
     {accepted && <p className="accepted-answer-label">✓ ACCEPTED ANSWER</p>}
     <div className="comment-head"><strong>{comment.author?.display_name || comment.author?.username || 'Town member'}</strong><span>{ago(comment.created_at)}{comment.edited_at ? ' · edited' : ''}</span></div>
     {editing ? <form className="comment-edit" onSubmit={saveEdit}><textarea value={editText} onChange={e => setEditText(e.target.value)} maxLength={2000} /><div><button className="button primary" disabled={busy}>Save</button><button type="button" className="button secondary" onClick={() => setEditing(false)}>Cancel</button></div></form> : <p>{comment.body}</p>}
-    <div className="comment-actions">{currentUserId && <button onClick={() => setReplyOpen(v => !v)}>Reply</button>}{canEdit && <><button onClick={() => setEditing(true)}>Edit</button><button onClick={remove}>Delete</button></>}{canAcceptAnswer && <button className={accepted?'accepted-answer-action':''} onClick={() => onAcceptAnswer(comment.id)}>{accepted?'Accepted answer':'Mark as answer'}</button>}{currentUserId && !canEdit && <button onClick={() => setReporting(true)}>Report</button>}</div>
+    <div className="comment-actions">{currentUserId && <button onClick={() => setReplyOpen(v => !v)}>Reply</button>}{canEdit && <><button onClick={() => setEditing(true)}>Edit</button><button onClick={remove}>Delete</button></>}{canAcceptAnswer && <button className={accepted?'accepted-answer-action':''} onClick={() => onAcceptAnswer(comment.id)}>{accepted?'Accepted answer':'Mark as answer'}</button>}{currentUserId && !canEdit && <><button onClick={() => setReporting(true)}>Report</button><button onClick={blockMember}>Block member</button></>}</div>
     {reporting && <ReportDialog currentUserId={currentUserId} communityId={communityId} commentId={comment.id} onClose={() => setReporting(false)} />}
     {replyOpen && <form className="reply-form" onSubmit={submitReply}><textarea value={text} onChange={e => setText(e.target.value)} placeholder="Write a reply…" maxLength={2000} required /><button className="button primary" disabled={busy}>{busy ? 'Posting…' : 'Reply'}</button></form>}
     {children && <div className="comment-children">{children}</div>}
@@ -82,6 +88,11 @@ export function PostPage({ postId, currentUserId }) {
     try {
       const { data: p, error: pe } = await supabase.from('posts').select('id,community_id,topic_id,author_id,post_type,title,body,link_url,media_url,is_pinned,accepted_answer_id,created_at,updated_at').eq('id', postId).eq('status', 'published').maybeSingle()
       if (pe) throw pe; if (!p) throw new Error('Post not found.')
+      if (currentUserId) {
+        const { data: blocked, error: blockError } = await supabase.from('user_blocks').select('blocked_id').eq('blocker_id', currentUserId).eq('blocked_id', p.author_id).maybeSingle()
+        if (blockError) throw blockError
+        if (blocked) throw new Error('You have blocked the author of this discussion.')
+      }
       const [{ data: community, error: ce }, { data: topic, error: te }, { data: author, error: ae }, { data: cs, error: cse }, { data: vote, error: ve }] = await Promise.all([
         supabase.from('communities').select('id,name,slug,category').eq('id', p.community_id).maybeSingle(),
         p.topic_id ? supabase.from('topics').select('id,name').eq('id', p.topic_id).maybeSingle() : Promise.resolve({ data: null, error: null }),
@@ -90,11 +101,16 @@ export function PostPage({ postId, currentUserId }) {
         currentUserId ? supabase.from('post_votes').select('value').eq('post_id', p.id).eq('user_id', currentUserId).maybeSingle() : Promise.resolve({ data: null, error: null })
       ])
       if (ce || te || ae || cse || ve) throw ce || te || ae || cse || ve
-      const authorIds = [...new Set((cs || []).map(c => c.author_id).filter(Boolean))]
-      const { data: commentAuthors, error: cae } = authorIds.length ? await supabase.from('profiles').select('id,username,display_name').in('id', authorIds) : { data: [], error: null }
-      if (cae) throw cae
+      const commentRows = cs || []
+      const authorIds = [...new Set(commentRows.map(c => c.author_id).filter(Boolean))]
+      const [{ data: commentAuthors, error: cae }, { data: blocks, error: be }] = await Promise.all([
+        authorIds.length ? supabase.from('profiles').select('id,username,display_name').in('id', authorIds) : Promise.resolve({ data: [], error: null }),
+        currentUserId && authorIds.length ? supabase.from('user_blocks').select('blocked_id').eq('blocker_id', currentUserId).in('blocked_id', authorIds) : Promise.resolve({ data: [], error: null })
+      ])
+      if (cae || be) throw cae || be
+      const blockedIds = new Set((blocks || []).map(row => row.blocked_id))
       const authorMap = new Map((commentAuthors || []).map(a => [a.id, a]))
-      const tree = (cs || []).map(c => ({ ...c, author: authorMap.get(c.author_id) }))
+      const tree = commentRows.filter(comment => !blockedIds.has(comment.author_id)).map(c => ({ ...c, author: authorMap.get(c.author_id) }))
       const { data: stats } = await supabase.rpc('get_public_post_stats', { post_ids: [p.id] })
       setPost({ ...p, community, topic, author, score: Number(stats?.[0]?.upvote_score || 0), views: Number(stats?.[0]?.view_count || 0), myVote: vote?.value || 0 })
       setComments(tree)
