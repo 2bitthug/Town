@@ -6936,3 +6936,68 @@ select:focus {
   .ps2-shell .profile-settings-form .engagement-panel,
   .ps2-shell .profile-settings-form .profile-preview-card { -webkit-backdrop-filter: none; backdrop-filter: none; }
 }
+
+
+/* Vivid accent glass system — shared across Town */
+:root {
+  color-scheme: dark;
+  --town-glass-base: rgba(7, 8, 12, .82);
+  --town-glass-soft: color-mix(in srgb, var(--town-accent, #287BFF) 9%, rgba(7, 8, 12, .91));
+  --town-glass-strong: color-mix(in srgb, var(--town-accent, #287BFF) 16%, rgba(7, 8, 12, .88));
+  --town-glass-border: color-mix(in srgb, var(--town-accent, #287BFF) 42%, rgba(255,255,255,.12));
+  --town-glass-glow: color-mix(in srgb, var(--town-accent, #287BFF) 22%, transparent);
+}
+html, body { background: #050507; }
+.ps2-shell {
+  --town-glass-base: rgba(7, 8, 12, .82);
+  --town-glass-soft: color-mix(in srgb, var(--accent, #287BFF) 9%, rgba(7, 8, 12, .91));
+  --town-glass-strong: color-mix(in srgb, var(--accent, #287BFF) 16%, rgba(7, 8, 12, .88));
+  --town-glass-border: color-mix(in srgb, var(--accent, #287BFF) 42%, rgba(255,255,255,.12));
+  --town-glass-glow: color-mix(in srgb, var(--accent, #287BFF) 22%, transparent);
+}
+.ps2-shell :is(.card, .feed-card, .post-card, .community-card, .community-tile,
+  .profile-editor-section, .engagement-panel, .profile-preview-card, .achievement-card,
+  .collectible-card, .reputation-panel, .chat-panel, .chat-conversation,
+  .saved-item, .settings-panel, .pet-panel, .pet-home-card, .souvenir-card,
+  .profile-stat-card, .stat-card, .dashboard-card, .feature-card, .widget-card) {
+  background: var(--town-glass-soft);
+  border-color: var(--town-glass-border);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.045), 0 10px 30px var(--town-glass-glow);
+  -webkit-backdrop-filter: blur(16px) saturate(135%);
+  backdrop-filter: blur(16px) saturate(135%);
+}
+.ps2-shell :is(.profile-editor-section, .engagement-panel, .profile-preview-card, .profile-stat-card, .stat-card) {
+  background: var(--town-glass-strong);
+}
+.ps2-shell :is(.ps2-sidebar, .ps2-topbar, .ps2-nav, .sidebar, .side-nav) {
+  background: rgba(5, 6, 9, .88);
+  border-color: var(--town-glass-border);
+  -webkit-backdrop-filter: blur(18px) saturate(140%);
+  backdrop-filter: blur(18px) saturate(140%);
+}
+.ps2-shell :is(button, .button, a.button, .profile-color-choice, .profile-pet-choice, .nav-link, .ps2-nav a) {
+  transition: background .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease;
+}
+.ps2-shell :is(button, .button, .profile-color-choice, .profile-pet-choice, .nav-link, .ps2-nav a):not(.profile-color-choice span):hover {
+  border-color: var(--accent, #287BFF);
+  box-shadow: 0 0 0 1px var(--town-glass-glow), 0 0 18px var(--town-glass-glow);
+}
+.ps2-shell :is(.button.primary, button.primary, .profile-color-choice.selected, .profile-pet-choice.selected, .ps2-nav a.active, .nav-link.active) {
+  background: color-mix(in srgb, var(--accent, #287BFF) 22%, rgba(8,9,13,.82));
+  border-color: var(--accent, #287BFF);
+  color: #fff;
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 0 16px var(--town-glass-glow);
+}
+.ps2-shell :is(input, textarea, select) {
+  border-color: color-mix(in srgb, var(--accent, #287BFF) 30%, #30343b);
+}
+.ps2-shell :is(input, textarea, select):focus {
+  border-color: var(--accent, #287BFF);
+  box-shadow: 0 0 0 3px var(--town-glass-glow);
+}
+.ps2-shell :is(.eyebrow, .section-kicker, .profile-editor-section legend, .ps2-nav a.active) {
+  color: var(--accent, #287BFF);
+}
+@media (prefers-reduced-motion: reduce) {
+  .ps2-shell :is(button, .button, a.button, .profile-color-choice, .profile-pet-choice) { transition: none; }
+}
