@@ -44,10 +44,6 @@ export function ModerationPage({ currentUserId }) {
         const { error: suspensionError } = await supabase.from('member_suspensions').insert({ user_id: targetUserId, community_id: report.community_id, moderator_id: currentUserId, reason: report.reason, expires_at: new Date(Date.now() + 7 * 86400000).toISOString() })
         if (suspensionError) throw suspensionError
       }
-      if (action === 'warn_member' || action === 'suspend_member') {
-        const { error: noticeError } = await supabase.rpc('notify_member_moderation', { p_user_id: targetUserId, p_kind: action === 'warn_member' ? 'moderator_warning' : 'moderator_suspension', p_community_id: report.community_id, p_reason: report.reason })
-        if (noticeError) throw noticeError
-      }
       const status = action === 'dismiss' ? 'dismissed' : 'resolved'
       const { error: re } = await supabase.from('reports').update({ status, resolved_at: new Date().toISOString(), resolved_by: currentUserId }).eq('id', report.id)
       if (re) throw re
