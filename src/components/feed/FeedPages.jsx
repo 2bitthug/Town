@@ -87,7 +87,23 @@ export function FeedPage({ currentUserId }) {
     {error && <div className="town-error">{error}<button className="button secondary" onClick={load}>Retry</button></div>}
     {loading && <div className="town-state">Loading the town feed…</div>}
     {!loading && !visiblePosts.length && <Empty>{posts.length ? <><p>No posts match these filters.</p><div className="feed-empty-actions"><button className="button secondary" onClick={() => { setCommunityFilter('all'); setJoinedOnly(false); setQuery('') }}>Clear filters</button><a className="button secondary" href="#/communities">Explore downtowns</a></div></> : <><p>There are no published posts to show yet. Town won’t invent activity to fill the feed.</p><div className="feed-empty-actions"><a className="button primary" href="#/communities">Find a downtown</a><a className="button secondary" href="#/create-post">Start a discussion</a></div></>}</Empty>}
-    <div className="feed-list">{visiblePosts.map(post => { const author = post.author?.display_name || post.author?.username || 'Town member'; const score = Number(post.stats.upvote_score || 0); return <article className="feed-card" key={post.id}>
+    <div className="feed-list">{visiblePosts.map(post => { const author = post.author?.display_name || post.author?.username || 'Town member'; const score = Number(post.stats.upvote_score || 0); return <article
+      className="feed-card feed-card-clickable"
+      key={post.id}
+      role="link"
+      tabIndex={0}
+      aria-label={`Open post: ${post.title}`}
+      onClick={event => {
+        if (event.target.closest('a, button, input, select, textarea, label')) return
+        window.location.hash = `#/post/${post.id}`
+      }}
+      onKeyDown={event => {
+        if ((event.key === 'Enter' || event.key === ' ') && event.target === event.currentTarget) {
+          event.preventDefault()
+          window.location.hash = `#/post/${post.id}`
+        }
+      }}
+    >
       <div className="feed-card-meta"><a href={`#/community/${post.community?.slug || ''}`}>{post.community?.name || 'Downtown'}</a><span>·</span><span>{post.community?.category || 'General'}</span>{post.is_pinned && <span className="post-pin-inline">PINNED</span>}</div>
       <h2>{post.title}</h2>{post.body && <p>{post.body}</p>}
       <div className="feed-card-footer"><span>by {author} · {age(post.created_at)}</span><div className="feed-stats"><button className={`feed-action ${post.myVote === 1 ? 'active' : ''}`} disabled={busyVote === post.id} onClick={() => vote(post, 1)}>▲ {score}</button><button className={`feed-action ${post.myVote === -1 ? 'down' : ''}`} disabled={busyVote === post.id} onClick={() => vote(post, -1)}>▼</button><span>{post.stats.comment_count} comments</span><span>{post.stats.view_count} views</span><button className={`feed-action ${saved.has(post.id) ? 'active' : ''}`} onClick={() => toggleSave(post)}>{saved.has(post.id) ? 'Saved' : 'Save'}</button></div></div>
