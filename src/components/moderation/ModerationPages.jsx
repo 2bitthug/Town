@@ -5,7 +5,7 @@ function Frame({ title, children }) { return <section className="town-page"><div
 function State({ children }) { return <div className="town-state">{children}</div> }
 
 export function ModerationPage({ currentUserId }) {
-  const [reports, setReports] = useState([]), [loading, setLoading] = useState(true), [error, setError] = useState(''), [allowed, setAllowed] = useState(false), [busy, setBusy] = useState('')
+  const [reports, setReports] = useState([]), [audit, setAudit] = useState([]), [loading, setLoading] = useState(true), [error, setError] = useState(''), [allowed, setAllowed] = useState(false), [busy, setBusy] = useState('')
   const load = async () => {
     if (!currentUserId) return
     setLoading(true); setError('')
@@ -27,6 +27,9 @@ export function ModerationPage({ currentUserId }) {
       ])
       const pm = new Map((posts || []).map(x => [x.id, x])), cm = new Map((comments || []).map(x => [x.id, x])), com = new Map((communities || []).map(x => [x.id, x]))
       setReports((data || []).map(r => ({ ...r, post: pm.get(r.post_id), comment: cm.get(r.comment_id), community: com.get(r.community_id) })))
+      const { data: auditRows, error: auditError } = await supabase.from('moderation_audit').select('id,action_type,reason,created_at,community_id,post_id,comment_id').in('community_id', ids).order('created_at',{ascending:false}).limit(30)
+      if (auditError) throw auditError
+      setAudit(auditRows || [])
     } catch (e) { setError(e.message || 'Unable to load moderation queue.') } finally { setLoading(false) }
   }
   useEffect(() => { load() }, [currentUserId])
@@ -34,8 +37,8 @@ export function ModerationPage({ currentUserId }) {
     setBusy(report.id)
     try {
       if (action !== 'dismiss') {
-        const payload = { community_id: report.community_id, moderator_id: currentUserId, post_id: report.post_id || null, comment_id: report.comment_id || null, action_type: action, reason: report.reason }
-        const { error: ae } = await supabase.from('moderation_actions').insert(payload); if (ae) throw ae
+        const payload = { community_id: report.community_id, moderator_id: currentUserId, report_id: report.id, target_user_id: report.reported_user_id || null, post_id: report.post_id || null, comment_id: report.comment_id || null, action_type: action, reason: report.reason }
+        const { error: ae } = await supabase.from('moderation_audit').insert(payload); if (ae) throw ae
       }
       const status = action === 'dismiss' ? 'dismissed' : 'resolved'
       const { error: re } = await supabase.from('reports').update({ status, resolved_at: new Date().toISOString(), resolved_by: currentUserId }).eq('id', report.id)
@@ -54,5 +57,6 @@ export function ModerationPage({ currentUserId }) {
       <div><p className="eyebrow">{r.community?.name || 'DOWNTOWN'} · {r.status}</p><h3>{r.post ? r.post.title : 'Reported comment'}</h3><p>{r.comment ? r.comment.body : r.reason}</p><small>Reason: {r.reason}</small></div>
       <div className="actions"><button className="button danger" disabled={busy === r.id} onClick={() => act(r, r.post_id ? 'remove_post' : 'remove_comment')}>{r.post_id ? 'Remove post' : 'Remove comment'}</button><button className="button secondary" disabled={busy === r.id} onClick={() => act(r, 'dismiss')}>Dismiss</button></div>
     </article>)}</div>}
+    <section className="card moderation-audit"><div className="card-heading"><div><p className="eyebrow">ACCOUNTABILITY</p><h2>Recent moderation actions</h2></div></div>{!audit.length?<div className="town-empty">No moderation actions have been recorded.</div>:<div className="moderation-audit-list">{audit.map(item=><article key={item.id}><strong>{item.action_type.replaceAll('_',' ')}</strong><span>{item.reason}</span><time>{new Date(item.created_at).toLocaleString()}</time></article>)}</div>}</section>
   </Frame>
 }
