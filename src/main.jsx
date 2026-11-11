@@ -1576,8 +1576,13 @@ function App() {
     return () => window.removeEventListener('town-accent-change', syncAccent)
   }, [session?.user?.id])
   useEffect(() => {
-    // Expose the saved member accent to the entire document, including the sign-in view.
-    document.documentElement.style.setProperty('--town-accent', globalAccent)
+    // Apply the selected member accent to the shared design tokens used by components.
+    const root = document.documentElement
+    root.style.setProperty('--town-accent', globalAccent)
+    root.style.setProperty('--accent', globalAccent)
+    root.style.setProperty('--profile-accent', globalAccent)
+    root.style.setProperty('--focus', globalAccent)
+    root.style.setProperty('--success', globalAccent)
   }, [globalAccent])
   useEffect(() => {
     if (!supabase) { setChecking(false); return }
