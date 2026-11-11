@@ -10,7 +10,7 @@ export function ModerationPage({ currentUserId }) {
     if (!currentUserId) return
     setLoading(true); setError('')
     try {
-      const { data: memberships, error: me } = await supabase.from('community_memberships').select('community_id,role').eq('user_id', currentUserId).in('role', ['moderator','owner'])
+      const { data: memberships, error: me } = await supabase.from('community_memberships').select('community_id,role').eq('user_id', currentUserId).in('role', ['moderator','owner','admin'])
       if (me) throw me
       const ids = (memberships || []).map(m => m.community_id)
       setAllowed(ids.length > 0)
@@ -36,10 +36,8 @@ export function ModerationPage({ currentUserId }) {
   const act = async (report, action) => {
     setBusy(report.id)
     try {
-      if (action !== 'dismiss') {
-        const payload = { community_id: report.community_id, moderator_id: currentUserId, report_id: report.id, target_user_id: report.reported_user_id || null, post_id: report.post_id || null, comment_id: report.comment_id || null, action_type: action, reason: report.reason }
-        const { error: ae } = await supabase.from('moderation_audit').insert(payload); if (ae) throw ae
-      }
+      const payload = { community_id: report.community_id, moderator_id: currentUserId, report_id: report.id, target_user_id: report.reported_user_id || null, post_id: report.post_id || null, comment_id: report.comment_id || null, action_type: action, reason: report.reason }
+      const { error: ae } = await supabase.from('moderation_audit').insert(payload); if (ae) throw ae
       const status = action === 'dismiss' ? 'dismissed' : 'resolved'
       const { error: re } = await supabase.from('reports').update({ status, resolved_at: new Date().toISOString(), resolved_by: currentUserId }).eq('id', report.id)
       if (re) throw re
