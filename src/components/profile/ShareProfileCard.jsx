@@ -112,7 +112,7 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
   const tierLabel = tier === 'gold' ? 'GOLD MEMBER' : tier === 'red' ? 'RARE MEMBER' : 'NEW MEMBER'
   const daysDisplay = memberDays === null ? '—' : String(memberDays)
   const colors = tier === 'gold'
-    ? { bg: '#090a0d', ink: '#fff4c6', accent: '#f5c451', line: '#8b6725', soft: '#17140d' }
+    ? { bg: '#120d05', ink: '#fff1c2', accent: '#ffd166', line: '#a97824', soft: '#241a0b' }
     : tier === 'red'
       ? { bg: '#0a090d', ink: '#fff0f1', accent: '#ff5268', line: '#8e263a', soft: '#1c1015' }
       : { bg: '#080b0d', ink: '#e8fff3', accent: '#39ff9c', line: '#28684f', soft: '#101a17' }
