@@ -1301,7 +1301,14 @@ function SettingsPage({ currentUserId }) {
     // Apply the colour immediately so the settings page and the rest of Town update together.
     setProfile(current => ({ ...current, accent_color: value }))
     localStorage.setItem(`town-accent:${currentUserId}`, value)
-    document.documentElement.style.setProperty('--town-accent', value)
+    const root = document.documentElement
+    root.style.setProperty('--town-accent', value)
+    root.style.setProperty('--accent', value)
+    root.style.setProperty('--profile-accent', value)
+    root.style.setProperty('--focus', value)
+    root.style.setProperty('--success', value)
+    document.querySelector('.ps2-shell')?.style.setProperty('--accent', value)
+    document.querySelector('.ps2-shell')?.style.setProperty('--profile-accent', value)
     window.dispatchEvent(new CustomEvent('town-accent-change', { detail: value }))
 
     // Keep the account preference in sync immediately; the main Save button still saves the rest
