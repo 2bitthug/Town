@@ -14,6 +14,7 @@ import { BetaLaunchPage } from './components/beta/BetaLaunchPage'
 import { PublicLaunchPage } from './components/launch/PublicLaunchPage'
 import { GrowthPage } from './components/growth/GrowthPage'
 import { ShareProfileCard } from './components/profile/ShareProfileCard'
+import { PetCompanionExperience } from './components/pet/PetCompanionExperience'
 
 const LEGACY_SOURCES = {
   pokemon: (name) => `https://pokeapi.co/api/v2/pokemon/${encodeURIComponent(name.toLowerCase())}`,
@@ -1630,7 +1631,8 @@ function App() {
     ['saved', 'Saved'],
     ['settings', 'Settings'],
     ['reputation', 'Reputation'],
-    ['profile', 'Profile']
+    ['profile', 'Profile'],
+    ['pet', 'Pet companion']
   ]
 
   let page
@@ -1656,6 +1658,7 @@ function App() {
   else if (routeName === 'privacy') page = <LegalPage kind="privacy" />
   else if (routeName === 'accessibility') page = <LegalPage kind="accessibility" />
   else if (routeName === 'settings') page = <SettingsPage currentUserId={session?.user?.id} />
+  else if (routeName === 'pet') page = <PetCompanionExperience currentUserId={session?.user?.id} />
   else if (routeName === 'about') page = <InfoPage title="About Town"><p className="feature-text">Town is a community discussion platform built around downtowns: spaces for shared interests, local topics, questions, and conversations.</p><p className="feature-text">You can browse public discussions and choose how posts are sorted. Town’s goal is to make discovery deliberate and give people more control over what they see.</p><p className="feature-text">Town is an early-stage project. Features and community activity are still developing, and feedback helps shape what comes next.</p></InfoPage>
   else if (routeName === 'help') page = <InfoPage title="How Town works"><p className="feature-text">1. Explore downtowns to find communities around topics you care about.</p><p className="feature-text">2. Open a downtown or post to read the conversation before creating an account.</p><p className="feature-text">3. Use the feed’s sorting controls—such as Latest or Most Discussed—to choose how posts are ordered.</p><p className="feature-text">4. Create an account when you want to participate by posting, commenting, joining, or voting.</p><p className="feature-text">Town is in early development. Public activity depends on the communities and members who contribute; we do not fabricate activity to make the site look busy.</p><div className="town-hero-actions"><a className="button primary" href="#/communities">Explore Communities</a><a className="button secondary" href="#/feed">Browse the feed</a></div></InfoPage>
   else page = <NotFoundPage />
