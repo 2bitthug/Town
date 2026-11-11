@@ -236,7 +236,7 @@ export function CommunityPage({ slug, currentUserId }) {
   const [community, setCommunity] = useState(null)
   const [categories, setCategories] = useState([])
   const [posts, setPosts] = useState([])
-  const [member, setMember] = useState(false)
+  const [member, setMember] = useState(false), [membershipRole, setMembershipRole] = useState('')
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [uploadingIcon, setUploadingIcon] = useState(false)
@@ -264,7 +264,7 @@ export function CommunityPage({ slug, currentUserId }) {
     setCommunity(communityData)
     setCategories(categoryData || [])
     setPosts(postData || [])
-    setMember(Boolean(membership?.data))
+    setMember(Boolean(membership?.data)); setMembershipRole(membership?.data?.role || '')
     setLoading(false)
   }
 
@@ -407,6 +407,7 @@ export function CommunityPage({ slug, currentUserId }) {
           <div className="town-side-card"><p className="eyebrow">RULES</p><h3>Downtown rules</h3><p>{community.rules || 'No rules have been published yet.'}</p></div>
         </aside>
       </div>
+      <CommunityEventsPanel communityId={community.id} currentUserId={currentUserId} canManage={community.creator_id === currentUserId || ['owner','moderator','admin'].includes(membershipRole)} />
     </PageFrame>
   )
 }
@@ -447,4 +448,39 @@ export function CreateCommunityPage({ currentUserId }) {
       <div className="town-form-actions"><button className="button primary" disabled={busy}>{busy ? 'Creating…' : 'Create downtown'}</button><a className="button secondary" href="#/communities">Cancel</a></div>
     </form>
   </PageFrame>
+}
+
+
+function CommunityEventsPanel({ communityId, currentUserId, canManage }) {
+  const [events,setEvents]=useState([])
+  const [title,setTitle]=useState('')
+  const [description,setDescription]=useState('')
+  const [startsAt,setStartsAt]=useState('')
+  const [location,setLocation]=useState('')
+  const [busy,setBusy]=useState(false)
+  const [error,setError]=useState('')
+  const load=async()=>{
+    const {data,error:loadError}=await supabase.from('community_events').select('id,title,description,starts_at,location,created_by').eq('community_id',communityId).gte('starts_at',new Date().toISOString()).order('starts_at').limit(12)
+    if(loadError)setError(loadError.message)
+    setEvents(data||[])
+  }
+  useEffect(()=>{load()},[communityId])
+  const create=async e=>{
+    e.preventDefault()
+    if(!currentUserId||!title.trim()||!startsAt)return
+    setBusy(true);setError('')
+    const {error:createError}=await supabase.from('community_events').insert({community_id:communityId,created_by:currentUserId,title:title.trim(),description:description.trim(),starts_at:new Date(startsAt).toISOString(),location:location.trim()})
+    if(createError)setError(createError.message)
+    else{setTitle('');setDescription('');setStartsAt('');setLocation('');await load()}
+    setBusy(false)
+  }
+  const remove=async id=>{
+    const {error:removeError}=await supabase.from('community_events').delete().eq('id',id)
+    if(removeError)setError(removeError.message);else setEvents(rows=>rows.filter(x=>x.id!==id))
+  }
+  return <section className="card community-events"><div className="card-heading"><div><p className="eyebrow">MEET THE COMMUNITY</p><h2>Upcoming events</h2><p className="feature-text">Meetups, online sessions and community activities organised by downtown members.</p></div></div>
+    {error&&<div className="town-error" role="alert">{error}</div>}
+    {canManage&&<form className="community-event-form" onSubmit={create}><label>Event title<input value={title} onChange={e=>setTitle(e.target.value)} minLength={3} maxLength={100} placeholder="e.g. Monthly community meetup" required /></label><label>Date and time<input type="datetime-local" value={startsAt} onChange={e=>setStartsAt(e.target.value)} min={new Date().toISOString().slice(0,16)} required /></label><label>Location or meeting link<input value={location} onChange={e=>setLocation(e.target.value)} maxLength={160} placeholder="Venue or online link" /></label><label>Description<textarea value={description} onChange={e=>setDescription(e.target.value)} maxLength={1000} placeholder="What should members know?" /></label><button className="button primary" disabled={busy}>{busy?'Publishing…':'Publish event'}</button></form>}
+    {!events.length?<div className="town-empty">No upcoming events have been scheduled.</div>:<div className="community-event-list">{events.map(event=><article className="community-event-item" key={event.id}><div className="community-event-date"><strong>{new Date(event.starts_at).toLocaleDateString(undefined,{day:'2-digit'})}</strong><span>{new Date(event.starts_at).toLocaleDateString(undefined,{month:'short'})}</span></div><div><h3>{event.title}</h3><p>{event.description}</p><span>{new Date(event.starts_at).toLocaleString()} {event.location&&'· '+event.location}</span></div>{(event.created_by===currentUserId||canManage)&&<button className="button secondary" onClick={()=>remove(event.id)}>Cancel event</button>}</article>)}</div>}
+  </section>
 }
