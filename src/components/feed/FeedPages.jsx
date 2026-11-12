@@ -17,7 +17,7 @@ async function loadStats(ids) {
   return data || []
 }
 
-export function FeedPage({ currentUserId }) {
+export function FeedPage({ currentUserId, guestMode = false, guestState, setGuestState }) {
   const [posts, setPosts] = useState([]), [communities, setCommunities] = useState([]), [joinedIds, setJoinedIds] = useState(new Set())
   const [sort, setSort] = useState(() => localStorage.getItem(SORT_KEY) || 'latest'), [communityFilter, setCommunityFilter] = useState('all'), [joinedOnly, setJoinedOnly] = useState(false), [query, setQuery] = useState(''), [searchInput, setSearchInput] = useState(''), [postType, setPostType] = useState('all'), [tagOptions, setTagOptions] = useState([]), [tagFilter, setTagFilter] = useState('all'), [feedMode,setFeedMode]=useState('all'), [followedUsers,setFollowedUsers]=useState(new Set()), [followedCommunities,setFollowedCommunities]=useState(new Set()), [followedTags,setFollowedTags]=useState(new Set())
   const [loading, setLoading] = useState(true), [error, setError] = useState(''), [busyVote, setBusyVote] = useState(null), [saved, setSaved] = useState(new Set())
@@ -35,14 +35,14 @@ export function FeedPage({ currentUserId }) {
       const rows = rawPosts || [], ids = rows.map(p => p.id), authorIds = [...new Set(rows.map(p => p.author_id).filter(Boolean))]
       const [{ data: profiles, error: pre }, { data: memberships, error: me }, { data: votes, error: ve }, { data: saves, error: se }, { data: blocks, error: be }, { data: postTagRows, error: te }, {data:userFollows,error:ufe}, {data:communityFollows,error:cfe}, {data:tagFollows,error:tfe}, stats] = await Promise.all([
         authorIds.length ? supabase.from('profiles').select('id,username,display_name').in('id', authorIds) : Promise.resolve({ data: [], error: null }),
-        currentUserId ? supabase.from('community_memberships').select('community_id').eq('user_id', currentUserId) : Promise.resolve({ data: [], error: null }),
+        currentUserId ? supabase.from('community_memberships').select('community_id').eq('user_id', currentUserId) : Promise.resolve({ data: (guestState?.joinedCommunityIds || []).map(community_id => ({ community_id })), error: null }),
         currentUserId && ids.length ? supabase.from('post_votes').select('post_id,value').eq('user_id', currentUserId).in('post_id', ids) : Promise.resolve({ data: [], error: null }),
-        currentUserId && ids.length ? supabase.from('saved_posts').select('post_id').eq('user_id', currentUserId).in('post_id', ids) : Promise.resolve({ data: [], error: null }),
+        currentUserId && ids.length ? supabase.from('saved_posts').select('post_id').eq('user_id', currentUserId).in('post_id', ids) : Promise.resolve({ data: (guestState?.savedPostIds || []).filter(post_id => ids.includes(post_id)).map(post_id => ({ post_id })), error: null }),
         currentUserId ? supabase.from('user_blocks').select('blocked_id').eq('blocker_id', currentUserId) : Promise.resolve({ data: [], error: null }),
         ids.length ? supabase.from('post_tags').select('post_id,tag_id,community_tags(name)').in('post_id', ids) : Promise.resolve({ data: [], error: null }),
         currentUserId ? supabase.from('user_follows').select('followed_id').eq('follower_id',currentUserId) : Promise.resolve({data:[],error:null}),
-        currentUserId ? supabase.from('community_follows').select('community_id').eq('user_id',currentUserId) : Promise.resolve({data:[],error:null}),
-        currentUserId ? supabase.from('tag_follows').select('tag_id').eq('user_id',currentUserId) : Promise.resolve({data:[],error:null}),
+        currentUserId ? supabase.from('community_follows').select('community_id').eq('user_id',currentUserId) : Promise.resolve({data:(guestState?.followedCommunityIds || []).map(community_id => ({community_id})),error:null}),
+        currentUserId ? supabase.from('tag_follows').select('tag_id').eq('user_id',currentUserId) : Promise.resolve({data:(guestState?.followedTagIds || []).map(tag_id => ({tag_id})),error:null}),
         loadStats(ids)
       ])
       if (pre) throw pre; if (me) throw me; if (ve) throw ve; if (se) throw se; if (be) throw be; if (te) throw te; if (ufe) throw ufe; if (cfe) throw cfe; if (tfe) throw tfe
@@ -53,9 +53,9 @@ export function FeedPage({ currentUserId }) {
     } catch (err) { setError(err.message || 'Unable to load the town feed.') } finally { setLoading(false) }
   }
   useEffect(() => { const timer = setTimeout(() => setQuery(searchInput.trim()), 350); return () => clearTimeout(timer) }, [searchInput])
-  useEffect(() => { load() }, [currentUserId, query])
+  useEffect(() => { load() }, [currentUserId, query, guestMode])
   useEffect(() => { let active = true; const fetchTags = async () => { let request = supabase.from('community_tags').select('id,name,community_id').eq('status','active').order('name'); if (communityFilter !== 'all') request = request.eq('community_id', communityFilter); const { data, error: tagError } = await request; if (active) { setTagOptions(tagError ? [] : data || []); if (tagFilter !== 'all' && !(data || []).some(tag => tag.id === tagFilter)) setTagFilter('all') } }; fetchTags(); return () => { active = false } }, [communityFilter])
-  useEffect(() => { localStorage.setItem(SORT_KEY, sort) }, [sort])
+  useEffect(() => { if (!guestMode) localStorage.setItem(SORT_KEY, sort) }, [sort, guestMode])
 
   const visiblePosts = useMemo(() => {
     const result = posts.filter(post => {
@@ -75,6 +75,7 @@ export function FeedPage({ currentUserId }) {
   }, [posts, communityFilter, joinedOnly, joinedIds, query, sort, postType, tagFilter, feedMode, followedUsers, followedCommunities, followedTags])
 
   const toggleTagFollow = async tagId => {
+    if (guestMode) { const next = new Set(followedTags); next.has(tagId) ? next.delete(tagId) : next.add(tagId); setFollowedTags(next); setGuestState?.(state => ({ ...state, followedTagIds: [...next] })); return }
     if (!currentUserId) return
     const following = followedTags.has(tagId)
     const result = following
@@ -94,6 +95,7 @@ export function FeedPage({ currentUserId }) {
     } catch (err) { setError(err.message || 'Unable to update vote.') } finally { setBusyVote(null) }
   }
   const toggleSave = async post => {
+    if (guestMode) { const next = new Set(saved); next.has(post.id) ? next.delete(post.id) : next.add(post.id); setSaved(next); setGuestState?.(state => ({ ...state, savedPostIds: [...next] })); return }
     if (!currentUserId) return
     const isSaved = saved.has(post.id), next = new Set(saved)
     try {
@@ -127,7 +129,7 @@ export function FeedPage({ currentUserId }) {
     >
       <div className="feed-card-meta"><a href={`#/community/${post.community?.slug || ''}`}>{post.community?.name || 'Downtown'}</a><span>·</span><span>{post.community?.category || 'General'}</span>{post.is_pinned && <span className="post-pin-inline">PINNED</span>}</div>
       <div className="feed-post-heading"><span className={`post-type-pill post-type-${post.post_type}`}>{post.post_type === 'question' ? 'QUESTION' : (post.post_type || 'DISCUSSION').toUpperCase()}</span>{post.post_type === 'question' && <span className="question-answer-state">{post.accepted_answer_id ? 'Answered' : post.question_status === 'closed' ? 'Closed' : 'Open question'}</span>}</div>{post.tags?.length > 0 && <div className="feed-post-tags">{post.tags.map(tag => <span key={tag.id}>{tag.name}{currentUserId && <button type="button" className="feed-tag-follow" onClick={event => { event.stopPropagation(); toggleTagFollow(tag.id) }}>{followedTags.has(tag.id) ? "Following" : "Follow tag"}</button>}</span>)}</div>}<h2>{post.title}</h2>{post.body && <p>{post.body}</p>}
-      <div className="feed-card-footer"><span>by {author} · {age(post.created_at)}</span><div className="feed-stats"><button className={`feed-action ${post.myVote === 1 ? 'active' : ''}`} disabled={busyVote === post.id} onClick={() => vote(post, 1)}>▲ {score}</button><button className={`feed-action ${post.myVote === -1 ? 'down' : ''}`} disabled={busyVote === post.id} onClick={() => vote(post, -1)}>▼</button><span>{post.stats.comment_count} comments</span><span>{post.stats.view_count} views</span><button className={`feed-action ${saved.has(post.id) ? 'active' : ''}`} onClick={() => toggleSave(post)}>{saved.has(post.id) ? 'Saved' : 'Save'}</button></div></div>
+      <div className="feed-card-footer"><span>by {author} · {age(post.created_at)}</span><div className="feed-stats"><button className={`feed-action ${post.myVote === 1 ? 'active' : ''}`} disabled={guestMode || busyVote === post.id} title={guestMode ? 'Sign in to vote' : 'Upvote'} onClick={() => vote(post, 1)}>▲ {score}</button><button className={`feed-action ${post.myVote === -1 ? 'down' : ''}`} disabled={guestMode || busyVote === post.id} title={guestMode ? 'Sign in to vote' : 'Downvote'} onClick={() => vote(post, -1)}>▼</button><span>{post.stats.comment_count} comments</span><span>{post.stats.view_count} views</span><button className={`feed-action ${saved.has(post.id) ? 'active' : ''}`} onClick={() => toggleSave(post)}>{saved.has(post.id) ? 'Saved' : 'Save'}</button></div></div>
     </article> })}</div>
   </PageFrame>
 }
