@@ -39,3 +39,43 @@
 .pet-collectible-info>a{color:#c9d99b;font-size:.8rem;text-decoration:none}
 .pet-collected-state{display:inline-flex;align-items:center;gap:5px;padding:7px 10px;border:1px solid #526c50;border-radius:8px;background:#17251b;color:#b8d9a7;font-size:.78rem;white-space:nowrap}
 @media(max-width:760px){.pet-catalog{grid-template-columns:minmax(0,1fr)}.pet-collectible-card{grid-template-columns:94px minmax(0,1fr)}.pet-collectible-stamp{width:66px;height:66px;font-size:10px}}
+
+
+/* Species-specific companion artwork: preserve crisp pixel edges without
+   forcing every animal into the same 16px silhouette. */
+.pet-room-character {
+  left: 8%;
+  width: 184px;
+  filter: drop-shadow(0 7px 5px rgba(0,0,0,.24));
+}
+.pet-room-character .pet-sprite-art {
+  display: block;
+  width: 184px;
+  height: 184px;
+  overflow: visible;
+  image-rendering: auto;
+}
+.pet-choice-grid button {
+  min-height: 94px;
+  padding: 8px 5px 10px;
+  background: linear-gradient(155deg, rgba(31,43,37,.96), rgba(14,20,18,.98));
+}
+.pet-choice-grid button .pet-sprite-thumb {
+  display: block;
+  width: 58px;
+  height: 58px;
+  overflow: visible;
+  image-rendering: auto;
+}
+.pet-choice-grid button.selected {
+  box-shadow: inset 0 0 0 1px var(--accent), 0 0 16px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.pet-choice-grid button small {
+  color: #cbd7ce;
+  font-weight: 600;
+}
+@media(max-width:760px) {
+  .pet-room-character { width: 152px; }
+  .pet-room-character .pet-sprite-art { width: 152px; height: 152px; }
+  .pet-choice-grid button .pet-sprite-thumb { width: 54px; height: 54px; }
+}
