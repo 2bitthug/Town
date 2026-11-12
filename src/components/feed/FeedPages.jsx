@@ -105,8 +105,35 @@ export function FeedPage({ currentUserId, guestMode = false, guestState, setGues
     } catch (err) { setError(err.message || 'Unable to update saved posts.') }
   }
 
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  const activeCommunity = communities.find(item => item.id === communityFilter)
+  const activeTag = tagOptions.find(item => item.id === tagFilter)
+  const activeTypeLabel = ({ question: 'Questions', discussion: 'Discussions', link: 'Links', media: 'Media' })[postType]
+  const clearFilters = () => { setFeedMode('all'); setCommunityFilter('all'); setTagFilter('all'); setPostType('all'); setJoinedOnly(false) }
+
   return <PageFrame title="Your town, sorted by you." actions={<a className="button primary" href="#/communities">Browse downtowns</a>}>
-    <div className="feed-controls"><select value={feedMode} onChange={e=>setFeedMode(e.target.value)} aria-label="Feed mode"><option value="all">All posts</option><option value="following">Following</option></select><input value={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder="Search posts…" aria-label="Search posts" /><select value={communityFilter} onChange={e => setCommunityFilter(e.target.value)} aria-label="Filter by downtown"><option value="all">All downtowns</option>{communities.map(c => <option value={c.id} key={c.id}>{c.name}</option>)}</select><select value={tagFilter} onChange={e => setTagFilter(e.target.value)} aria-label="Filter by tag"><option value="all">All tags</option>{tagOptions.map(tag => <option value={tag.id} key={tag.id}>{tag.name}</option>)}</select><select value={postType} onChange={e => setPostType(e.target.value)} aria-label="Filter by post type"><option value="all">All post types</option><option value="question">Questions</option><option value="discussion">Discussions</option><option value="link">Links</option><option value="media">Media</option></select><select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select><label className="feed-check"><input type="checkbox" checked={joinedOnly} onChange={e => setJoinedOnly(e.target.checked)} /> Joined only</label></div>
+    <div className="feed-toolbar">
+      <label className="feed-search"><span aria-hidden="true">⌕</span><input value={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder="Search posts…" aria-label="Search posts" /></label>
+      <div className="feed-toolbar-actions">
+        <button type="button" className={`feed-filter-toggle ${filtersOpen ? 'active' : ''}`} aria-expanded={filtersOpen} onClick={() => setFiltersOpen(open => !open)}><span>☷</span> Filters{[communityFilter !== 'all', tagFilter !== 'all', postType !== 'all', feedMode !== 'all', joinedOnly].filter(Boolean).length > 0 && <span className="feed-filter-count">{[communityFilter !== 'all', tagFilter !== 'all', postType !== 'all', feedMode !== 'all', joinedOnly].filter(Boolean).length}</span>}</button>
+        <label className="feed-sort"><span className="sr-only">Sort feed</span><select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select></label>
+      </div>
+    </div>
+    {filtersOpen && <div className="feed-filter-panel">
+      <label>Feed<select value={feedMode} onChange={e => setFeedMode(e.target.value)}><option value="all">All posts</option><option value="following">Following</option></select></label>
+      <label>Downtown<select value={communityFilter} onChange={e => setCommunityFilter(e.target.value)}><option value="all">All downtowns</option>{communities.map(c => <option value={c.id} key={c.id}>{c.name}</option>)}</select></label>
+      <label>Tag<select value={tagFilter} onChange={e => setTagFilter(e.target.value)}><option value="all">All tags</option>{tagOptions.map(tag => <option value={tag.id} key={tag.id}>{tag.name}</option>)}</select></label>
+      <label>Post type<select value={postType} onChange={e => setPostType(e.target.value)}><option value="all">All post types</option><option value="question">Questions</option><option value="discussion">Discussions</option><option value="link">Links</option><option value="media">Media</option></select></label>
+      <label className="feed-check"><input type="checkbox" checked={joinedOnly} onChange={e => setJoinedOnly(e.target.checked)} /> Joined downtowns only</label>
+    </div>}
+    {(activeCommunity || activeTag || activeTypeLabel || feedMode !== 'all' || joinedOnly) && <div className="feed-active-filters">
+      {feedMode !== 'all' && <button type="button" onClick={() => setFeedMode('all')}>Following ×</button>}
+      {activeCommunity && <button type="button" onClick={() => setCommunityFilter('all')}>{activeCommunity.name} ×</button>}
+      {activeTag && <button type="button" onClick={() => setTagFilter('all')}>#{activeTag.name} ×</button>}
+      {activeTypeLabel && <button type="button" onClick={() => setPostType('all')}>{activeTypeLabel} ×</button>}
+      {joinedOnly && <button type="button" onClick={() => setJoinedOnly(false)}>Joined only ×</button>}
+      <button type="button" className="feed-clear-filters" onClick={clearFilters}>Clear all</button>
+    </div>}
     {error && <div className="town-error">{error}<button className="button secondary" onClick={load}>Retry</button></div>}
     {loading && <div className="town-state">Loading the town feed…</div>}
     {!loading && !visiblePosts.length && <Empty>{posts.length ? <><p>No posts match these filters.</p><div className="feed-empty-actions"><button className="button secondary" onClick={() => { setCommunityFilter('all'); setJoinedOnly(false); setQuery(''); setSearchInput(''); setPostType('all'); setTagFilter('all') }}>Clear filters</button><a className="button secondary" href="#/communities">Explore downtowns</a></div></> : <><p>There are no published posts to show yet. Town won’t invent activity to fill the feed.</p><div className="feed-empty-actions"><a className="button primary" href="#/communities">Find a downtown</a><a className="button secondary" href="#/create-post">Start a discussion</a></div></>}</Empty>}
