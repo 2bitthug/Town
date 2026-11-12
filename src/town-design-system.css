@@ -371,3 +371,65 @@
   .ps2-shell .profile-contribution-breakdown { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .ps2-shell .reputation-breakdown { grid-template-columns: 1fr; }
 }
+
+
+/* Guest-mode refinements: keep the same product shell, with clearer discovery hierarchy. */
+.guest-mode-shell .ps2-main { min-width: 0; }
+.guest-mode-shell .town-page { width: 100%; max-width: 1240px; }
+.guest-mode-shell .town-page-heading { align-items: center; }
+.guest-mode-shell .town-directory-intro {
+  align-items: center;
+  padding: 18px 20px;
+  border-color: color-mix(in srgb, var(--town-accent) 28%, rgba(255,255,255,.1));
+  border-radius: 16px;
+  background: linear-gradient(110deg, color-mix(in srgb, var(--town-accent) 9%, rgba(12,14,19,.96)), rgba(12,14,19,.92) 58%);
+}
+.guest-mode-shell .town-directory-intro strong {
+  display: block;
+  margin-bottom: 4px;
+  color: #f5f6f8;
+  font-size: .95rem;
+  letter-spacing: -.01em;
+}
+.guest-mode-shell .town-directory-intro p { max-width: 650px; }
+.guest-mode-shell .town-directory-controls { grid-template-columns: minmax(0,1fr) minmax(145px,190px) minmax(140px,165px); }
+.guest-mode-shell .guest-community-grid {
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr));
+  gap: 14px;
+}
+.guest-mode-shell .guest-community-grid .community-card {
+  min-height: 188px;
+  padding: 20px;
+  border-color: rgba(255,255,255,.105);
+  background: linear-gradient(145deg, rgba(255,255,255,.045), transparent 54%), rgba(13,15,21,.88);
+}
+.guest-mode-shell .guest-community-grid .community-card:hover {
+  border-color: color-mix(in srgb, var(--town-accent) 50%, rgba(255,255,255,.12));
+  box-shadow: 0 16px 36px rgba(0,0,0,.28), 0 0 0 1px color-mix(in srgb, var(--town-accent) 12%, transparent);
+}
+.guest-mode-shell .guest-community-grid .community-card-icon {
+  flex: 0 0 48px;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--town-accent) 14%, #11141b);
+  color: var(--town-accent);
+}
+.guest-mode-shell .community-discovery-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 12px 0;
+  color: #9298a5;
+  font-size: .74rem;
+}
+.guest-mode-shell .community-open { color: var(--town-accent); font-weight: 700; }
+.guest-mode-shell .guest-entry-card { width: min(100% - 32px, 540px); }
+.guest-mode-shell .pet-guest-card { border-color: color-mix(in srgb, var(--town-accent) 32%, rgba(255,255,255,.12)); }
+.guest-mode-shell .pet-guest-card .pet-milestone { gap: 16px; }
+@media (max-width: 760px) {
+  .guest-mode-shell .town-directory-controls { grid-template-columns: 1fr 1fr; }
+  .guest-mode-shell .town-directory-controls input { grid-column: 1 / -1; }
+  .guest-mode-shell .town-directory-intro { align-items: flex-start; flex-direction: column; }
+  .guest-mode-shell .guest-community-grid { grid-template-columns: 1fr; }
+}
