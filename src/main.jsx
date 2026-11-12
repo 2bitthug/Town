@@ -1583,7 +1583,8 @@ function GuestEntryScreen({ onGuest, onSignIn }) {
 }
 
 function GuestSettings({ guestState, setGuestState, onExit }) {
-  // Reuse the canonical palette so guest accents always pass the global theme resolver.\n  const colors = PROFILE_COLORS.map(([color, name]) => [name, color])
+  // Reuse the canonical palette so guest accents always pass the global theme resolver.
+  const colors = PROFILE_COLORS.map(([color, name]) => [name, color])
   const profile = guestState.profile || GUEST_DEFAULT.profile
   const apply = color => { setGuestState(state=>({...state,accentColor:color})); window.dispatchEvent(new CustomEvent('town-accent-change',{detail:color})) }
   const updateProfile = patch => setGuestState(state=>({...state,profile:{...state.profile,...patch}}))
