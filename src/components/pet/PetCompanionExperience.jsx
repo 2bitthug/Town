@@ -149,7 +149,7 @@ export function PetCompanionExperience({ currentUserId, guestMode = false, guest
     finally{setSaving(false)}
   }
   const collectFromCommunity = async id => {
-    if (guestMode) { const community=communities.find(x=>x.id===id); if (!community) return; if (!joinedCommunityIds.includes(id)) { setNotice('Join this downtown first.'); return }; const item={id:`guest-${id}`,community_id:id,souvenir_key:'guest-visit',collected_at:new Date().toISOString(),communities:{name:community.name,slug:community.slug}}; const next=[item,...souvenirs.filter(x=>x.community_id!==id)]; setSouvenirs(next); setGuestState?.(state=>({...state,petSouvenirs:next})); setNotice('A temporary souvenir was added to your guest collection.'); return }
+    if (guestMode) { const community=communities.find(x=>x.id===id); if (!community) return; if (!joinedCommunityIds.includes(id)) { setNotice('Join this downtown first.'); return }; const item={id:`guest-${id}`,community_id:id,souvenir_key:'guest-visit',collected_at:new Date().toISOString(),communities:{name:community.name,slug:community.slug}}; const next=[item,...souvenirs.filter(x=>x.community_id!==id)]; setSouvenirs(next); setGuestState?.(state=>({...state,petSouvenirs:next,guestNotifications:[...(state.guestNotifications||[]),{id:`guest-souvenir-${id}-${Date.now()}`,title:'Pet souvenir collected',body:`You collected a temporary souvenir from ${community.name}.`,created_at:new Date().toISOString(),read:false}]})); setNotice('A temporary souvenir was added to your guest collection.'); return }
     setSaving(true);setError('');setNotice('')
     try{
       const {data,error:e}=await supabase.rpc('record_pet_community_visit',{p_community_id:id})
