@@ -7487,3 +7487,19 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
 }
 .ps2-shell .post-type-question { color:var(--town-accent);border-color:var(--town-accent); }
 .ps2-shell .question-answer-state { border-color:color-mix(in srgb,var(--town-accent) 45%,var(--town-border)); }
+
+
+/* Keep the guest entry actions and their supporting copy visually separated. */
+.guest-entry-card .widget-help {
+  margin: 10px 0 18px;
+  line-height: 1.6;
+}
+
+.guest-entry-card > .button.full {
+  display: block;
+  margin: 14px 0 0;
+}
+
+.guest-entry-card > .widget-help + .button.full {
+  margin-top: 0;
+}
