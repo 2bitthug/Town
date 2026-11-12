@@ -80,3 +80,18 @@
   .pet-room-character .pet-sprite-art { width: var(--pet-sprite-size); height: var(--pet-sprite-size); }
   .pet-choice-grid button .pet-sprite-thumb { width: 54px; height: 54px; }
 }
+
+
+/* Guest companion should read as a complete interactive room, not an account progress screen. */
+.pet-guest-card { display: grid; align-content: start; gap: 8px; }
+.pet-guest-card h2 { margin: 2px 0 0; }
+.pet-guest-card > p:not(.eyebrow) { line-height: 1.6; }
+.pet-guest-card .pet-milestone { align-items: center; }
+.pet-guest-card .pet-milestone span { color: #e2e9e4; }
+.pet-guest-card .pet-milestone small { color: #a9b5ad; }
+.pet-experience .pet-notice { margin: 0 0 14px; }
+.pet-experience .pet-error { margin: 0 0 14px; }
+@media (max-width: 760px) {
+  .pet-room-sky { min-height: 230px; }
+  .pet-room { padding: 14px; }
+}
