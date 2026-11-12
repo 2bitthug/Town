@@ -95,7 +95,7 @@ export function PetCompanionExperience({ currentUserId, guestMode = false, guest
       setPosts(postData || [])
     } catch (e) { setError(e.message || 'Could not load your companion.') }
     finally { setLoading(false) }
-  },[currentUserId,refreshKey,guestMode,guestState?.petProfile,guestState?.petCompanion,guestState?.petSouvenirs,guestState?.joinedCommunityIds])
+  },[currentUserId,refreshKey,guestMode])
 
   useEffect(()=>{load()},[load])
 
