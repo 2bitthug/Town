@@ -77,19 +77,23 @@ export function SavedPostsPage({ currentUserId }) {
   </Frame>
 }
 
-export function UserProfilePage({ userId }) {
+export function UserProfilePage({ userId, currentUserId }) {
   const [profile,setProfile]=useState(null)
   const [stats,setStats]=useState({posts:0,comments:0,reputation:0})
+  const [followState,setFollowState]=useState({following:false,followers:0,followingCount:0,busy:false})
   const [loading,setLoading]=useState(true)
   const [error,setError]=useState('')
   useEffect(()=>{
     let active=true
     ;(async()=>{
       setLoading(true);setError('')
-      const [profileResult,postsResult,commentsResult]=await Promise.all([
+      const [profileResult,postsResult,commentsResult,followResult,followerCount,followingCount]=await Promise.all([
         supabase.from('profiles').select('*').eq('id',userId).maybeSingle(),
         supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',userId).neq('status','removed'),
-        supabase.from('comments').select('id',{count:'exact',head:true}).eq('author_id',userId).neq('status','removed')
+        supabase.from('comments').select('id',{count:'exact',head:true}).eq('author_id',userId).neq('status','removed'),
+        currentUserId && currentUserId !== userId ? supabase.from('user_follows').select('followed_id').eq('follower_id',currentUserId).eq('followed_id',userId).maybeSingle() : Promise.resolve({data:null}),
+        supabase.from('user_follows').select('follower_id',{count:'exact',head:true}).eq('followed_id',userId),
+        supabase.from('user_follows').select('followed_id',{count:'exact',head:true}).eq('follower_id',userId)
       ])
       if(!active)return
       if(profileResult.error){setError(profileResult.error.message);setLoading(false);return}
@@ -97,10 +101,12 @@ export function UserProfilePage({ userId }) {
       const p=profileResult.data
       setProfile(p)
       setStats({posts:postsResult.count??0,comments:commentsResult.count??0,reputation:p?.reputation_score??0})
+      setFollowState({following:Boolean(followResult.data),followers:followerCount.count??0,followingCount:followingCount.count??0,busy:false})
       setLoading(false)
     })()
     return()=>{active=false}
   },[userId])
+  const toggleFollow=async()=>{if(!currentUserId||currentUserId===userId||followState.busy)return;setFollowState(s=>({...s,busy:true}));const result=followState.following?await supabase.from('user_follows').delete().eq('follower_id',currentUserId).eq('followed_id',userId):await supabase.from('user_follows').insert({follower_id:currentUserId,followed_id:userId});if(result.error){setError(result.error.message);setFollowState(s=>({...s,busy:false}));return}setFollowState(s=>({...s,following:!s.following,followers:s.followers+(s.following?-1:1),busy:false}))}
   if(loading)return <Frame title="Member profile"><State>Loading…</State></Frame>
   if(error||!profile)return <Frame title="Member profile"><ErrorBox>{error||'Profile not found.'}</ErrorBox></Frame>
   const displayName=profile.display_name?.trim()||profile.username
@@ -114,7 +120,7 @@ export function UserProfilePage({ userId }) {
           <div className="public-avatar"><img src={avatarUrl(profile.avatar_id)} alt="" /></div>
           <div className="public-profile-identity">
             <h2>{displayName}</h2>
-            <p className="profile-joined">Member since {new Date(profile.created_at).toLocaleDateString()}</p>
+            <p className="profile-joined">Member since {new Date(profile.created_at).toLocaleDateString()}</p>{currentUserId&&currentUserId!==userId&&<button className={`button ${followState.following?'secondary':'primary'}`} disabled={followState.busy} onClick={toggleFollow}>{followState.busy?'Working…':followState.following?'Following':'Follow'}</button>}
             {profile.bio&&<p className="public-profile-bio">{profile.bio}</p>}
           </div>
         </div>
@@ -123,7 +129,7 @@ export function UserProfilePage({ userId }) {
           <div><span>COMPANION</span><strong>{profile.pet_name?.trim()||petNames[profile.pet_id]}</strong><small>{petNames[profile.pet_id]}</small></div>
         </div>}
       </section>
-      <div className="profile-stat-grid">
+      <div className="profile-stat-grid"><div><strong>{followState.followers.toLocaleString()}</strong><span>Followers</span></div><div><strong>{followState.followingCount.toLocaleString()}</strong><span>Following</span></div>
         <div><strong>{stats.posts.toLocaleString()}</strong><span>Posts published</span></div>
         <div><strong>{stats.comments.toLocaleString()}</strong><span>Comments made</span></div>
         <div><strong>{stats.reputation.toLocaleString()}</strong><span>Reputation points</span></div>
