@@ -19,33 +19,39 @@ async function loadStats(ids) {
 
 export function FeedPage({ currentUserId }) {
   const [posts, setPosts] = useState([]), [communities, setCommunities] = useState([]), [joinedIds, setJoinedIds] = useState(new Set())
-  const [sort, setSort] = useState(() => localStorage.getItem(SORT_KEY) || 'latest'), [communityFilter, setCommunityFilter] = useState('all'), [joinedOnly, setJoinedOnly] = useState(false), [query, setQuery] = useState(''), [postType, setPostType] = useState('all')
+  const [sort, setSort] = useState(() => localStorage.getItem(SORT_KEY) || 'latest'), [communityFilter, setCommunityFilter] = useState('all'), [joinedOnly, setJoinedOnly] = useState(false), [query, setQuery] = useState(''), [searchInput, setSearchInput] = useState(''), [postType, setPostType] = useState('all'), [tagOptions, setTagOptions] = useState([]), [tagFilter, setTagFilter] = useState('all')
   const [loading, setLoading] = useState(true), [error, setError] = useState(''), [busyVote, setBusyVote] = useState(null), [saved, setSaved] = useState(new Set())
 
   const load = async () => {
     setLoading(true); setError('')
     try {
+      const postsQuery = supabase.from('posts').select('id,community_id,topic_id,author_id,post_type,question_status,title,body,link_url,media_url,is_pinned,accepted_answer_id,created_at').eq('status', 'published').order('created_at', { ascending: false }).limit(100)
+      if (query.trim()) postsQuery.textSearch('search_document', query.trim(), { config: 'english', type: 'websearch' })
       const [{ data: rawPosts, error: pe }, { data: cs, error: ce }] = await Promise.all([
-        supabase.from('posts').select('id,community_id,topic_id,author_id,post_type,title,body,link_url,media_url,is_pinned,accepted_answer_id,created_at').eq('status', 'published').order('created_at', { ascending: false }).limit(100),
+        postsQuery,
         supabase.from('communities').select('id,name,slug,category').eq('status', 'active').eq('visibility', 'public').order('name')
       ])
       if (pe) throw pe; if (ce) throw ce
       const rows = rawPosts || [], ids = rows.map(p => p.id), authorIds = [...new Set(rows.map(p => p.author_id).filter(Boolean))]
-      const [{ data: profiles, error: pre }, { data: memberships, error: me }, { data: votes, error: ve }, { data: saves, error: se }, { data: blocks, error: be }, stats] = await Promise.all([
+      const [{ data: profiles, error: pre }, { data: memberships, error: me }, { data: votes, error: ve }, { data: saves, error: se }, { data: blocks, error: be }, { data: postTagRows, error: te }, stats] = await Promise.all([
         authorIds.length ? supabase.from('profiles').select('id,username,display_name').in('id', authorIds) : Promise.resolve({ data: [], error: null }),
         currentUserId ? supabase.from('community_memberships').select('community_id').eq('user_id', currentUserId) : Promise.resolve({ data: [], error: null }),
         currentUserId && ids.length ? supabase.from('post_votes').select('post_id,value').eq('user_id', currentUserId).in('post_id', ids) : Promise.resolve({ data: [], error: null }),
         currentUserId && ids.length ? supabase.from('saved_posts').select('post_id').eq('user_id', currentUserId).in('post_id', ids) : Promise.resolve({ data: [], error: null }),
         currentUserId ? supabase.from('user_blocks').select('blocked_id').eq('blocker_id', currentUserId) : Promise.resolve({ data: [], error: null }),
+        ids.length ? supabase.from('post_tags').select('post_id,tag_id,community_tags(name)').in('post_id', ids) : Promise.resolve({ data: [], error: null }),
         loadStats(ids)
       ])
-      if (pre) throw pre; if (me) throw me; if (ve) throw ve; if (se) throw se; if (be) throw be
+      if (pre) throw pre; if (me) throw me; if (ve) throw ve; if (se) throw se; if (be) throw be; if (te) throw te
       const pm = new Map((profiles || []).map(p => [p.id, p])), cm = new Map((cs || []).map(c => [c.id, c])), sm = new Map((stats || []).map(s => [s.post_id, s])), vm = new Map((votes || []).map(v => [v.post_id, v.value]))
-      setPosts(rows.filter(post => !(blocks || []).some(block => block.blocked_id === post.author_id)).map(post => ({ ...post, author: pm.get(post.author_id), community: cm.get(post.community_id), stats: sm.get(post.id) || { comment_count: 0, upvote_score: 0, view_count: 0 }, myVote: vm.get(post.id) || 0 })))
+      const tagsByPost = new Map(); (postTagRows || []).forEach(row => { const list = tagsByPost.get(row.post_id) || []; if (row.community_tags?.name) list.push({ id: row.tag_id, name: row.community_tags.name }); tagsByPost.set(row.post_id, list) })
+      setPosts(rows.filter(post => !(blocks || []).some(block => block.blocked_id === post.author_id)).map(post => ({ ...post, tags: tagsByPost.get(post.id) || [], author: pm.get(post.author_id), community: cm.get(post.community_id), stats: sm.get(post.id) || { comment_count: 0, upvote_score: 0, view_count: 0 }, myVote: vm.get(post.id) || 0 })))
       setCommunities(cs || []); setJoinedIds(new Set((memberships || []).map(m => m.community_id))); setSaved(new Set((saves || []).map(s => s.post_id)))
     } catch (err) { setError(err.message || 'Unable to load the town feed.') } finally { setLoading(false) }
   }
-  useEffect(() => { load() }, [currentUserId])
+  useEffect(() => { const timer = setTimeout(() => setQuery(searchInput.trim()), 350); return () => clearTimeout(timer) }, [searchInput])
+  useEffect(() => { load() }, [currentUserId, query])
+  useEffect(() => { let active = true; const fetchTags = async () => { let request = supabase.from('community_tags').select('id,name,community_id').eq('status','active').order('name'); if (communityFilter !== 'all') request = request.eq('community_id', communityFilter); const { data, error: tagError } = await request; if (active) { setTagOptions(tagError ? [] : data || []); if (tagFilter !== 'all' && !(data || []).some(tag => tag.id === tagFilter)) setTagFilter('all') } }; fetchTags(); return () => { active = false } }, [communityFilter])
   useEffect(() => { localStorage.setItem(SORT_KEY, sort) }, [sort])
 
   const visiblePosts = useMemo(() => {
@@ -53,6 +59,7 @@ export function FeedPage({ currentUserId }) {
     const result = posts.filter(post => {
       if (communityFilter !== 'all' && post.community_id !== communityFilter) return false
       if (postType !== 'all' && post.post_type !== postType) return false
+      if (tagFilter !== 'all' && !post.tags?.some(tag => tag.id === tagFilter)) return false
       if (joinedOnly && !joinedIds.has(post.community_id)) return false
       return !needle || `${post.title} ${post.body} ${post.community?.name || ''} ${post.author?.username || ''}`.toLowerCase().includes(needle)
     })
@@ -62,7 +69,7 @@ export function FeedPage({ currentUserId }) {
       if (sort === 'viewed') return Number(b.stats.view_count) - Number(a.stats.view_count) || new Date(b.created_at) - new Date(a.created_at)
       return new Date(b.created_at) - new Date(a.created_at)
     })
-  }, [posts, communityFilter, joinedOnly, joinedIds, query, sort, postType])
+  }, [posts, communityFilter, joinedOnly, joinedIds, query, sort, postType, tagFilter])
 
   const vote = async (post, value) => {
     if (!currentUserId || busyVote) return
@@ -84,10 +91,10 @@ export function FeedPage({ currentUserId }) {
   }
 
   return <PageFrame title="Your town, sorted by you." actions={<a className="button primary" href="#/communities">Browse downtowns</a>}>
-    <div className="feed-controls"><input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search posts…" aria-label="Search posts" /><select value={communityFilter} onChange={e => setCommunityFilter(e.target.value)} aria-label="Filter by downtown"><option value="all">All downtowns</option>{communities.map(c => <option value={c.id} key={c.id}>{c.name}</option>)}</select><select value={postType} onChange={e => setPostType(e.target.value)} aria-label="Filter by post type"><option value="all">All post types</option><option value="question">Questions</option><option value="discussion">Discussions</option><option value="link">Links</option><option value="media">Media</option></select><select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select><label className="feed-check"><input type="checkbox" checked={joinedOnly} onChange={e => setJoinedOnly(e.target.checked)} /> Joined only</label></div>
+    <div className="feed-controls"><input value={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder="Search posts…" aria-label="Search posts" /><select value={communityFilter} onChange={e => setCommunityFilter(e.target.value)} aria-label="Filter by downtown"><option value="all">All downtowns</option>{communities.map(c => <option value={c.id} key={c.id}>{c.name}</option>)}</select><select value={tagFilter} onChange={e => setTagFilter(e.target.value)} aria-label="Filter by tag"><option value="all">All tags</option>{tagOptions.map(tag => <option value={tag.id} key={tag.id}>{tag.name}</option>)}</select><select value={postType} onChange={e => setPostType(e.target.value)} aria-label="Filter by post type"><option value="all">All post types</option><option value="question">Questions</option><option value="discussion">Discussions</option><option value="link">Links</option><option value="media">Media</option></select><select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select><label className="feed-check"><input type="checkbox" checked={joinedOnly} onChange={e => setJoinedOnly(e.target.checked)} /> Joined only</label></div>
     {error && <div className="town-error">{error}<button className="button secondary" onClick={load}>Retry</button></div>}
     {loading && <div className="town-state">Loading the town feed…</div>}
-    {!loading && !visiblePosts.length && <Empty>{posts.length ? <><p>No posts match these filters.</p><div className="feed-empty-actions"><button className="button secondary" onClick={() => { setCommunityFilter('all'); setJoinedOnly(false); setQuery(''); setPostType('all') }}>Clear filters</button><a className="button secondary" href="#/communities">Explore downtowns</a></div></> : <><p>There are no published posts to show yet. Town won’t invent activity to fill the feed.</p><div className="feed-empty-actions"><a className="button primary" href="#/communities">Find a downtown</a><a className="button secondary" href="#/create-post">Start a discussion</a></div></>}</Empty>}
+    {!loading && !visiblePosts.length && <Empty>{posts.length ? <><p>No posts match these filters.</p><div className="feed-empty-actions"><button className="button secondary" onClick={() => { setCommunityFilter('all'); setJoinedOnly(false); setQuery(''); setSearchInput(''); setPostType('all'); setTagFilter('all') }}>Clear filters</button><a className="button secondary" href="#/communities">Explore downtowns</a></div></> : <><p>There are no published posts to show yet. Town won’t invent activity to fill the feed.</p><div className="feed-empty-actions"><a className="button primary" href="#/communities">Find a downtown</a><a className="button secondary" href="#/create-post">Start a discussion</a></div></>}</Empty>}
     <div className="feed-list">{visiblePosts.map(post => { const author = post.author?.display_name || post.author?.username || 'Town member'; const score = Number(post.stats.upvote_score || 0); return <article
       className="feed-card feed-card-clickable"
       key={post.id}
@@ -106,7 +113,7 @@ export function FeedPage({ currentUserId }) {
       }}
     >
       <div className="feed-card-meta"><a href={`#/community/${post.community?.slug || ''}`}>{post.community?.name || 'Downtown'}</a><span>·</span><span>{post.community?.category || 'General'}</span>{post.is_pinned && <span className="post-pin-inline">PINNED</span>}</div>
-      <div className="feed-post-heading"><span className={`post-type-pill post-type-${post.post_type}`}>{post.post_type === 'question' ? 'QUESTION' : (post.post_type || 'DISCUSSION').toUpperCase()}</span>{post.post_type === 'question' && <span className="question-answer-state">{post.accepted_answer_id ? 'Answered' : 'Open question'}</span>}</div><h2>{post.title}</h2>{post.body && <p>{post.body}</p>}
+      <div className="feed-post-heading"><span className={`post-type-pill post-type-${post.post_type}`}>{post.post_type === 'question' ? 'QUESTION' : (post.post_type || 'DISCUSSION').toUpperCase()}</span>{post.post_type === 'question' && <span className="question-answer-state">{post.accepted_answer_id ? 'Answered' : post.question_status === 'closed' ? 'Closed' : 'Open question'}</span>}</div>{post.tags?.length > 0 && <div className="feed-post-tags">{post.tags.map(tag => <span key={tag.id}>{tag.name}</span>)}</div>}<h2>{post.title}</h2>{post.body && <p>{post.body}</p>}
       <div className="feed-card-footer"><span>by {author} · {age(post.created_at)}</span><div className="feed-stats"><button className={`feed-action ${post.myVote === 1 ? 'active' : ''}`} disabled={busyVote === post.id} onClick={() => vote(post, 1)}>▲ {score}</button><button className={`feed-action ${post.myVote === -1 ? 'down' : ''}`} disabled={busyVote === post.id} onClick={() => vote(post, -1)}>▼</button><span>{post.stats.comment_count} comments</span><span>{post.stats.view_count} views</span><button className={`feed-action ${saved.has(post.id) ? 'active' : ''}`} onClick={() => toggleSave(post)}>{saved.has(post.id) ? 'Saved' : 'Save'}</button></div></div>
     </article> })}</div>
   </PageFrame>
