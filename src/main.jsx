@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles.css'
+import './town-design-system.css'
 import { isSupabaseConfigured, supabase } from './lib/supabase'
 import { DEFAULT_AVATAR_ID, PROFILE_AVATARS, CREATURE_DETAILS, avatarUrl } from './avatar'
 import { TownHomePage, CommunitiesPage, CommunityPage, CreateCommunityPage } from './components/community/CommunityPages'
