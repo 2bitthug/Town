@@ -74,6 +74,16 @@ export function FeedPage({ currentUserId }) {
     })
   }, [posts, communityFilter, joinedOnly, joinedIds, query, sort, postType, tagFilter, feedMode, followedUsers, followedCommunities, followedTags])
 
+  const toggleTagFollow = async tagId => {
+    if (!currentUserId) return
+    const following = followedTags.has(tagId)
+    const result = following
+      ? await supabase.from('tag_follows').delete().eq('user_id', currentUserId).eq('tag_id', tagId)
+      : await supabase.from('tag_follows').insert({ user_id: currentUserId, tag_id: tagId })
+    if (result.error) { setError(result.error.message); return }
+    setFollowedTags(current => { const next = new Set(current); following ? next.delete(tagId) : next.add(tagId); return next })
+  }
+
   const vote = async (post, value) => {
     if (!currentUserId || busyVote) return
     setBusyVote(post.id); const next = post.myVote === value ? 0 : value
@@ -116,7 +126,7 @@ export function FeedPage({ currentUserId }) {
       }}
     >
       <div className="feed-card-meta"><a href={`#/community/${post.community?.slug || ''}`}>{post.community?.name || 'Downtown'}</a><span>·</span><span>{post.community?.category || 'General'}</span>{post.is_pinned && <span className="post-pin-inline">PINNED</span>}</div>
-      <div className="feed-post-heading"><span className={`post-type-pill post-type-${post.post_type}`}>{post.post_type === 'question' ? 'QUESTION' : (post.post_type || 'DISCUSSION').toUpperCase()}</span>{post.post_type === 'question' && <span className="question-answer-state">{post.accepted_answer_id ? 'Answered' : post.question_status === 'closed' ? 'Closed' : 'Open question'}</span>}</div>{post.tags?.length > 0 && <div className="feed-post-tags">{post.tags.map(tag => <span key={tag.id}>{tag.name}</span>)}</div>}<h2>{post.title}</h2>{post.body && <p>{post.body}</p>}
+      <div className="feed-post-heading"><span className={`post-type-pill post-type-${post.post_type}`}>{post.post_type === 'question' ? 'QUESTION' : (post.post_type || 'DISCUSSION').toUpperCase()}</span>{post.post_type === 'question' && <span className="question-answer-state">{post.accepted_answer_id ? 'Answered' : post.question_status === 'closed' ? 'Closed' : 'Open question'}</span>}</div>{post.tags?.length > 0 && <div className="feed-post-tags">{post.tags.map(tag => <span key={tag.id}>{tag.name}{currentUserId && <button type="button" className="feed-tag-follow" onClick={event => { event.stopPropagation(); toggleTagFollow(tag.id) }}>{followedTags.has(tag.id) ? "Following" : "Follow tag"}</button>}</span>)}</div>}<h2>{post.title}</h2>{post.body && <p>{post.body}</p>}
       <div className="feed-card-footer"><span>by {author} · {age(post.created_at)}</span><div className="feed-stats"><button className={`feed-action ${post.myVote === 1 ? 'active' : ''}`} disabled={busyVote === post.id} onClick={() => vote(post, 1)}>▲ {score}</button><button className={`feed-action ${post.myVote === -1 ? 'down' : ''}`} disabled={busyVote === post.id} onClick={() => vote(post, -1)}>▼</button><span>{post.stats.comment_count} comments</span><span>{post.stats.view_count} views</span><button className={`feed-action ${saved.has(post.id) ? 'active' : ''}`} onClick={() => toggleSave(post)}>{saved.has(post.id) ? 'Saved' : 'Save'}</button></div></div>
     </article> })}</div>
   </PageFrame>
