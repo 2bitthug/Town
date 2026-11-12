@@ -220,7 +220,7 @@ export function CommunitiesPage({ currentUserId, guestMode = false, guestState }
         </select>
         <select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort downtowns">
           <option value="latest">Recently created</option>
-          <option value="members">Most members</option>
+          {!guestMode && <option value="members">Most members</option>}
           <option value="active">Most active</option>
           <option value="name">Name</option>
         </select>
@@ -386,7 +386,7 @@ export function CommunityPage({ slug, currentUserId, guestMode = false, guestSta
     <PageFrame
       eyebrow={community.category}
       title={community.name}
-      actions={<>{/* New post button */}{currentUserId ? <a className="button primary" href="#/create-post">New post</a> : <a className="button secondary" href="#/create-post">Sign in to post</a>}{slug === 'city-mumbai' && (<>{/* Section links */}<a className="button secondary" href={`#/library/${slug}`}>Library</a><a className="button secondary" href={`#/wiki/${slug}`}>Wiki</a><a className="button secondary" href={`#/updates/${slug}`}>Updates</a></>)}{(currentUserId || guestMode) && (<button className={`button ${followingCommunity ? 'secondary' : 'primary'}`} disabled={followBusy} onClick={toggleCommunityFollow}>{followBusy?'Working…':followingCommunity?'Following':'Follow downtown'} · {followerCount}</button>)}{(currentUserId || guestMode) && (<button className={`button ${member ? 'secondary' : 'primary'}`} disabled={busy} onClick={toggleMembership}>{busy ? 'Working…' : member ? 'Leave downtown' : 'Join downtown'}</button>)}</>}
+      actions={<>{/* New post button */}{currentUserId ? <a className="button primary" href="#/create-post">New post</a> : <a className="button secondary" href="#/create-post">Sign in to post</a>}{slug === 'city-mumbai' && (<>{/* Section links */}<a className="button secondary" href={`#/library/${slug}`}>Library</a><a className="button secondary" href={`#/wiki/${slug}`}>Wiki</a><a className="button secondary" href={`#/updates/${slug}`}>Updates</a></>)}{(currentUserId || guestMode) && (<button className={`button ${followingCommunity ? 'secondary' : 'primary'}`} disabled={followBusy} onClick={toggleCommunityFollow}>{followBusy?'Working…':followingCommunity?'Following':'Follow downtown'}{!guestMode ? ` · ${followerCount}` : ''}</button>)}{(currentUserId || guestMode) && (<button className={`button ${member ? 'secondary' : 'primary'}`} disabled={busy} onClick={toggleMembership}>{busy ? 'Working…' : member ? 'Leave downtown' : 'Join downtown'}</button>)}</>}
     >
       <div className="community-header">
         <div className="community-profile-identity">
