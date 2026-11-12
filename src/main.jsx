@@ -1670,7 +1670,7 @@ function App() {
   const username = session?.user?.user_metadata?.username || session?.user?.email?.split('@')[0] || 'Guest'
   const signOut = async () => { await supabase.auth.signOut() }
   const [routeName, routeParam] = route.split('/')
-  const currentProfileHref = session?.user?.id ? `#/profile/${session.user.id}` : '#/home'
+  const currentProfileHref = session?.user?.id ? `#/profile/${session.user.id}` : '#/profile/demo'
 
   const isActive = (id) => {
     if (id === 'feed') return routeName === 'feed' || routeName === 'post'
