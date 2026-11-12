@@ -112,7 +112,7 @@ export function UserProfilePage({ userId, currentUserId }) {
       setLoading(false)
     })()
     return()=>{active=false}
-  },[userId])
+  },[userId,currentUserId])
   const toggleFollow=async()=>{if(!currentUserId||currentUserId===userId||followState.busy)return;setFollowState(s=>({...s,busy:true}));const result=followState.following?await supabase.from('user_follows').delete().eq('follower_id',currentUserId).eq('followed_id',userId):await supabase.from('user_follows').insert({follower_id:currentUserId,followed_id:userId});if(result.error){setError(result.error.message);setFollowState(s=>({...s,busy:false}));return}setFollowState(s=>({...s,following:!s.following,followers:s.followers+(s.following?-1:1),busy:false}))}
   if(loading)return <Frame title="Member profile"><State>Loading…</State></Frame>
   if(error||!profile)return <Frame title="Member profile"><ErrorBox>{error||'Profile not found.'}</ErrorBox></Frame>
@@ -144,7 +144,7 @@ export function UserProfilePage({ userId, currentUserId }) {
       </div>
       {interests.length>0&&<section className="public-profile-interests"><p className="eyebrow">INTERESTS</p><div className="profile-interest-list">{interests.map((x,i)=><span className="profile-interest-chip" key={`${x}-${i}`}>{x}</span>)}</div></section>}
       <section className="public-profile-contributions">
-        <div className="town-section-heading"><div><p className="eyebrow">MEMBER CONTRIBUTIONS</p><h2>Reputation breakdown</h2></div><a className="button secondary" href={currentUserId===userId?'#/reputation':undefined} onClick={currentUserId===userId?undefined:e=>e.preventDefault()}>{currentUserId===userId?'View full ledger':''}</a></div>
+        <div className="town-section-heading"><div><p className="eyebrow">MEMBER CONTRIBUTIONS</p><h2>Reputation breakdown</h2></div>{currentUserId===userId&&<a className="button secondary" href="#/reputation">View full ledger</a>}</div>
         {reputationBreakdown.length ? <div className="profile-contribution-breakdown">{reputationBreakdown.map(item=><div className="profile-contribution-metric" key={item.event_type}><strong>{Number(item.points_total)>0?'+':''}{Number(item.points_total).toLocaleString()}</strong><span>{reputationEventLabel(item.event_type)}</span><small>{Number(item.event_count).toLocaleString()} events</small></div>)}</div> : <div className="town-empty">No recorded reputation events yet.</div>}
         <div className="profile-recent-contributions"><p className="eyebrow">RECENT CONTRIBUTIONS</p>{recentReputation.length ? recentReputation.map(event=><div className="profile-contribution-event" key={event.id}><div><strong>{reputationEventLabel(event.event_type)}</strong><span>{ago(event.created_at)}</span></div><b className={event.points>=0?'points positive':'points negative'}>{event.points>0?'+':''}{event.points}</b></div>) : <p className="town-empty">New contributions will appear here.</p>}</div>
       </section>
