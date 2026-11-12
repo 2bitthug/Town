@@ -1145,7 +1145,7 @@ function RadioMiniPlayer() {
     <button className="radio-mini-close" type="button" aria-label="Close radio player" onClick={() => { audioRef.current?.pause(); setStation(null); setPlaying(false) }}>×</button>
   </div>
 }
-function HomePage({ currentUserId }) { return <TownHomePage currentUserId={currentUserId} /> }
+function HomePage({ currentUserId, guestMode }) { return <TownHomePage currentUserId={currentUserId} guestMode={guestMode} /> }
 
 function useHashRoute() {
   const read = () => window.location.hash.replace(/^#\/?/, '').split('?')[0] || 'home'
@@ -1768,7 +1768,7 @@ function App() {
   if (!session && entryMode === 'choose' && routeName !== 'signin') return <GuestEntryScreen onGuest={() => { setEntryMode('guest'); window.location.hash='#/home' }} onSignIn={() => { window.location.hash='#/signin' }} />
 
   let page
-  if (routeName === 'home') page = <HomePage currentUserId={session?.user?.id} />
+  if (routeName === 'home') page = <HomePage currentUserId={session?.user?.id} guestMode={guestMode} />
   else if (routeName === 'feed') page = <FeedPage currentUserId={session?.user?.id} guestMode={guestMode} guestState={guestState} setGuestState={setGuestState} />
   else if (routeName === 'post' && routeParam) page = <PostPage postId={routeParam} currentUserId={session?.user?.id} guestMode={guestMode} />
   else if (routeName === 'create-post') page = <CreatePostPage currentUserId={session?.user?.id} />
