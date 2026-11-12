@@ -1633,7 +1633,7 @@ function App() {
   }, [session?.user?.id])
 
   if (checking) return <main className="auth-shell"><Loading label="Checking session…" /></main>
-  if (!isSupabaseConfigured && route !== 'home') return <Auth onLogin={() => window.location.reload()} />
+
 
   const username = session?.user?.user_metadata?.username || session?.user?.email?.split('@')[0] || 'Guest'
   const signOut = async () => { await supabase.auth.signOut() }
@@ -1668,6 +1668,7 @@ function App() {
   else if (routeName === 'feed') page = <FeedPage currentUserId={session?.user?.id} />
   else if (routeName === 'post' && routeParam) page = <PostPage postId={routeParam} currentUserId={session?.user?.id} />
   else if (routeName === 'create-post') page = <CreatePostPage currentUserId={session?.user?.id} />
+  else if (routeName === 'signin') page = <Auth onLogin={() => { const returnTo = window.sessionStorage.getItem('town-auth-return') || '#/feed'; window.sessionStorage.removeItem('town-auth-return'); window.location.hash = returnTo; window.location.reload() }} />
   else if (routeName === 'communities') page = <CommunitiesPage currentUserId={session?.user?.id} />
   else if (routeName === 'community' && routeParam) page = <CommunityPage slug={routeParam} currentUserId={session?.user?.id} />
   else if (routeName === 'create-community') page = <CreateCommunityPage currentUserId={session?.user?.id} />
@@ -1689,10 +1690,11 @@ function App() {
   else if (routeName === 'settings') page = <SettingsPage currentUserId={session?.user?.id} />
   else if (routeName === 'pet') page = <PetCompanionExperience currentUserId={session?.user?.id} />
   else if (routeName === 'about') page = <InfoPage title="About Town"><p className="feature-text">Town is a community discussion platform built around downtowns: spaces for shared interests, local topics, questions, and conversations.</p><p className="feature-text">You can browse public discussions and choose how posts are sorted. Town’s goal is to make discovery deliberate and give people more control over what they see.</p><p className="feature-text">Town is an early-stage project. Features and community activity are still developing, and feedback helps shape what comes next.</p></InfoPage>
-  else if (routeName === 'help') page = <InfoPage title="How Town works"><p className="feature-text">1. Explore downtowns to find communities around topics you care about.</p><p className="feature-text">2. Open a downtown or post to read the conversation before creating an account.</p><p className="feature-text">3. Use the feed’s sorting controls—such as Latest or Most Discussed—to choose how posts are ordered.</p><p className="feature-text">4. Create an account when you want to participate by posting, commenting, joining, or voting.</p><p className="feature-text">Town is in early development. Public activity depends on the communities and members who contribute; we do not fabricate activity to make the site look busy.</p><div className="town-hero-actions"><a className="button primary" href="#/communities">Explore Communities</a><a className="button secondary" href="#/feed">Browse the feed</a></div></InfoPage>
+  else if (routeName === 'help') page = <InfoPage title="How Town works"><p className="feature-text">1. Explore downtowns to find communities around topics you care about.</p><p className="feature-text">2. Open a downtown or post to read the conversation before creating an account.</p><p className="feature-text">3. Use the feed’s sorting controls—such as Latest or Most Discussed—to choose how posts are ordered.</p><p className="feature-text">4. Browse Town without an account. Sign in only when you want to publish a post or join a discussion with a comment or reply.</p><p className="feature-text">Town is in early development. Public activity depends on the communities and members who contribute; we do not fabricate activity to make the site look busy.</p><div className="town-hero-actions"><a className="button primary" href="#/communities">Explore Communities</a><a className="button secondary" href="#/feed">Browse the feed</a></div></InfoPage>
   else page = <NotFoundPage />
 
-  if (routeName !== 'home' && !session) return <Auth onLogin={() => window.location.reload()} />
+  if (routeName === 'create-post' && !session) return <Auth onLogin={() => window.location.reload()} />
+  if (routeName === 'signin' && !session) return <Auth onLogin={() => { const returnTo = window.sessionStorage.getItem('town-auth-return') || '#/feed'; window.sessionStorage.removeItem('town-auth-return'); window.location.hash = returnTo; window.location.reload() }} />
 
   return <div className="ps2-shell" style={{ '--accent': globalAccent, '--profile-accent': globalAccent }}>
     <div className="ps2-scanlines" aria-hidden="true" />
