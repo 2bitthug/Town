@@ -19,7 +19,7 @@ async function loadStats(ids) {
 
 export function FeedPage({ currentUserId }) {
   const [posts, setPosts] = useState([]), [communities, setCommunities] = useState([]), [joinedIds, setJoinedIds] = useState(new Set())
-  const [sort, setSort] = useState(() => localStorage.getItem(SORT_KEY) || 'latest'), [communityFilter, setCommunityFilter] = useState('all'), [joinedOnly, setJoinedOnly] = useState(false), [query, setQuery] = useState(''), [searchInput, setSearchInput] = useState(''), [postType, setPostType] = useState('all'), [tagOptions, setTagOptions] = useState([]), [tagFilter, setTagFilter] = useState('all')
+  const [sort, setSort] = useState(() => localStorage.getItem(SORT_KEY) || 'latest'), [communityFilter, setCommunityFilter] = useState('all'), [joinedOnly, setJoinedOnly] = useState(false), [query, setQuery] = useState(''), [searchInput, setSearchInput] = useState(''), [postType, setPostType] = useState('all'), [tagOptions, setTagOptions] = useState([]), [tagFilter, setTagFilter] = useState('all'), [feedMode,setFeedMode]=useState('all'), [followedUsers,setFollowedUsers]=useState(new Set()), [followedCommunities,setFollowedCommunities]=useState(new Set()), [followedTags,setFollowedTags]=useState(new Set())
   const [loading, setLoading] = useState(true), [error, setError] = useState(''), [busyVote, setBusyVote] = useState(null), [saved, setSaved] = useState(new Set())
 
   const load = async () => {
@@ -33,20 +33,23 @@ export function FeedPage({ currentUserId }) {
       ])
       if (pe) throw pe; if (ce) throw ce
       const rows = rawPosts || [], ids = rows.map(p => p.id), authorIds = [...new Set(rows.map(p => p.author_id).filter(Boolean))]
-      const [{ data: profiles, error: pre }, { data: memberships, error: me }, { data: votes, error: ve }, { data: saves, error: se }, { data: blocks, error: be }, { data: postTagRows, error: te }, stats] = await Promise.all([
+      const [{ data: profiles, error: pre }, { data: memberships, error: me }, { data: votes, error: ve }, { data: saves, error: se }, { data: blocks, error: be }, { data: postTagRows, error: te }, {data:userFollows,error:ufe}, {data:communityFollows,error:cfe}, {data:tagFollows,error:tfe}, stats] = await Promise.all([
         authorIds.length ? supabase.from('profiles').select('id,username,display_name').in('id', authorIds) : Promise.resolve({ data: [], error: null }),
         currentUserId ? supabase.from('community_memberships').select('community_id').eq('user_id', currentUserId) : Promise.resolve({ data: [], error: null }),
         currentUserId && ids.length ? supabase.from('post_votes').select('post_id,value').eq('user_id', currentUserId).in('post_id', ids) : Promise.resolve({ data: [], error: null }),
         currentUserId && ids.length ? supabase.from('saved_posts').select('post_id').eq('user_id', currentUserId).in('post_id', ids) : Promise.resolve({ data: [], error: null }),
         currentUserId ? supabase.from('user_blocks').select('blocked_id').eq('blocker_id', currentUserId) : Promise.resolve({ data: [], error: null }),
         ids.length ? supabase.from('post_tags').select('post_id,tag_id,community_tags(name)').in('post_id', ids) : Promise.resolve({ data: [], error: null }),
+        currentUserId ? supabase.from('user_follows').select('followed_id').eq('follower_id',currentUserId) : Promise.resolve({data:[],error:null}),
+        currentUserId ? supabase.from('community_follows').select('community_id').eq('user_id',currentUserId) : Promise.resolve({data:[],error:null}),
+        currentUserId ? supabase.from('tag_follows').select('tag_id').eq('user_id',currentUserId) : Promise.resolve({data:[],error:null}),
         loadStats(ids)
       ])
-      if (pre) throw pre; if (me) throw me; if (ve) throw ve; if (se) throw se; if (be) throw be; if (te) throw te
+      if (pre) throw pre; if (me) throw me; if (ve) throw ve; if (se) throw se; if (be) throw be; if (te) throw te; if (ufe) throw ufe; if (cfe) throw cfe; if (tfe) throw tfe
       const pm = new Map((profiles || []).map(p => [p.id, p])), cm = new Map((cs || []).map(c => [c.id, c])), sm = new Map((stats || []).map(s => [s.post_id, s])), vm = new Map((votes || []).map(v => [v.post_id, v.value]))
       const tagsByPost = new Map(); (postTagRows || []).forEach(row => { const list = tagsByPost.get(row.post_id) || []; if (row.community_tags?.name) list.push({ id: row.tag_id, name: row.community_tags.name }); tagsByPost.set(row.post_id, list) })
       setPosts(rows.filter(post => !(blocks || []).some(block => block.blocked_id === post.author_id)).map(post => ({ ...post, tags: tagsByPost.get(post.id) || [], author: pm.get(post.author_id), community: cm.get(post.community_id), stats: sm.get(post.id) || { comment_count: 0, upvote_score: 0, view_count: 0 }, myVote: vm.get(post.id) || 0 })))
-      setCommunities(cs || []); setJoinedIds(new Set((memberships || []).map(m => m.community_id))); setSaved(new Set((saves || []).map(s => s.post_id)))
+      setCommunities(cs || []); setJoinedIds(new Set((memberships || []).map(m => m.community_id))); setSaved(new Set((saves || []).map(s => s.post_id))); setFollowedUsers(new Set((userFollows||[]).map(x=>x.followed_id))); setFollowedCommunities(new Set((communityFollows||[]).map(x=>x.community_id))); setFollowedTags(new Set((tagFollows||[]).map(x=>x.tag_id)))
     } catch (err) { setError(err.message || 'Unable to load the town feed.') } finally { setLoading(false) }
   }
   useEffect(() => { const timer = setTimeout(() => setQuery(searchInput.trim()), 350); return () => clearTimeout(timer) }, [searchInput])
@@ -56,6 +59,7 @@ export function FeedPage({ currentUserId }) {
 
   const visiblePosts = useMemo(() => {
     const result = posts.filter(post => {
+      if (feedMode==='following' && !(followedUsers.has(post.author_id)||followedCommunities.has(post.community_id)||(post.tags||[]).some(tag=>followedTags.has(tag.id)))) return false
       if (communityFilter !== 'all' && post.community_id !== communityFilter) return false
       if (postType !== 'all' && post.post_type !== postType) return false
       if (tagFilter !== 'all' && !post.tags?.some(tag => tag.id === tagFilter)) return false
@@ -68,7 +72,7 @@ export function FeedPage({ currentUserId }) {
       if (sort === 'viewed') return Number(b.stats.view_count) - Number(a.stats.view_count) || new Date(b.created_at) - new Date(a.created_at)
       return new Date(b.created_at) - new Date(a.created_at)
     })
-  }, [posts, communityFilter, joinedOnly, joinedIds, query, sort, postType, tagFilter])
+  }, [posts, communityFilter, joinedOnly, joinedIds, query, sort, postType, tagFilter, feedMode, followedUsers, followedCommunities, followedTags])
 
   const vote = async (post, value) => {
     if (!currentUserId || busyVote) return
@@ -90,7 +94,7 @@ export function FeedPage({ currentUserId }) {
   }
 
   return <PageFrame title="Your town, sorted by you." actions={<a className="button primary" href="#/communities">Browse downtowns</a>}>
-    <div className="feed-controls"><input value={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder="Search posts…" aria-label="Search posts" /><select value={communityFilter} onChange={e => setCommunityFilter(e.target.value)} aria-label="Filter by downtown"><option value="all">All downtowns</option>{communities.map(c => <option value={c.id} key={c.id}>{c.name}</option>)}</select><select value={tagFilter} onChange={e => setTagFilter(e.target.value)} aria-label="Filter by tag"><option value="all">All tags</option>{tagOptions.map(tag => <option value={tag.id} key={tag.id}>{tag.name}</option>)}</select><select value={postType} onChange={e => setPostType(e.target.value)} aria-label="Filter by post type"><option value="all">All post types</option><option value="question">Questions</option><option value="discussion">Discussions</option><option value="link">Links</option><option value="media">Media</option></select><select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select><label className="feed-check"><input type="checkbox" checked={joinedOnly} onChange={e => setJoinedOnly(e.target.checked)} /> Joined only</label></div>
+    <div className="feed-controls"><select value={feedMode} onChange={e=>setFeedMode(e.target.value)} aria-label="Feed mode"><option value="all">All posts</option><option value="following">Following</option></select><input value={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder="Search posts…" aria-label="Search posts" /><select value={communityFilter} onChange={e => setCommunityFilter(e.target.value)} aria-label="Filter by downtown"><option value="all">All downtowns</option>{communities.map(c => <option value={c.id} key={c.id}>{c.name}</option>)}</select><select value={tagFilter} onChange={e => setTagFilter(e.target.value)} aria-label="Filter by tag"><option value="all">All tags</option>{tagOptions.map(tag => <option value={tag.id} key={tag.id}>{tag.name}</option>)}</select><select value={postType} onChange={e => setPostType(e.target.value)} aria-label="Filter by post type"><option value="all">All post types</option><option value="question">Questions</option><option value="discussion">Discussions</option><option value="link">Links</option><option value="media">Media</option></select><select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select><label className="feed-check"><input type="checkbox" checked={joinedOnly} onChange={e => setJoinedOnly(e.target.checked)} /> Joined only</label></div>
     {error && <div className="town-error">{error}<button className="button secondary" onClick={load}>Retry</button></div>}
     {loading && <div className="town-state">Loading the town feed…</div>}
     {!loading && !visiblePosts.length && <Empty>{posts.length ? <><p>No posts match these filters.</p><div className="feed-empty-actions"><button className="button secondary" onClick={() => { setCommunityFilter('all'); setJoinedOnly(false); setQuery(''); setSearchInput(''); setPostType('all'); setTagFilter('all') }}>Clear filters</button><a className="button secondary" href="#/communities">Explore downtowns</a></div></> : <><p>There are no published posts to show yet. Town won’t invent activity to fill the feed.</p><div className="feed-empty-actions"><a className="button primary" href="#/communities">Find a downtown</a><a className="button secondary" href="#/create-post">Start a discussion</a></div></>}</Empty>}
