@@ -29,7 +29,7 @@ function Empty({ children }) {
   return <div className="town-empty">{children}</div>
 }
 
-export function TownHomePage({ currentUserId, guestMode = false }) {
+export function TownHomePage({ currentUserId }) {
   const [communities, setCommunities] = useState([])
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
