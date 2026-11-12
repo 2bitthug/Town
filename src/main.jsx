@@ -1674,7 +1674,7 @@ function App() {
   else if (routeName === 'social') page = <SocialSection currentUserId={session?.user?.id} />
   else if (routeName === 'saved') page = <SavedPostsPage currentUserId={session?.user?.id} />
   else if (routeName === 'notifications') page = <NotificationsPage currentUserId={session?.user?.id} />
-  else if (routeName === 'profile' && routeParam) page = <UserProfilePage userId={routeParam} />
+  else if (routeName === 'profile' && routeParam) page = <UserProfilePage userId={routeParam} currentUserId={session?.user?.id} />
   else if (routeName === 'community-manage' && routeParam) page = <CommunityManagePage communityId={routeParam} currentUserId={session?.user?.id} />
   else if (routeName === 'reputation') page = <ReputationPage currentUserId={session?.user?.id} />
   else if (routeName === 'moderation') page = <ModerationPage currentUserId={session?.user?.id} />
