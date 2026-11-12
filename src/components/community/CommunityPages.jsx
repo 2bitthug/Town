@@ -152,7 +152,7 @@ export function TownHomePage() {
   )
 }
 
-export function CommunitiesPage({ currentUserId }) {
+export function CommunitiesPage({ currentUserId, guestMode = false, guestState }) {
   const [communities, setCommunities] = useState([]), [joinedIds, setJoinedIds] = useState(new Set())
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
@@ -175,7 +175,7 @@ export function CommunitiesPage({ currentUserId }) {
     const [{data:memberships},{data:posts},{data:joined}]=await Promise.all([
       ids.length?supabase.from('community_memberships').select('community_id').in('community_id',ids):Promise.resolve({data:[]}),
       ids.length?supabase.from('posts').select('community_id').in('community_id',ids).eq('status','published'):Promise.resolve({data:[]}),
-      currentUserId?supabase.from('community_memberships').select('community_id').eq('user_id',currentUserId):Promise.resolve({data:[]})
+      currentUserId?supabase.from('community_memberships').select('community_id').eq('user_id',currentUserId):Promise.resolve({data:(guestState?.joinedCommunityIds || []).map(community_id=>({community_id}))})
     ])
     const memberCounts=new Map(),postCounts=new Map()
     ;(memberships||[]).forEach(row=>memberCounts.set(row.community_id,(memberCounts.get(row.community_id)||0)+1))
@@ -185,7 +185,7 @@ export function CommunitiesPage({ currentUserId }) {
     setLoading(false)
   }
 
-  useEffect(() => { load() }, [currentUserId])
+  useEffect(() => { load() }, [currentUserId, guestMode])
 
   const categories = useMemo(() => ['All', ...Array.from(new Set(communities.map(c => c.category).filter(Boolean))).sort()], [communities])
 
@@ -246,7 +246,7 @@ export function CommunitiesPage({ currentUserId }) {
   )
 }
 
-export function CommunityPage({ slug, currentUserId }) {
+export function CommunityPage({ slug, currentUserId, guestMode = false, guestState, setGuestState }) {
   const [community, setCommunity] = useState(null)
   const [categories, setCategories] = useState([])
   const [posts, setPosts] = useState([])
@@ -272,8 +272,8 @@ export function CommunityPage({ slug, currentUserId }) {
     const [{ data: categoryData, error: categoryError }, { data: postData, error: postError }, membership, communityFollow, communityFollowers] = await Promise.all([
       supabase.from('community_categories').select('id,name,description,position').eq('community_id', communityData.id).order('position'),
       supabase.from('posts').select('id,title,body,post_type,created_at,is_pinned,author_id').eq('community_id', communityData.id).eq('status', 'published').order('created_at', { ascending: false }).limit(20),
-      currentUserId ? supabase.from('community_memberships').select('role').eq('community_id', communityData.id).eq('user_id', currentUserId).maybeSingle() : Promise.resolve({ data: null }),
-      currentUserId ? supabase.from('community_follows').select('community_id').eq('community_id',communityData.id).eq('user_id',currentUserId).maybeSingle() : Promise.resolve({data:null}),
+      currentUserId ? supabase.from('community_memberships').select('role').eq('community_id', communityData.id).eq('user_id', currentUserId).maybeSingle() : Promise.resolve({ data: guestState?.joinedCommunityIds?.includes(communityData.id) ? { role: 'member' } : null }),
+      currentUserId ? supabase.from('community_follows').select('community_id').eq('community_id',communityData.id).eq('user_id',currentUserId).maybeSingle() : Promise.resolve({data: guestState?.followedCommunityIds?.includes(communityData.id) ? { community_id: communityData.id } : null}),
       supabase.from('community_follows').select('user_id',{count:'exact',head:true}).eq('community_id',communityData.id)
     ])
     if (categoryError || postError) setError(categoryError?.message || postError?.message || 'Unable to load downtown.')
@@ -284,7 +284,7 @@ export function CommunityPage({ slug, currentUserId }) {
     setLoading(false)
   }
 
-  useEffect(() => { load(); window.dispatchEvent(new CustomEvent('town-pet-event', { detail: { kind: 'community-opened', label: slug } })) }, [slug, currentUserId])
+  useEffect(() => { load(); window.dispatchEvent(new CustomEvent('town-pet-event', { detail: { kind: 'community-opened', label: slug } })) }, [slug, currentUserId, guestMode])
 
   // Record foreground time in each downtown for members who have not published posts.
   useEffect(() => {
@@ -360,10 +360,12 @@ export function CommunityPage({ slug, currentUserId }) {
     }
   }
 
-  const toggleCommunityFollow=async()=>{if(!currentUserId||!community||followBusy)return;setFollowBusy(true);const result=followingCommunity?await supabase.from('community_follows').delete().eq('user_id',currentUserId).eq('community_id',community.id):await supabase.from('community_follows').insert({user_id:currentUserId,community_id:community.id});if(result.error)setError(result.error.message);else{setFollowingCommunity(!followingCommunity);setFollowerCount(n=>n+(followingCommunity?-1:1))}setFollowBusy(false)}
+  const toggleCommunityFollow=async()=>{if(!community||followBusy)return;if(guestMode){const next=new Set(guestState?.followedCommunityIds||[]);followingCommunity?next.delete(community.id):next.add(community.id);setGuestState?.(state=>({...state,followedCommunityIds:[...next]}));setFollowingCommunity(!followingCommunity);setFollowerCount(n=>n+(followingCommunity?-1:1));return}if(!currentUserId)return;setFollowBusy(true);const result=followingCommunity?await supabase.from('community_follows').delete().eq('user_id',currentUserId).eq('community_id',community.id):await supabase.from('community_follows').insert({user_id:currentUserId,community_id:community.id});if(result.error)setError(result.error.message);else{setFollowingCommunity(!followingCommunity);setFollowerCount(n=>n+(followingCommunity?-1:1))}setFollowBusy(false)}
 
   const toggleMembership = async () => {
-    if (!currentUserId || !community) return
+    if (!community) return
+    if (guestMode) { const next = new Set(guestState?.joinedCommunityIds || []); member ? next.delete(community.id) : next.add(community.id); setGuestState?.(state => ({ ...state, joinedCommunityIds: [...next] })); setMember(!member); return }
+    if (!currentUserId) return
     setBusy(true)
     if (member) {
       const { error: leaveError } = await supabase.from('community_memberships').delete().eq('community_id', community.id).eq('user_id', currentUserId)
@@ -384,7 +386,7 @@ export function CommunityPage({ slug, currentUserId }) {
     <PageFrame
       eyebrow={community.category}
       title={community.name}
-      actions={<>{/* New post button */}{currentUserId ? <a className="button primary" href="#/create-post">New post</a> : <a className="button secondary" href="#/create-post">Sign in to post</a>}{slug === 'city-mumbai' && (<>{/* Section links */}<a className="button secondary" href={`#/library/${slug}`}>Library</a><a className="button secondary" href={`#/wiki/${slug}`}>Wiki</a><a className="button secondary" href={`#/updates/${slug}`}>Updates</a></>)}{currentUserId && (<button className={`button ${followingCommunity ? 'secondary' : 'primary'}`} disabled={followBusy} onClick={toggleCommunityFollow}>{followBusy?'Working…':followingCommunity?'Following':'Follow downtown'} · {followerCount}</button>)}{currentUserId && (<button className={`button ${member ? 'secondary' : 'primary'}`} disabled={busy} onClick={toggleMembership}>{busy ? 'Working…' : member ? 'Leave downtown' : 'Join downtown'}</button>)}</>}
+      actions={<>{/* New post button */}{currentUserId ? <a className="button primary" href="#/create-post">New post</a> : <a className="button secondary" href="#/create-post">Sign in to post</a>}{slug === 'city-mumbai' && (<>{/* Section links */}<a className="button secondary" href={`#/library/${slug}`}>Library</a><a className="button secondary" href={`#/wiki/${slug}`}>Wiki</a><a className="button secondary" href={`#/updates/${slug}`}>Updates</a></>)}{(currentUserId || guestMode) && (<button className={`button ${followingCommunity ? 'secondary' : 'primary'}`} disabled={followBusy} onClick={toggleCommunityFollow}>{followBusy?'Working…':followingCommunity?'Following':'Follow downtown'} · {followerCount}</button>)}{(currentUserId || guestMode) && (<button className={`button ${member ? 'secondary' : 'primary'}`} disabled={busy} onClick={toggleMembership}>{busy ? 'Working…' : member ? 'Leave downtown' : 'Join downtown'}</button>)}</>}
     >
       <div className="community-header">
         <div className="community-profile-identity">
