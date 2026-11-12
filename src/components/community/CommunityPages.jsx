@@ -250,7 +250,7 @@ export function CommunityPage({ slug, currentUserId }) {
   const [community, setCommunity] = useState(null)
   const [categories, setCategories] = useState([])
   const [posts, setPosts] = useState([])
-  const [member, setMember] = useState(false), [membershipRole, setMembershipRole] = useState('')
+  const [member, setMember] = useState(false), [membershipRole, setMembershipRole] = useState(''), [followingCommunity,setFollowingCommunity]=useState(false), [followBusy,setFollowBusy]=useState(false), [followerCount,setFollowerCount]=useState(0)
   const [loading, setLoading] = useState(true)
   const [busy, setBusy] = useState(false)
   const [uploadingIcon, setUploadingIcon] = useState(false)
@@ -269,16 +269,18 @@ export function CommunityPage({ slug, currentUserId }) {
       setLoading(false)
       return
     }
-    const [{ data: categoryData, error: categoryError }, { data: postData, error: postError }, membership] = await Promise.all([
+    const [{ data: categoryData, error: categoryError }, { data: postData, error: postError }, membership, communityFollow, communityFollowers] = await Promise.all([
       supabase.from('community_categories').select('id,name,description,position').eq('community_id', communityData.id).order('position'),
       supabase.from('posts').select('id,title,body,post_type,created_at,is_pinned,author_id').eq('community_id', communityData.id).eq('status', 'published').order('created_at', { ascending: false }).limit(20),
-      currentUserId ? supabase.from('community_memberships').select('role').eq('community_id', communityData.id).eq('user_id', currentUserId).maybeSingle() : Promise.resolve({ data: null })
+      currentUserId ? supabase.from('community_memberships').select('role').eq('community_id', communityData.id).eq('user_id', currentUserId).maybeSingle() : Promise.resolve({ data: null }),
+      currentUserId ? supabase.from('community_follows').select('community_id').eq('community_id',communityData.id).eq('user_id',currentUserId).maybeSingle() : Promise.resolve({data:null}),
+      supabase.from('community_follows').select('user_id',{count:'exact',head:true}).eq('community_id',communityData.id)
     ])
     if (categoryError || postError) setError(categoryError?.message || postError?.message || 'Unable to load downtown.')
     setCommunity(communityData)
     setCategories(categoryData || [])
     setPosts(postData || [])
-    setMember(Boolean(membership?.data)); setMembershipRole(membership?.data?.role || '')
+    setMember(Boolean(membership?.data)); setMembershipRole(membership?.data?.role || ''); setFollowingCommunity(Boolean(communityFollow?.data)); setFollowerCount(communityFollowers.count??0)
     setLoading(false)
   }
 
@@ -358,6 +360,8 @@ export function CommunityPage({ slug, currentUserId }) {
     }
   }
 
+  const toggleCommunityFollow=async()=>{if(!currentUserId||!community||followBusy)return;setFollowBusy(true);const result=followingCommunity?await supabase.from('community_follows').delete().eq('user_id',currentUserId).eq('community_id',community.id):await supabase.from('community_follows').insert({user_id:currentUserId,community_id:community.id});if(result.error)setError(result.error.message);else{setFollowingCommunity(!followingCommunity);setFollowerCount(n=>n+(followingCommunity?-1:1))}setFollowBusy(false)}
+
   const toggleMembership = async () => {
     if (!currentUserId || !community) return
     setBusy(true)
@@ -380,7 +384,7 @@ export function CommunityPage({ slug, currentUserId }) {
     <PageFrame
       eyebrow={community.category}
       title={community.name}
-      actions={<>{/* New post button */}{currentUserId ? <a className="button primary" href="#/create-post">New post</a> : <a className="button secondary" href="#/create-post">Sign in to post</a>}{slug === 'city-mumbai' && (<>{/* Section links */}<a className="button secondary" href={`#/library/${slug}`}>Library</a><a className="button secondary" href={`#/wiki/${slug}`}>Wiki</a><a className="button secondary" href={`#/updates/${slug}`}>Updates</a></>)}{currentUserId && (<button className={`button ${member ? 'secondary' : 'primary'}`} disabled={busy} onClick={toggleMembership}>{busy ? 'Working…' : member ? 'Leave downtown' : 'Join downtown'}</button>)}</>}
+      actions={<>{/* New post button */}{currentUserId ? <a className="button primary" href="#/create-post">New post</a> : <a className="button secondary" href="#/create-post">Sign in to post</a>}{slug === 'city-mumbai' && (<>{/* Section links */}<a className="button secondary" href={`#/library/${slug}`}>Library</a><a className="button secondary" href={`#/wiki/${slug}`}>Wiki</a><a className="button secondary" href={`#/updates/${slug}`}>Updates</a></>)}{currentUserId && (<button className={`button ${followingCommunity ? 'secondary' : 'primary'}`} disabled={followBusy} onClick={toggleCommunityFollow}>{followBusy?'Working…':followingCommunity?'Following':'Follow downtown'} · {followerCount}</button>)}{currentUserId && (<button className={`button ${member ? 'secondary' : 'primary'}`} disabled={busy} onClick={toggleMembership}>{busy ? 'Working…' : member ? 'Leave downtown' : 'Join downtown'}</button>)}</>}
     >
       <div className="community-header">
         <div className="community-profile-identity">
