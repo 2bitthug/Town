@@ -55,13 +55,12 @@ export function FeedPage({ currentUserId }) {
   useEffect(() => { localStorage.setItem(SORT_KEY, sort) }, [sort])
 
   const visiblePosts = useMemo(() => {
-    const needle = query.trim().toLowerCase()
     const result = posts.filter(post => {
       if (communityFilter !== 'all' && post.community_id !== communityFilter) return false
       if (postType !== 'all' && post.post_type !== postType) return false
       if (tagFilter !== 'all' && !post.tags?.some(tag => tag.id === tagFilter)) return false
       if (joinedOnly && !joinedIds.has(post.community_id)) return false
-      return !needle || `${post.title} ${post.body} ${post.community?.name || ''} ${post.author?.username || ''}`.toLowerCase().includes(needle)
+      return true
     })
     return [...result].sort((a, b) => {
       if (sort === 'discussed') return Number(b.stats.comment_count) - Number(a.stats.comment_count) || new Date(b.created_at) - new Date(a.created_at)
