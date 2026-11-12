@@ -5,6 +5,7 @@ import { avatarUrl } from '../../avatar'
 function Frame({ title, eyebrow = 'TOWN', actions, children }) {
   return <section className="town-page"><div className="town-page-heading"><div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1></div>{actions && <div className="town-page-actions">{actions}</div>}</div>{children}</section>
 }
+const reputationEventLabel = (type) => ({ post_created: 'Published a post', comment_created: 'Added a comment', post_upvoted: 'Received a post upvote', comment_upvoted: 'Received a comment upvote', post_downvoted: 'Received a post downvote', comment_downvoted: 'Received a comment downvote', answer_accepted: 'Answer accepted', answer_unaccepted: 'Accepted answer replaced', moderator_recognition: 'Moderator recognition', manual_adjustment: 'Reputation adjustment' }[type] || type)
 const ago = (value) => { const d = new Date(value); const s = Math.max(1, Math.floor((Date.now() - d.getTime()) / 1000)); if (s < 60) return `${s}s ago`; const m = Math.floor(s / 60); if (m < 60) return `${m}m ago`; const h = Math.floor(m / 60); if (h < 24) return `${h}h ago`; const days = Math.floor(h / 24); if (days < 30) return `${days}d ago`; return d.toLocaleDateString() }
 function State({ children }) { return <div className="town-state">{children}</div> }
 function Empty({ children }) { return <div className="town-empty">{children}</div> }
@@ -80,6 +81,8 @@ export function SavedPostsPage({ currentUserId }) {
 export function UserProfilePage({ userId, currentUserId }) {
   const [profile,setProfile]=useState(null)
   const [stats,setStats]=useState({posts:0,comments:0,reputation:0})
+  const [reputationBreakdown,setReputationBreakdown]=useState([])
+  const [recentReputation,setRecentReputation]=useState([])
   const [followState,setFollowState]=useState({following:false,followers:0,followingCount:0,busy:false})
   const [loading,setLoading]=useState(true)
   const [error,setError]=useState('')
@@ -87,25 +90,29 @@ export function UserProfilePage({ userId, currentUserId }) {
     let active=true
     ;(async()=>{
       setLoading(true);setError('')
-      const [profileResult,postsResult,commentsResult,followResult,followerCount,followingCount]=await Promise.all([
+      const [profileResult,postsResult,commentsResult,followResult,followerCount,followingCount,reputationResult,recentReputationResult]=await Promise.all([
         supabase.from('profiles').select('*').eq('id',userId).maybeSingle(),
         supabase.from('posts').select('id',{count:'exact',head:true}).eq('author_id',userId).neq('status','removed'),
         supabase.from('comments').select('id',{count:'exact',head:true}).eq('author_id',userId).neq('status','removed'),
         currentUserId && currentUserId !== userId ? supabase.from('user_follows').select('followed_id').eq('follower_id',currentUserId).eq('followed_id',userId).maybeSingle() : Promise.resolve({data:null}),
         supabase.from('user_follows').select('follower_id',{count:'exact',head:true}).eq('followed_id',userId),
-        supabase.from('user_follows').select('followed_id',{count:'exact',head:true}).eq('follower_id',userId)
+        supabase.from('user_follows').select('followed_id',{count:'exact',head:true}).eq('follower_id',userId),
+        supabase.rpc('get_public_reputation_breakdown',{target_user_id:userId}),
+        supabase.from('reputation_events').select('id,event_type,points,post_id,comment_id,created_at').eq('user_id',userId).order('created_at',{ascending:false}).limit(6)
       ])
       if(!active)return
       if(profileResult.error){setError(profileResult.error.message);setLoading(false);return}
-      if(postsResult.error||commentsResult.error){setError((postsResult.error||commentsResult.error).message);setLoading(false);return}
+      if(postsResult.error||commentsResult.error||reputationResult.error||recentReputationResult.error){setError((postsResult.error||commentsResult.error||reputationResult.error||recentReputationResult.error).message);setLoading(false);return}
       const p=profileResult.data
       setProfile(p)
       setStats({posts:postsResult.count??0,comments:commentsResult.count??0,reputation:p?.reputation_score??0})
+      setReputationBreakdown(reputationResult.data||[])
+      setRecentReputation(recentReputationResult.data||[])
       setFollowState({following:Boolean(followResult.data),followers:followerCount.count??0,followingCount:followingCount.count??0,busy:false})
       setLoading(false)
     })()
     return()=>{active=false}
-  },[userId])
+  },[userId,currentUserId])
   const toggleFollow=async()=>{if(!currentUserId||currentUserId===userId||followState.busy)return;setFollowState(s=>({...s,busy:true}));const result=followState.following?await supabase.from('user_follows').delete().eq('follower_id',currentUserId).eq('followed_id',userId):await supabase.from('user_follows').insert({follower_id:currentUserId,followed_id:userId});if(result.error){setError(result.error.message);setFollowState(s=>({...s,busy:false}));return}setFollowState(s=>({...s,following:!s.following,followers:s.followers+(s.following?-1:1),busy:false}))}
   if(loading)return <Frame title="Member profile"><State>Loading…</State></Frame>
   if(error||!profile)return <Frame title="Member profile"><ErrorBox>{error||'Profile not found.'}</ErrorBox></Frame>
@@ -136,6 +143,11 @@ export function UserProfilePage({ userId, currentUserId }) {
         <div><strong>{interests.length.toLocaleString()}</strong><span>Interests</span></div>
       </div>
       {interests.length>0&&<section className="public-profile-interests"><p className="eyebrow">INTERESTS</p><div className="profile-interest-list">{interests.map((x,i)=><span className="profile-interest-chip" key={`${x}-${i}`}>{x}</span>)}</div></section>}
+      <section className="public-profile-contributions">
+        <div className="town-section-heading"><div><p className="eyebrow">MEMBER CONTRIBUTIONS</p><h2>Reputation breakdown</h2></div>{currentUserId===userId&&<a className="button secondary" href="#/reputation">View full ledger</a>}</div>
+        {reputationBreakdown.length ? <div className="profile-contribution-breakdown">{reputationBreakdown.map(item=><div className="profile-contribution-metric" key={item.event_type}><strong>{Number(item.points_total)>0?'+':''}{Number(item.points_total).toLocaleString()}</strong><span>{reputationEventLabel(item.event_type)}</span><small>{Number(item.event_count).toLocaleString()} events</small></div>)}</div> : <div className="town-empty">No recorded reputation events yet.</div>}
+        <div className="profile-recent-contributions"><p className="eyebrow">RECENT CONTRIBUTIONS</p>{recentReputation.length ? recentReputation.map(event=><div className="profile-contribution-event" key={event.id}><div><strong>{reputationEventLabel(event.event_type)}</strong><span>{ago(event.created_at)}</span></div><b className={event.points>=0?'points positive':'points negative'}>{event.points>0?'+':''}{event.points}</b></div>) : <p className="town-empty">New contributions will appear here.</p>}</div>
+      </section>
     </div>
   </Frame>
 }
