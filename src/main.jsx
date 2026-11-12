@@ -1668,7 +1668,7 @@ function App() {
   else if (routeName === 'feed') page = <FeedPage currentUserId={session?.user?.id} />
   else if (routeName === 'post' && routeParam) page = <PostPage postId={routeParam} currentUserId={session?.user?.id} />
   else if (routeName === 'create-post') page = <CreatePostPage currentUserId={session?.user?.id} />
-  else if (routeName === 'signin') page = <Auth onLogin={() => { const returnTo = window.sessionStorage.getItem('town-auth-return') || '#/feed'; window.sessionStorage.removeItem('town-auth-return'); window.location.hash = returnTo; window.location.reload() }} />
+  else if (routeName === 'signin') page = session ? <InfoPage title="You are already signed in"><p className="feature-text">You can continue browsing Town or return to the discussion.</p><a className="button primary" href={window.sessionStorage.getItem('town-auth-return') || '#/feed'}>Continue</a></InfoPage> : <Auth onLogin={() => { const returnTo = window.sessionStorage.getItem('town-auth-return') || '#/feed'; window.sessionStorage.removeItem('town-auth-return'); window.location.hash = returnTo; window.location.reload() }} />
   else if (routeName === 'communities') page = <CommunitiesPage currentUserId={session?.user?.id} />
   else if (routeName === 'community' && routeParam) page = <CommunityPage slug={routeParam} currentUserId={session?.user?.id} />
   else if (routeName === 'create-community') page = <CreateCommunityPage currentUserId={session?.user?.id} />
