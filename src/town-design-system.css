@@ -303,3 +303,71 @@
     animation-iteration-count: 1 !important;
   }
 }
+
+
+/* Reputation and member contribution surfaces */
+.ps2-shell .reputation-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  gap: 10px;
+}
+.ps2-shell .reputation-breakdown-row,
+.ps2-shell .profile-contribution-event {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 13px 15px;
+  border: 1px solid rgba(255,255,255,.085);
+  border-radius: 13px;
+  background: rgba(255,255,255,.025);
+}
+.ps2-shell .reputation-breakdown-row > div,
+.ps2-shell .profile-contribution-event > div {
+  display: grid;
+  gap: 4px;
+  min-width: 0;
+}
+.ps2-shell .reputation-breakdown-row strong,
+.ps2-shell .profile-contribution-event strong { color: #e8eaf0; font-size: .88rem; }
+.ps2-shell .reputation-breakdown-row span,
+.ps2-shell .profile-contribution-event span,
+.ps2-shell .profile-contribution-metric small {
+  color: #858b98;
+  font-size: .74rem;
+}
+.ps2-shell .profile-contribution-breakdown {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(145px, 1fr));
+  gap: 10px;
+}
+.ps2-shell .profile-contribution-metric {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+  padding: 15px;
+  border: 1px solid rgba(255,255,255,.085);
+  border-radius: 13px;
+  background: rgba(255,255,255,.025);
+}
+.ps2-shell .profile-contribution-metric strong {
+  color: var(--town-accent);
+  font-size: 1.25rem;
+  font-variant-numeric: tabular-nums;
+}
+.ps2-shell .profile-contribution-metric span { color: #d8dbe3; font-size: .8rem; }
+.ps2-shell .public-profile-contributions {
+  display: grid;
+  gap: 16px;
+  margin-top: 26px;
+}
+.ps2-shell .public-profile-contributions .town-section-heading { margin-bottom: 0; }
+.ps2-shell .profile-recent-contributions { display: grid; gap: 8px; }
+.ps2-shell .profile-recent-contributions > .eyebrow { margin: 8px 0 2px; }
+.ps2-shell .profile-contribution-event { padding: 11px 13px; }
+.ps2-shell .profile-contribution-event .points,
+.ps2-shell .reputation-breakdown-row .points { font-variant-numeric: tabular-nums; }
+@media (max-width: 620px) {
+  .ps2-shell .profile-contribution-breakdown { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ps2-shell .reputation-breakdown { grid-template-columns: 1fr; }
+}
