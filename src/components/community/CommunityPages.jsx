@@ -29,7 +29,7 @@ function Empty({ children }) {
   return <div className="town-empty">{children}</div>
 }
 
-export function TownHomePage() {
+export function TownHomePage({ currentUserId, guestMode = false }) {
   const [communities, setCommunities] = useState([])
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -91,7 +91,7 @@ export function TownHomePage() {
               </p>
               <div className="town-hero-actions">
                 <a className="button primary" href="#/communities">Explore downtowns <span aria-hidden="true">→</span></a>
-                <a className="button secondary" href="#/create-post">Create a post</a>
+                <a className="button secondary" href={currentUserId ? "#/create-post" : "#/signin"}>{currentUserId ? "Create a post" : "Sign in to post"}</a>
               </div>
             </div>
             <span className="town-home-hero-caption">LOCAL VOICES · SHARED INTERESTS</span>
