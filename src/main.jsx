@@ -1800,7 +1800,7 @@ function App() {
   if (routeName === 'create-post' && !session) return <Auth onLogin={() => window.location.reload()} />
   if (routeName === 'signin' && !session) return <Auth onLogin={() => { const returnTo = window.sessionStorage.getItem('town-auth-return') || '#/feed'; window.sessionStorage.removeItem('town-auth-return'); window.location.hash = returnTo; window.location.reload() }} />
 
-  return <div className="ps2-shell" style={{ '--accent': globalAccent, '--profile-accent': globalAccent }}>
+  return <div className={`ps2-shell ${guestMode ? 'guest-mode-shell' : ''}`} style={{ '--accent': globalAccent, '--profile-accent': globalAccent }}>
     <div className="ps2-scanlines" aria-hidden="true" />
     <header className="ps2-topbar">
       <button className="mobile-nav-toggle" type="button" aria-label="Toggle navigation" aria-expanded={mobileNavOpen} onClick={() => setMobileNavOpen(v => !v)}>MENU</button>
