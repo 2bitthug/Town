@@ -45,7 +45,7 @@
    forcing every animal into the same 16px silhouette. */
 .pet-room-character {
   left: 8%;
-  --pet-sprite-size: 184px;
+  --pet-sprite-size: 152px;
   width: var(--pet-sprite-size);
   filter: drop-shadow(0 7px 5px rgba(0,0,0,.24));
 }
@@ -76,7 +76,7 @@
   font-weight: 600;
 }
 @media(max-width:760px) {
-  .pet-room-character { --pet-sprite-size: 152px; width: var(--pet-sprite-size); }
+  .pet-room-character { --pet-sprite-size: 128px; width: var(--pet-sprite-size); }
   .pet-room-character .pet-sprite-art { width: var(--pet-sprite-size); height: var(--pet-sprite-size); }
   .pet-choice-grid button .pet-sprite-thumb { width: 54px; height: 54px; }
 }
