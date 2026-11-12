@@ -27,7 +27,7 @@ export function SearchPage({ currentUserId }) {
         const { data, error: e } = await supabase.from('profiles').select('id,username,display_name,bio').or(`username.ilike.%${q}%,display_name.ilike.%${q}%,bio.ilike.%${q}%`).limit(50)
         if (e) throw e; setResults(data || [])
       } else {
-        const { data, error: e } = await supabase.from('posts').select('id,title,body,community_id,author_id,created_at,status').neq('status','removed').or(`title.ilike.%${q}%,body.ilike.%${q}%`).order('created_at',{ascending:false}).limit(50)
+        const { data, error: e } = await supabase.from('posts').select('id,title,body,community_id,author_id,created_at,status').eq('status','published').textSearch('search_document', q, { config: 'english', type: 'websearch' }).order('created_at',{ascending:false}).limit(50)
         if (e) throw e
         const ids = [...new Set((data || []).map(p => p.community_id).filter(Boolean))]
         const { data: communities } = ids.length ? await supabase.from('communities').select('id,name,slug').in('id',ids) : { data: [] }
