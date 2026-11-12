@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import './PetCompanionExperience.css'
+import PetSprite from './PetSprite'
 import { getMembershipProgress, hasPetUnlock, isPetId, uniqueSouvenirs } from './petRules'
 
 const PETS = [
@@ -19,7 +20,6 @@ const CATALOG = [
   {key:'welcome-wave',type:'trick',label:'Hello wave',detail:'Your pet’s first trick',source:'Welcome gift',emoji:'👋'},
   {key:'toy-ball',type:'toy',label:'Play ball',detail:'A bright ball your pet can chase around its room',source:'Welcome gift',emoji:'⚽'}
 ]
-const petSprite = id => id && id !== 'none' ? `/pets/${id}.svg` : ''
 const safeArray = value => Array.isArray(value) ? value : []
 
 export function PetCompanionExperience({ currentUserId }) {
@@ -153,7 +153,7 @@ export function PetCompanionExperience({ currentUserId }) {
         <div className="pet-room-sky" aria-label="Your pet’s decorated home">
           <div className="pet-room-sign">PET HOME</div>
           {safeArray(companion.home_items).map(k=><div className={`pet-room-decoration pet-decor-${k}`} key={k} aria-label={CATALOG.find(x=>x.key===k)?.label || 'Decoration'}><span>{CATALOG.find(x=>x.key===k)?.emoji || '✦'}</span></div>)}
-          {profile.pet_id!=='none' ? <div key={playKey} className={`pet-room-character ${playKey ? "pet-playing" : ""}`} style={{filter:companion.color_id==='mint-coat'?'hue-rotate(55deg)':companion.color_id==='sunset-coat'?'hue-rotate(315deg)':'none'}}><img src={petSprite(profile.pet_id)} alt={selectedPet?.[1] || 'Your pet'}/></div> : <div className="pet-room-empty">Choose a pet to move in.</div>}
+          {profile.pet_id!=='none' ? <div key={playKey} className={`pet-room-character ${playKey ? "pet-playing" : ""}`} style={{filter:companion.color_id==='mint-coat'?'hue-rotate(55deg)':companion.color_id==='sunset-coat'?'hue-rotate(315deg)':'none'}}><PetSprite id={profile.pet_id} className="pet-sprite-art" title={selectedPet?.[1] || 'Your pet'}/></div> : <div className="pet-room-empty">Choose a pet to move in.</div>}
           <div className="pet-room-floor"/>
         </div>
         <div className="pet-room-caption"><div><strong>{profile.pet_name || 'Pixel'} {companion.outfit_id==='stargazer-outfit'?'✦':''}</strong><span>{selectedPet?.[1] || 'No pet selected'} · always happy to see you</span></div><button className="button secondary" onClick={()=>setActiveTab('customize')}>Decorate home</button></div>
@@ -162,7 +162,7 @@ export function PetCompanionExperience({ currentUserId }) {
       <article className="pet-progress-card"><p className="eyebrow">YOUR JOURNEY</p><h2>Progress that stays</h2><p>Membership milestones are based on time since joining—not daily visits.</p>{progress.map(x=><div className="pet-milestone" key={x.label}><span>{x.done?'✓':'○'} {x.label}</span><small>{x.detail}</small></div>)}<div className="pet-milestone"><span>Helpful community recognition</span><small>{unlocks.some(x=>x.reward_key==='helpful-sparkle')?'Reward unlocked':'Earned through positive feedback'}</small></div><a className="button secondary" href="#/reputation">View reputation</a></article>
     </div>}
     {activeTab==='customize' && <div className="pet-customize-grid">
-      <article className="pet-panel"><h2>Choose your companion</h2><p>Change your pet whenever you like. No pet is required.</p><div className="pet-choice-grid">{[['none','No pet'],...PETS].map(([id,label])=><button key={id} className={profile.pet_id===id?'selected':''} aria-pressed={profile.pet_id===id} onClick={()=>savePet({pet_id:id})} disabled={saving}>{id==='none'?'×':<img src={petSprite(id)} alt=""/>}<small>{label}</small></button>)}</div><label className="pet-name-field">Pet name<input value={profile.pet_name ?? ''} placeholder="Give your pet a name" maxLength={20} onChange={e=>setProfile(x=>({...x,pet_name:e.target.value}))}/></label><button className="button primary" disabled={saving} onClick={()=>savePet()}>{saving?'Saving…':'Save name and pet'}</button></article>
+      <article className="pet-panel"><h2>Choose your companion</h2><p>Change your pet whenever you like. No pet is required.</p><div className="pet-choice-grid">{[['none','No pet'],...PETS].map(([id,label])=><button key={id} className={profile.pet_id===id?'selected':''} aria-pressed={profile.pet_id===id} onClick={()=>savePet({pet_id:id})} disabled={saving}>{id==='none'?'×':<PetSprite id={id} className="pet-sprite-thumb" title={label}/>}<small>{label}</small></button>)}</div><label className="pet-name-field">Pet name<input value={profile.pet_name ?? ''} placeholder="Give your pet a name" maxLength={20} onChange={e=>setProfile(x=>({...x,pet_name:e.target.value}))}/></label><button className="button primary" disabled={saving} onClick={()=>savePet()}>{saving?'Saving…':'Save name and pet'}</button></article>
       <article className="pet-panel"><h2>Unlockables</h2><p>Earn cosmetics through membership and constructive recognition. Locked rewards show their requirements.</p><div className="pet-catalog">{CATALOG.map(item=>{const got=hasPetUnlock(unlocks,item.key);return <div className={got?'unlocked':'locked'} key={item.key}><span className={`pet-catalog-icon pet-icon-${item.type}`} style={{'--item-color':item.color||'var(--accent)'}}>{item.emoji||'◈'}</span><div><strong>{item.label}</strong><small>{got?'Unlocked':item.source}</small><p>{item.detail}</p></div>{got?<div className="pet-catalog-actions"><span className="pet-owned">Owned</span>{item.type==='color'&&<button className="button secondary" disabled={saving} onClick={()=>saveCompanion({color_id:item.key})}>{companion.color_id===item.key?'Equipped':'Equip'}</button>}{item.type==='outfit'&&<button className="button secondary" disabled={saving} onClick={()=>saveCompanion({outfit_id:item.key})}>{companion.outfit_id===item.key?'Equipped':'Equip'}</button>}</div>:<span className="pet-lock">Locked</span>}</div>})}</div></article>
       <article className="pet-panel"><h2>Home decorations</h2><p>Place unlocked items in your pet’s room.</p>{CATALOG.filter(x=>x.type==='decoration'||x.type==='toy').map(item=>{const got=hasPetUnlock(unlocks,item.key),placed=safeArray(companion.home_items).includes(item.key);return <div className="pet-home-item" key={item.key}><span>{item.emoji}</span><div><strong>{item.label}</strong><small>{got?'Available to place':item.source}</small></div><button className="button secondary" disabled={!got||saving} onClick={()=>placed?removeDecoration(item.key):addDecoration(item.key)}>{placed?'Remove':'Place'}</button></div>})}</article>
     </div>}
