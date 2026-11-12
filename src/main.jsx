@@ -1776,7 +1776,7 @@ function App() {
   else if (routeName === 'communities') page = <CommunitiesPage currentUserId={session?.user?.id} guestMode={guestMode} guestState={guestState} />
   else if (routeName === 'community' && routeParam) page = <CommunityPage slug={routeParam} currentUserId={session?.user?.id} guestMode={guestMode} guestState={guestState} setGuestState={setGuestState} />
   else if (routeName === 'create-community') page = <CreateCommunityPage currentUserId={session?.user?.id} />
-  else if (routeName === 'search') page = <SearchPage currentUserId={session?.user?.id} />
+  else if (routeName === 'search') page = <SearchPage currentUserId={session?.user?.id} guestMode={guestMode} />
   else if (routeName === 'social') page = session ? <SocialSection currentUserId={session.user.id} /> : <GuestChatPage guestState={guestState} setGuestState={setGuestState} />
   else if (routeName === 'saved') page = session ? <SavedPostsPage currentUserId={session.user.id} /> : <GuestSavedPostsPage guestState={guestState} setGuestState={setGuestState} />
   else if (routeName === 'notifications') page = session ? <NotificationsPage currentUserId={session.user.id} /> : <GuestAccountFeature kind="notifications" />
