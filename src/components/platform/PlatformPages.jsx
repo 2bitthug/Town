@@ -11,7 +11,7 @@ function State({ children }) { return <div className="town-state">{children}</di
 function Empty({ children }) { return <div className="town-empty">{children}</div> }
 function ErrorBox({ children }) { return <div className="town-error">{children}</div> }
 
-export function SearchPage({ currentUserId }) {
+export function SearchPage({ currentUserId, guestMode = false }) {
   const [query, setQuery] = useState('')
   const [scope, setScope] = useState('posts')
   const [results, setResults] = useState([])
@@ -25,6 +25,7 @@ export function SearchPage({ currentUserId }) {
         const { data, error: e } = await supabase.from('communities').select('id,name,slug,description,category').eq('status','active').or(`name.ilike.%${q}%,description.ilike.%${q}%,category.ilike.%${q}%`).order('name').limit(50)
         if (e) throw e; setResults(data || [])
       } else if (scope === 'users') {
+        if (guestMode) throw new Error('Sign in to search member profiles. Guest search covers public posts and downtowns.')
         const { data, error: e } = await supabase.from('profiles').select('id,username,display_name,bio').or(`username.ilike.%${q}%,display_name.ilike.%${q}%,bio.ilike.%${q}%`).limit(50)
         if (e) throw e; setResults(data || [])
       } else {
@@ -36,7 +37,7 @@ export function SearchPage({ currentUserId }) {
       }
     } catch (e) { setError(e.message || 'Search failed.') } finally { setLoading(false) }
   }
-  return <Frame title="Search" eyebrow="FIND DELIBERATELY"><form className="platform-search" onSubmit={search}><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search posts, downtowns, or people…" /><select value={scope} onChange={e=>setScope(e.target.value)}><option value="posts">Posts</option><option value="communities">Downtowns</option><option value="users">People</option></select><button className="button primary">Search</button></form>{error && <ErrorBox>{error}</ErrorBox>}{loading ? <State>Searching…</State> : !query.trim() ? <Empty>Search the town by words you choose.</Empty> : !results.length ? <Empty>No results found.</Empty> : <div className="search-results">{results.map(item => scope === 'posts' ? <a className="search-result" href={`#/post/${item.id}`} key={item.id}><strong>{item.title}</strong><span>{item.community?.name || 'Downtown'} · {ago(item.created_at)}</span><p>{item.body || 'No body text.'}</p></a> : scope === 'communities' ? <a className="search-result" href={`#/community/${item.slug}`} key={item.id}><strong>{item.name}</strong><span>{item.category || 'Downtown'}</span><p>{item.description || 'No description.'}</p></a> : <a className="search-result" href={`#/profile/${item.id}`} key={item.id}><strong>{item.display_name || item.username}</strong><span>@{item.username}</span><p>{item.bio || 'Town member'}</p></a>)}</div>}</Frame>
+  return <Frame title="Search" eyebrow="FIND DELIBERATELY"><form className="platform-search" onSubmit={search}><input value={query} onChange={e=>setQuery(e.target.value)} placeholder="Search posts, downtowns, or people…" /><select value={scope} onChange={e=>setScope(e.target.value)}><option value="posts">Posts</option><option value="communities">Downtowns</option>{!guestMode && <option value="users">People</option>}</select><button className="button primary">Search</button></form>{error && <ErrorBox>{error}</ErrorBox>}{loading ? <State>Searching…</State> : !query.trim() ? <Empty>Search the town by words you choose.</Empty> : !results.length ? <Empty>No results found.</Empty> : <div className="search-results">{results.map(item => scope === 'posts' ? <a className="search-result" href={`#/post/${item.id}`} key={item.id}><strong>{item.title}</strong><span>{item.community?.name || 'Downtown'} · {ago(item.created_at)}</span><p>{item.body || 'No body text.'}</p></a> : scope === 'communities' ? <a className="search-result" href={`#/community/${item.slug}`} key={item.id}><strong>{item.name}</strong><span>{item.category || 'Downtown'}</span><p>{item.description || 'No description.'}</p></a> : <a className="search-result" href={`#/profile/${item.id}`} key={item.id}><strong>{item.display_name || item.username}</strong><span>@{item.username}</span><p>{item.bio || 'Town member'}</p></a>)}</div>}</Frame>
 }
 
 export function SavedPostsPage({ currentUserId }) {

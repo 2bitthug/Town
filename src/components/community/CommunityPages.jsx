@@ -29,7 +29,7 @@ function Empty({ children }) {
   return <div className="town-empty">{children}</div>
 }
 
-export function TownHomePage() {
+export function TownHomePage({ currentUserId }) {
   const [communities, setCommunities] = useState([])
   const [posts, setPosts] = useState([])
   const [loading, setLoading] = useState(true)
@@ -91,7 +91,7 @@ export function TownHomePage() {
               </p>
               <div className="town-hero-actions">
                 <a className="button primary" href="#/communities">Explore downtowns <span aria-hidden="true">→</span></a>
-                <a className="button secondary" href="#/create-post">Create a post</a>
+                <a className="button secondary" href={currentUserId ? "#/create-post" : "#/signin"}>{currentUserId ? "Create a post" : "Sign in to post"}</a>
               </div>
             </div>
             <span className="town-home-hero-caption">LOCAL VOICES · SHARED INTERESTS</span>
@@ -173,14 +173,14 @@ export function CommunitiesPage({ currentUserId, guestMode = false, guestState }
     if (fetchError) setError(fetchError.message)
     const ids=(data||[]).map(item=>item.id)
     const [{data:memberships},{data:posts},{data:joined}]=await Promise.all([
-      ids.length?supabase.from('community_memberships').select('community_id').in('community_id',ids):Promise.resolve({data:[]}),
+      !guestMode && ids.length?supabase.from('community_memberships').select('community_id').in('community_id',ids):Promise.resolve({data:[]}),
       ids.length?supabase.from('posts').select('community_id').in('community_id',ids).eq('status','published'):Promise.resolve({data:[]}),
       currentUserId?supabase.from('community_memberships').select('community_id').eq('user_id',currentUserId):Promise.resolve({data:(guestState?.joinedCommunityIds || []).map(community_id=>({community_id}))})
     ])
     const memberCounts=new Map(),postCounts=new Map()
     ;(memberships||[]).forEach(row=>memberCounts.set(row.community_id,(memberCounts.get(row.community_id)||0)+1))
     ;(posts||[]).forEach(row=>postCounts.set(row.community_id,(postCounts.get(row.community_id)||0)+1))
-    setCommunities((data||[]).map(item=>({...item,member_count:memberCounts.get(item.id)||0,post_count:postCounts.get(item.id)||0})))
+    setCommunities((data||[]).map(item=>({...item,member_count:guestMode?null:(memberCounts.get(item.id)||0),post_count:postCounts.get(item.id)||0})))
     setJoinedIds(new Set((joined||[]).map(row=>row.community_id)))
     setLoading(false)
   }
@@ -210,9 +210,9 @@ export function CommunitiesPage({ currentUserId, guestMode = false, guestState }
     <PageFrame
       eyebrow="DOWNTOWNS"
       title="Choose where to spend your attention."
-      actions={currentUserId ? <a className="button primary" href="#/create-community">Create downtown</a> : <a className="button secondary" href="#/create-community">Sign in to create</a>}
+      actions={currentUserId ? <a className="button primary" href="#/create-community">Create downtown</a> : <a className="button secondary" href="#/signin">Sign in to create</a>}
     >
-      <div className="town-directory-intro"><p>Start with a small set of downtowns. Explore the full directory whenever you want.</p><button type="button" className="button secondary" onClick={() => setShowAll(v => !v)}>{showAll ? 'Show curated selection' : `Show all ${communities.length} downtowns`}</button></div>
+      <div className="town-directory-intro"><div><strong>{communities.length} public downtowns</strong><p>Explore active communities, find a topic that interests you, and join the conversation.</p></div><button type="button" className="button secondary" onClick={() => setShowAll(v => !v)}>{showAll ? 'Show curated selection' : 'Show all downtowns'}</button></div>
       <div className="town-directory-controls">
         <input value={query} onChange={e => setQuery(e.target.value)} placeholder="Search downtowns…" aria-label="Search downtowns" />
         <select value={category} onChange={e => setCategory(e.target.value)} aria-label="Filter by category">
@@ -220,7 +220,7 @@ export function CommunitiesPage({ currentUserId, guestMode = false, guestState }
         </select>
         <select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort downtowns">
           <option value="latest">Recently created</option>
-          <option value="members">Most members</option>
+          {!guestMode && <option value="members">Most members</option>}
           <option value="active">Most active</option>
           <option value="name">Name</option>
         </select>
@@ -229,7 +229,7 @@ export function CommunitiesPage({ currentUserId, guestMode = false, guestState }
       {loading && <Loading />}
       {error && <div className="town-error">{error}<button className="button secondary" onClick={load}>Retry</button></div>}
       {!loading && !error && !filtered.length && <Empty>{query || category !== 'All' ? 'No downtowns match your filters.' : 'No downtowns have been seeded yet.'}</Empty>}
-      <div className="community-grid">
+      <div className={`community-grid ${guestMode ? 'guest-community-grid' : ''}`}>
         {curated.map(community => (
           <a className="community-card" href={`#/community/${community.slug}`} key={community.id}>
             <div className="community-card-icon">{community.icon_url ? <img src={community.icon_url} alt="" /> : community.name.slice(0, 1).toUpperCase()}</div>
@@ -237,7 +237,7 @@ export function CommunitiesPage({ currentUserId, guestMode = false, guestState }
               <div className="community-card-topline"><span>{community.category}</span></div>
               <h2>{community.name}</h2>
               <p>{community.description || 'A downtown in the town.'}</p>
-              <div className="community-discovery-stats"><span>{community.member_count} members</span><span>{community.post_count} discussions</span></div><span className="community-open">{joinedIds.has(community.id) ? 'Joined downtown →' : 'Explore downtown →'}</span>
+              <div className="community-discovery-stats">{community.member_count === null ? <span>Public downtown</span> : <span>{community.member_count} members</span>}<span>{community.post_count} discussions</span></div><span className="community-open">{joinedIds.has(community.id) ? 'Joined downtown →' : 'Explore downtown →'}</span>
             </div>
           </a>
         ))}
@@ -360,11 +360,11 @@ export function CommunityPage({ slug, currentUserId, guestMode = false, guestSta
     }
   }
 
-  const toggleCommunityFollow=async()=>{if(!community||followBusy)return;if(guestMode){const next=new Set(guestState?.followedCommunityIds||[]);followingCommunity?next.delete(community.id):next.add(community.id);setGuestState?.(state=>({...state,followedCommunityIds:[...next]}));setFollowingCommunity(!followingCommunity);setFollowerCount(n=>n+(followingCommunity?-1:1));return}if(!currentUserId)return;setFollowBusy(true);const result=followingCommunity?await supabase.from('community_follows').delete().eq('user_id',currentUserId).eq('community_id',community.id):await supabase.from('community_follows').insert({user_id:currentUserId,community_id:community.id});if(result.error)setError(result.error.message);else{setFollowingCommunity(!followingCommunity);setFollowerCount(n=>n+(followingCommunity?-1:1))}setFollowBusy(false)}
+  const toggleCommunityFollow=async()=>{if(!community||followBusy)return;if(guestMode){const next=new Set(guestState?.followedCommunityIds||[]);followingCommunity?next.delete(community.id):next.add(community.id);setGuestState?.(state=>({...state,followedCommunityIds:[...next],guestNotifications:followingCommunity?(state.guestNotifications||[]):[...(state.guestNotifications||[]),{id:`guest-follow-${community.id}-${Date.now()}`,title:'Downtown followed',body:`You are now following ${community.name} during this visit.`,created_at:new Date().toISOString(),read:false}]}));setFollowingCommunity(!followingCommunity);setFollowerCount(n=>n+(followingCommunity?-1:1));return}if(!currentUserId)return;setFollowBusy(true);const result=followingCommunity?await supabase.from('community_follows').delete().eq('user_id',currentUserId).eq('community_id',community.id):await supabase.from('community_follows').insert({user_id:currentUserId,community_id:community.id});if(result.error)setError(result.error.message);else{setFollowingCommunity(!followingCommunity);setFollowerCount(n=>n+(followingCommunity?-1:1))}setFollowBusy(false)}
 
   const toggleMembership = async () => {
     if (!community) return
-    if (guestMode) { const next = new Set(guestState?.joinedCommunityIds || []); member ? next.delete(community.id) : next.add(community.id); setGuestState?.(state => ({ ...state, joinedCommunityIds: [...next] })); setMember(!member); return }
+    if (guestMode) { const next = new Set(guestState?.joinedCommunityIds || []); member ? next.delete(community.id) : next.add(community.id); setGuestState?.(state => ({ ...state, joinedCommunityIds: [...next], guestNotifications: member ? (state.guestNotifications || []) : [...(state.guestNotifications || []), { id: `guest-join-${community.id}-${Date.now()}`, title: 'Downtown joined', body: `You joined ${community.name} for this visit.`, created_at: new Date().toISOString(), read: false }] })); setMember(!member); return }
     if (!currentUserId) return
     setBusy(true)
     if (member) {
@@ -386,7 +386,7 @@ export function CommunityPage({ slug, currentUserId, guestMode = false, guestSta
     <PageFrame
       eyebrow={community.category}
       title={community.name}
-      actions={<>{/* New post button */}{currentUserId ? <a className="button primary" href="#/create-post">New post</a> : <a className="button secondary" href="#/create-post">Sign in to post</a>}{slug === 'city-mumbai' && (<>{/* Section links */}<a className="button secondary" href={`#/library/${slug}`}>Library</a><a className="button secondary" href={`#/wiki/${slug}`}>Wiki</a><a className="button secondary" href={`#/updates/${slug}`}>Updates</a></>)}{(currentUserId || guestMode) && (<button className={`button ${followingCommunity ? 'secondary' : 'primary'}`} disabled={followBusy} onClick={toggleCommunityFollow}>{followBusy?'Working…':followingCommunity?'Following':'Follow downtown'} · {followerCount}</button>)}{(currentUserId || guestMode) && (<button className={`button ${member ? 'secondary' : 'primary'}`} disabled={busy} onClick={toggleMembership}>{busy ? 'Working…' : member ? 'Leave downtown' : 'Join downtown'}</button>)}</>}
+      actions={<>{/* New post button */}{currentUserId ? <a className="button primary" href="#/create-post">New post</a> : <a className="button secondary" href="#/create-post">Sign in to post</a>}{slug === 'city-mumbai' && (<>{/* Section links */}<a className="button secondary" href={`#/library/${slug}`}>Library</a><a className="button secondary" href={`#/wiki/${slug}`}>Wiki</a><a className="button secondary" href={`#/updates/${slug}`}>Updates</a></>)}{(currentUserId || guestMode) && (<button className={`button ${followingCommunity ? 'secondary' : 'primary'}`} disabled={followBusy} onClick={toggleCommunityFollow}>{followBusy?'Working…':followingCommunity?'Following':'Follow downtown'}{!guestMode ? ` · ${followerCount}` : ''}</button>)}{(currentUserId || guestMode) && (<button className={`button ${member ? 'secondary' : 'primary'}`} disabled={busy} onClick={toggleMembership}>{busy ? 'Working…' : member ? 'Leave downtown' : 'Join downtown'}</button>)}</>}
     >
       <div className="community-header">
         <div className="community-profile-identity">

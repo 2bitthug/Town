@@ -97,7 +97,7 @@ export function PostPage({ postId, currentUserId, guestMode = false }) {
       const [{ data: community, error: ce }, { data: topic, error: te }, { data: author, error: ae }, { data: cs, error: cse }, { data: vote, error: ve }] = await Promise.all([
         supabase.from('communities').select('id,name,slug,category').eq('id', p.community_id).maybeSingle(),
         p.topic_id ? supabase.from('topics').select('id,name').eq('id', p.topic_id).maybeSingle() : Promise.resolve({ data: null, error: null }),
-        supabase.from('profiles').select('id,username,display_name').eq('id', p.author_id).maybeSingle(),
+        currentUserId ? supabase.from('profiles').select('id,username,display_name').eq('id', p.author_id).maybeSingle() : Promise.resolve({ data: null, error: null }),
         supabase.from('comments').select('id,post_id,parent_id,author_id,body,status,created_at,edited_at').eq('post_id', p.id).neq('status', 'removed').order('created_at', { ascending: true }),
         currentUserId ? supabase.from('post_votes').select('value').eq('post_id', p.id).eq('user_id', currentUserId).maybeSingle() : Promise.resolve({ data: null, error: null })
       ])
@@ -105,7 +105,7 @@ export function PostPage({ postId, currentUserId, guestMode = false }) {
       const commentRows = cs || []
       const authorIds = [...new Set(commentRows.map(c => c.author_id).filter(Boolean))]
       const [{ data: commentAuthors, error: cae }, { data: blocks, error: be }] = await Promise.all([
-        authorIds.length ? supabase.from('profiles').select('id,username,display_name').in('id', authorIds) : Promise.resolve({ data: [], error: null }),
+        currentUserId && authorIds.length ? supabase.from('profiles').select('id,username,display_name').in('id', authorIds) : Promise.resolve({ data: [], error: null }),
         currentUserId && authorIds.length ? supabase.from('user_blocks').select('blocked_id').eq('blocker_id', currentUserId).in('blocked_id', authorIds) : Promise.resolve({ data: [], error: null })
       ])
       if (cae || be) throw cae || be

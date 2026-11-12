@@ -19,7 +19,7 @@ async function loadStats(ids) {
 
 export function FeedPage({ currentUserId, guestMode = false, guestState, setGuestState }) {
   const [posts, setPosts] = useState([]), [communities, setCommunities] = useState([]), [joinedIds, setJoinedIds] = useState(new Set())
-  const [sort, setSort] = useState(() => localStorage.getItem(SORT_KEY) || 'latest'), [communityFilter, setCommunityFilter] = useState('all'), [joinedOnly, setJoinedOnly] = useState(false), [query, setQuery] = useState(''), [searchInput, setSearchInput] = useState(''), [postType, setPostType] = useState('all'), [tagOptions, setTagOptions] = useState([]), [tagFilter, setTagFilter] = useState('all'), [feedMode,setFeedMode]=useState('all'), [followedUsers,setFollowedUsers]=useState(new Set()), [followedCommunities,setFollowedCommunities]=useState(new Set()), [followedTags,setFollowedTags]=useState(new Set())
+  const [sort, setSort] = useState(() => guestMode ? 'latest' : (localStorage.getItem(SORT_KEY) || 'latest')), [communityFilter, setCommunityFilter] = useState('all'), [joinedOnly, setJoinedOnly] = useState(false), [query, setQuery] = useState(''), [searchInput, setSearchInput] = useState(''), [postType, setPostType] = useState('all'), [tagOptions, setTagOptions] = useState([]), [tagFilter, setTagFilter] = useState('all'), [feedMode,setFeedMode]=useState('all'), [followedUsers,setFollowedUsers]=useState(new Set()), [followedCommunities,setFollowedCommunities]=useState(new Set()), [followedTags,setFollowedTags]=useState(new Set())
   const [loading, setLoading] = useState(true), [error, setError] = useState(''), [busyVote, setBusyVote] = useState(null), [saved, setSaved] = useState(new Set())
 
   const load = async () => {
@@ -34,7 +34,7 @@ export function FeedPage({ currentUserId, guestMode = false, guestState, setGues
       if (pe) throw pe; if (ce) throw ce
       const rows = rawPosts || [], ids = rows.map(p => p.id), authorIds = [...new Set(rows.map(p => p.author_id).filter(Boolean))]
       const [{ data: profiles, error: pre }, { data: memberships, error: me }, { data: votes, error: ve }, { data: saves, error: se }, { data: blocks, error: be }, { data: postTagRows, error: te }, {data:userFollows,error:ufe}, {data:communityFollows,error:cfe}, {data:tagFollows,error:tfe}, stats] = await Promise.all([
-        authorIds.length ? supabase.from('profiles').select('id,username,display_name').in('id', authorIds) : Promise.resolve({ data: [], error: null }),
+        !guestMode && authorIds.length ? supabase.from('profiles').select('id,username,display_name').in('id', authorIds) : Promise.resolve({ data: [], error: null }),
         currentUserId ? supabase.from('community_memberships').select('community_id').eq('user_id', currentUserId) : Promise.resolve({ data: (guestState?.joinedCommunityIds || []).map(community_id => ({ community_id })), error: null }),
         currentUserId && ids.length ? supabase.from('post_votes').select('post_id,value').eq('user_id', currentUserId).in('post_id', ids) : Promise.resolve({ data: [], error: null }),
         currentUserId && ids.length ? supabase.from('saved_posts').select('post_id').eq('user_id', currentUserId).in('post_id', ids) : Promise.resolve({ data: (guestState?.savedPostIds || []).filter(post_id => ids.includes(post_id)).map(post_id => ({ post_id })), error: null }),
@@ -95,7 +95,7 @@ export function FeedPage({ currentUserId, guestMode = false, guestState, setGues
     } catch (err) { setError(err.message || 'Unable to update vote.') } finally { setBusyVote(null) }
   }
   const toggleSave = async post => {
-    if (guestMode) { const next = new Set(saved); next.has(post.id) ? next.delete(post.id) : next.add(post.id); setSaved(next); setGuestState?.(state => ({ ...state, savedPostIds: [...next] })); return }
+    if (guestMode) { const next = new Set(saved); const wasSaved = next.has(post.id); wasSaved ? next.delete(post.id) : next.add(post.id); setSaved(next); setGuestState?.(state => ({ ...state, savedPostIds: [...next], guestNotifications: wasSaved ? (state.guestNotifications || []) : [...(state.guestNotifications || []), { id: `guest-save-${post.id}-${Date.now()}`, title: 'Post saved for this visit', body: `“${post.title}” is now in your temporary Saved posts.`, created_at: new Date().toISOString(), read: false }] })); return }
     if (!currentUserId) return
     const isSaved = saved.has(post.id), next = new Set(saved)
     try {
