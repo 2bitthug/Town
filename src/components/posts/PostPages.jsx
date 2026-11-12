@@ -81,12 +81,12 @@ function Comment({ comment, children, currentUserId, communityId, onChanged, acc
 }
 
 export function PostPage({ postId, currentUserId }) {
-  const [post, setPost] = useState(null), [comments, setComments] = useState([]), [loading, setLoading] = useState(true), [error, setError] = useState('')
+  const [post, setPost] = useState(null), [comments, setComments] = useState([]), [loading, setLoading] = useState(true), [error, setError] = useState(''), [statusBusy, setStatusBusy] = useState(false)
   const [commentText, setCommentText] = useState(''), [busy, setBusy] = useState(false), [editing, setEditing] = useState(false), [editTitle, setEditTitle] = useState(''), [editBody, setEditBody] = useState(''), [reporting, setReporting] = useState(false)
   const load = async () => {
     setLoading(true); setError('')
     try {
-      const { data: p, error: pe } = await supabase.from('posts').select('id,community_id,topic_id,author_id,post_type,title,body,link_url,media_url,is_pinned,accepted_answer_id,created_at,updated_at').eq('id', postId).eq('status', 'published').maybeSingle()
+      const { data: p, error: pe } = await supabase.from('posts').select('id,community_id,topic_id,author_id,post_type,question_status,title,body,link_url,media_url,is_pinned,accepted_answer_id,created_at,updated_at').eq('id', postId).eq('status', 'published').maybeSingle()
       if (pe) throw pe; if (!p) throw new Error('Post not found.')
       if (currentUserId) {
         const { data: blocked, error: blockError } = await supabase.from('user_blocks').select('blocked_id').eq('blocker_id', currentUserId).eq('blocked_id', p.author_id).maybeSingle()
@@ -136,13 +136,21 @@ export function PostPage({ postId, currentUserId }) {
     else await load()
     setBusy(false)
   }
+  const changeQuestionStatus = async nextStatus => {
+    if (!post || post.post_type !== 'question' || statusBusy) return
+    setStatusBusy(true)
+    const { error: statusError } = await supabase.rpc('set_town_question_status', { p_post_id: post.id, p_status: nextStatus })
+    if (statusError) alert(statusError.message)
+    else await load()
+    setStatusBusy(false)
+  }
   const submitComment = async e => { e.preventDefault(); if (!commentText.trim() || !currentUserId) return; setBusy(true); const { error } = await supabase.from('comments').insert({ post_id: post.id, author_id: currentUserId, body: commentText.trim() }); if (!error) { setCommentText(''); load() } else alert(error.message); setBusy(false) }
   const savePost = async e => { e.preventDefault(); if (!editTitle.trim()) return; setBusy(true); const { error } = await supabase.from('posts').update({ title: editTitle.trim(), body: editBody.trim(), updated_at: new Date().toISOString() }).eq('id', post.id).eq('author_id', currentUserId); if (!error) { setEditing(false); load() } else alert(error.message); setBusy(false) }
   const deletePost = async () => { if (!confirm('Delete this post?')) return; const { error } = await supabase.from('posts').update({ status: 'removed' }).eq('id', post.id).eq('author_id', currentUserId); if (!error) window.location.hash = `#/community/${post.community.slug}`; else alert(error.message) }
   if (loading) return <Frame title="Loading discussion…"><State>Loading…</State></Frame>
   if (error || !post) return <Frame title="Discussion unavailable"><ErrorBox message={error || 'Post not found.'} retry={load} /></Frame>
   const canEdit = currentUserId === post.author_id
-  return <Frame eyebrow={post.community?.name || 'DISCUSSION'} title={post.title} actions={<><a className="button secondary" href={`#/community/${post.community?.slug}`}>Back to downtown</a>{canEdit && <button className="button secondary" onClick={() => { setEditing(true); setEditTitle(post.title); setEditBody(post.body || '') }}>Edit</button>}{currentUserId && !canEdit && <><button className="button secondary" onClick={() => setReporting(true)}>Report</button><button className="button secondary" onClick={blockAuthor} disabled={busy}>Block member</button></>}</>}>
+  return <Frame eyebrow={post.community?.name || 'DISCUSSION'} title={post.title} actions={<><a className="button secondary" href={`#/community/${post.community?.slug}`}>Back to downtown</a>{canEdit && <button className="button secondary" onClick={() => { setEditing(true); setEditTitle(post.title); setEditBody(post.body || '') }}>Edit</button>}{post.post_type === 'question' && <button className="button secondary" disabled={statusBusy || Boolean(post.accepted_answer_id)} onClick={() => changeQuestionStatus(post.question_status === 'closed' ? 'open' : 'closed')}>{statusBusy ? 'Updating…' : post.question_status === 'closed' ? 'Reopen question' : 'Close question'}</button>}{currentUserId && !canEdit && <><button className="button secondary" onClick={() => setReporting(true)}>Report</button><button className="button secondary" onClick={blockAuthor} disabled={busy}>Block member</button></>}</>}>
     <article className="discussion-post">
       <div className="discussion-meta"><span>{post.post_type === 'question' ? 'QUESTION' : post.post_type}</span>{post.topic?.name && <span>· {post.topic.name}</span>}<span>· by {post.author?.display_name || post.author?.username || 'Town member'}</span><span>· {ago(post.created_at)}</span></div>
       {editing ? <form className="town-form" onSubmit={savePost}><label>Title<input value={editTitle} onChange={e => setEditTitle(e.target.value)} maxLength={160} required /></label><label>Body<textarea value={editBody} onChange={e => setEditBody(e.target.value)} maxLength={10000} /></label><div className="town-form-actions"><button className="button primary" disabled={busy}>Save changes</button><button type="button" className="button secondary" onClick={() => setEditing(false)}>Cancel</button><button type="button" className="button danger" onClick={deletePost}>Delete post</button></div></form> : <><div className="discussion-body">{post.body && <p>{post.body}</p>}{post.link_url && <a className="discussion-link" href={post.link_url} target="_blank" rel="noreferrer">Open linked resource →</a>}{post.media_url && <img className="discussion-media" src={post.media_url} alt="Post media" />}</div></>}
