@@ -81,7 +81,7 @@ function Comment({ comment, children, currentUserId, communityId, onChanged, acc
   </article>
 }
 
-export function PostPage({ postId, currentUserId }) {
+export function PostPage({ postId, currentUserId, guestMode = false }) {
   const [post, setPost] = useState(null), [comments, setComments] = useState([]), [loading, setLoading] = useState(true), [error, setError] = useState(''), [statusBusy, setStatusBusy] = useState(false)
   const [commentText, setCommentText] = useState(''), [busy, setBusy] = useState(false), [editing, setEditing] = useState(false), [editTitle, setEditTitle] = useState(''), [editBody, setEditBody] = useState(''), [reporting, setReporting] = useState(false)
   const load = async () => {
@@ -115,10 +115,10 @@ export function PostPage({ postId, currentUserId }) {
       const { data: stats } = await supabase.rpc('get_public_post_stats', { post_ids: [p.id] })
       setPost({ ...p, community, topic, author, score: Number(stats?.[0]?.upvote_score || 0), views: Number(stats?.[0]?.view_count || 0), myVote: vote?.value || 0 })
       setComments(tree)
-      await supabase.rpc('record_post_view', { target_post_id: p.id })
+      if (!guestMode) await supabase.rpc('record_post_view', { target_post_id: p.id })
     } catch (e) { setError(e.message || 'Unable to load this discussion.') } finally { setLoading(false) }
   }
-  useEffect(() => { load() }, [postId, currentUserId])
+  useEffect(() => { load() }, [postId, currentUserId, guestMode])
   const grouped = useMemo(() => { const map = new Map(); comments.forEach(c => map.set(c.id, { ...c, children: [] })); const roots = []; map.forEach(c => { if (c.parent_id && map.has(c.parent_id)) map.get(c.parent_id).children.push(c); else roots.push(c) }); return roots }, [comments])
   const blockAuthor = async () => {
     if (!post?.author_id || post.author_id === currentUserId) return
@@ -159,7 +159,7 @@ export function PostPage({ postId, currentUserId }) {
     </article>
     {reporting && <ReportDialog currentUserId={currentUserId} communityId={post.community_id} postId={post.id} onClose={() => setReporting(false)} />}
     <section className={`discussion-comments ${post.post_type === 'question' ? 'question-thread' : ''}`}><div className="town-section-heading"><div><p className="eyebrow">DISCUSSION</p><h2>{post.post_type === 'question' ? 'Answers and discussion' : 'Discussion'} · {comments.length}</h2></div></div>
-      {currentUserId ? <form className="comment-composer" onSubmit={submitComment}><textarea value={commentText} onChange={e => setCommentText(e.target.value)} placeholder="Join the discussion…" maxLength={2000} required /><button className="button primary" disabled={busy}>{busy ? 'Posting…' : 'Post comment'}</button></form> : <div className="town-empty"><p>Want to add your perspective?</p><button className="button primary" type="button" onClick={() => requestSignIn(`#/post/${post.id}`)}>Sign in to join the discussion</button></div>}
+      {currentUserId ? <form className="comment-composer" onSubmit={submitComment}><textarea value={commentText} onChange={e => setCommentText(e.target.value)} placeholder="Join the discussion…" maxLength={2000} required /><button className="button primary" disabled={busy}>{busy ? 'Posting…' : 'Post comment'}</button></form> : <div className="town-empty"><p>{guestMode ? 'Guests can read the full discussion. Sign in to comment or reply.' : 'Want to add your perspective?'}</p><button className="button primary" type="button" onClick={() => requestSignIn(`#/post/${post.id}`)}>Sign in to join the discussion</button></div>}
       {!grouped.length ? <div className="town-empty">No comments yet. Start the discussion.</div> : <div className="comment-tree">{grouped.map(c => <Comment key={c.id} comment={c} currentUserId={currentUserId} communityId={post.community_id} onChanged={load} acceptedAnswerId={post.accepted_answer_id} canAcceptAnswer={post.post_type === 'question' && currentUserId === post.author_id} onAcceptAnswer={acceptAnswer}>{c.children.map(child => <Comment key={child.id} comment={child} currentUserId={currentUserId} communityId={post.community_id} onChanged={load} acceptedAnswerId={post.accepted_answer_id} canAcceptAnswer={post.post_type === 'question' && currentUserId === post.author_id} onAcceptAnswer={acceptAnswer}>{child.children?.map(grand => <Comment key={grand.id} comment={grand} currentUserId={currentUserId} communityId={post.community_id} onChanged={load} acceptedAnswerId={post.accepted_answer_id} canAcceptAnswer={post.post_type === 'question' && currentUserId === post.author_id} onAcceptAnswer={acceptAnswer} />)}</Comment>)}</Comment>)}</div>}
     </section>
   </Frame>
