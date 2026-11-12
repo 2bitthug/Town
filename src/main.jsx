@@ -1681,7 +1681,9 @@ function App() {
   useEffect(() => {
     const resolveAccent = (candidate) => PROFILE_COLORS.find(([value]) => value.toLowerCase() === String(candidate || '').toLowerCase())?.[0] || '#287BFF'
     const syncAccent = (event) => {
-      const stored = localStorage.getItem(session?.user?.id ? `town-accent:${session.user.id}` : 'town-accent')
+      const stored = session?.user?.id
+        ? localStorage.getItem(`town-accent:${session.user.id}`)
+        : entryMode === 'guest' ? guestState.accentColor : '#287BFF'
       setGlobalAccent(resolveAccent(event?.detail || stored))
     }
     syncAccent()
@@ -1691,7 +1693,7 @@ function App() {
       window.removeEventListener('town-accent-change', syncAccent)
       window.removeEventListener('storage', syncAccent)
     }
-  }, [session?.user?.id])
+  }, [session?.user?.id, entryMode, guestState.accentColor])
   useEffect(() => {
     // Apply the selected member accent to the shared design tokens used by components.
     const root = document.documentElement
