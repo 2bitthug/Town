@@ -1562,39 +1562,105 @@ function GlobalSearchBar() {
 }
 
 
-const GUEST_KEY = 'town-guest-demo-v1'
-const GUEST_DEFAULT = { pet_id:'cat', pet_name:'Pixel', pet_care:3, pet_personality:'curious', pet_animation:'breathe', accent_color:'#287BFF', saved:[], profile:{display_name:'Town Explorer',bio:'Trying out Town as a guest.',interests:'Communities, ideas and conversations'} }
-function readGuestDemo(){ try{return {...GUEST_DEFAULT,...JSON.parse(localStorage.getItem(GUEST_KEY)||'{}')}}catch{return GUEST_DEFAULT} }
-function writeGuestDemo(patch){const next={...readGuestDemo(),...patch};localStorage.setItem(GUEST_KEY,JSON.stringify(next));return next}
-function GuestPetDemo(){
- const [demo,setDemo]=useState(readGuestDemo),[panel,setPanel]=useState('home'),[open,setOpen]=useState(false),[notice,setNotice]=useState('')
- const update=patch=>setDemo(writeGuestDemo(patch))
- const pets=[['cat','Cat'],['dog','Dog'],['fox','Fox'],['rabbit','Rabbit'],['bear','Bear'],['wolf','Wolf'],['owl','Owl'],['penguin','Penguin'],['frog','Frog'],['turtle','Turtle'],['deer','Deer'],['panda','Panda'],['tiger','Tiger'],['raccoon','Raccoon'],['hedgehog','Hedgehog'],['duck','Duck'],['squirrel','Squirrel'],['lion','Lion']]
- return <section className="pet-experience">
-  <div className="pet-exp-header"><div><p className="eyebrow">INTERACTIVE GUEST DEMO</p><h1>Meet your Town companion</h1><p>Try the pet feature without creating an account. Your demo changes stay in this browser.</p></div><span className="town-demo-pill">GUEST DEMO</span></div>
-  <div className="pet-exp-tabs">{[['home','Pet home'],['customize','Choose a pet'],['settings','Personality']].map(([id,label])=><button key={id} className={panel===id?'active':''} onClick={()=>setPanel(id)}>{label}</button>)}</div>
-  {panel==='home'&&<div className="pet-exp-grid"><article className="pet-room"><div className="pet-room-sky"><div className="pet-room-sign">TOWN PET HOME</div><div className="pet-room-character"><PetSprite id={demo.pet_id} className="pet-sprite-art" title={demo.pet_name}/></div><div className="pet-room-floor"/></div><div className="pet-room-caption"><div><strong>{demo.pet_name}</strong><span>{pets.find(p=>p[0]===demo.pet_id)?.[1]} · {demo.pet_personality}</span></div><button className="button secondary" onClick={()=>setPanel('customize')}>Change pet</button></div><div className="pet-emotes"><span>Care and play</span><div className="pet-inline-actions"><button onClick={()=>{update({pet_care:Math.min(5,demo.pet_care+1)});setNotice('A snack for '+demo.pet_name+'.')}}>Feed</button><button onClick={()=>{setNotice(demo.pet_name+' had fun playing!')}}>Play</button><button onClick={()=>{setNotice(demo.pet_name+' is resting.')}}>Rest</button></div></div><p className="pet-notice" role="status">{notice||'Your companion is ready to explore.'}</p></article><article className="pet-progress-card"><p className="eyebrow">DEMO PROFILE</p><h2>{demo.pet_name}</h2><p>Care level: {demo.pet_care}/5</p><p>Personality: {demo.pet_personality}</p><p>All actions here are local demonstrations. No account data is created or changed.</p><button className="button primary" onClick={()=>setOpen(v=>!v)}>{open?'Close companion controls':'Open companion controls'}</button>{open&&<div className="pet-panel"><label>Pet name<input value={demo.pet_name} maxLength={20} onChange={e=>update({pet_name:e.target.value})}/></label><label>Personality<select value={demo.pet_personality} onChange={e=>update({pet_personality:e.target.value})}><option value="curious">Curious</option><option value="playful">Playful</option><option value="calm">Calm</option></select></label><label>Idle behaviour<select value={demo.pet_animation} onChange={e=>update({pet_animation:e.target.value})}><option value="breathe">Breathe gently</option><option value="wander">Occasionally wander</option><option value="wave">Wave and bounce</option></select></label></div>}</article></div>}
-  {panel==='customize'&&<article className="pet-panel"><h2>Choose your companion</h2><div className="pet-choice-grid">{pets.map(([id,label])=><button key={id} className={demo.pet_id===id?'selected':''} onClick={()=>update({pet_id:id})}><PetSprite id={id} className="pet-sprite-thumb" title={label}/><small>{label}</small></button>)}</div><label>Pet name<input value={demo.pet_name} maxLength={20} onChange={e=>update({pet_name:e.target.value})}/></label></article>}
-  {panel==='settings'&&<article className="pet-panel"><h2>Companion personality</h2><label>Personality<select value={demo.pet_personality} onChange={e=>update({pet_personality:e.target.value})}><option value="curious">Curious</option><option value="playful">Playful</option><option value="calm">Calm</option></select></label><label>Idle behaviour<select value={demo.pet_animation} onChange={e=>update({pet_animation:e.target.value})}><option value="breathe">Breathe gently</option><option value="wander">Occasionally wander</option><option value="wave">Wave and bounce</option></select></label></article>}
- </section>
+
+const GUEST_DEFAULT = {
+  savedPostIds: [], joinedCommunityIds: [], followedCommunityIds: [], followedTagIds: [],
+  petProfile: { pet_id: 'cat', pet_name: 'Pixel', created_at: null },
+  petCompanion: { color_id: 'default', outfit_id: 'none', home_items: [], active_emote: 'wave' },
+  petSouvenirs: [], accentColor: '#287BFF',
+  profile: { display_name: 'Town Explorer', bio: '', interests: '' },
+  chatMessages: []
 }
-function GuestSettings(){
- const [demo,setDemo]=useState(readGuestDemo),[message,setMessage]=useState('Changes are saved in this browser only.')
- const colors=[['Electric Blue','#287BFF'],['Neon Cyan','#00D9FF'],['Electric Purple','#9B5CFF'],['Hot Pink','#FF4FA3'],['Tangerine','#FF8A3D'],['Crimson','#F0445E'],['Acid Green','#B7F34A'],['Vivid Mint','#42E6B5']]
- const apply=color=>{const next=writeGuestDemo({accent_color:color});setDemo(next);document.documentElement.style.setProperty('--town-accent',color);document.documentElement.style.setProperty('--accent',color);document.querySelector('.ps2-shell')?.style.setProperty('--accent',color);window.dispatchEvent(new CustomEvent('town-accent-change',{detail:color}));setMessage('Accent applied and saved locally.')}
- return <Card eyebrow="SETTINGS · GUEST DEMO" title="Make Town yours"><p className="feature-text">Explore appearance and profile settings without an account. Your changes are stored only in this browser.</p><h3>Accent colour</h3><div className="pet-choice-grid">{colors.map(([name,color])=><button key={color} className={demo.accent_color===color?'selected':''} onClick={()=>apply(color)}><span style={{display:'block',width:32,height:32,borderRadius:'50%',background:color,margin:'auto'}}/><small>{name}</small></button>)}</div><h3>Demo profile</h3><label>Display name<input value={demo.profile.display_name} onChange={e=>{const profile={...demo.profile,display_name:e.target.value};setDemo(writeGuestDemo({profile}))}}/></label><label>Bio<textarea value={demo.profile.bio} onChange={e=>{const profile={...demo.profile,bio:e.target.value};setDemo(writeGuestDemo({profile}))}}/></label><label>Interests<input value={demo.profile.interests} onChange={e=>{const profile={...demo.profile,interests:e.target.value};setDemo(writeGuestDemo({profile}))}}/></label><p className="status notice">{message}</p></Card>
+
+function GuestEntryScreen({ onGuest, onSignIn }) {
+  return <main className="auth-shell"><section className="auth-card guest-entry-card">
+    <p className="eyebrow">TOWN</p><h1>Choose how to enter.</h1>
+    <p className="lead">Explore the full Town experience as a guest, or sign in to participate and keep your activity.</p>
+    <button className="button primary full" type="button" onClick={onGuest}>Continue as guest</button>
+    <p className="widget-help">Browse discussions, search, explore downtowns, customise your companion and save items for this visit. Guest activity is temporary.</p>
+    <button className="button secondary full" type="button" onClick={onSignIn}>Sign in or create an account</button>
+  </section></main>
 }
-function GuestPersonalDemo({kind}){
- const [demo,setDemo]=useState(readGuestDemo)
- const title={saved:'Saved posts',notifications:'Notifications',social:'Chat preview',reputation:'Reputation preview',profile:'Your demo profile'}[kind]||'Town demo'
- const samples={saved:[['How should communities welcome new members?','Community design'],['What makes a good question?','Product ideas']],notifications:[['Welcome to Town','Your demo is ready.'],['A new discussion is trending','Explore the public feed.']],social:[['Town Guide','Welcome! Explore downtowns and try the pet companion.'],['Town Guide','This is a sample conversation; messages are not sent.']],reputation:[['Helpful contribution','+10'],['Accepted answer','+25']]}
- const rows=samples[kind]||[]
- return <Card eyebrow="INTERACTIVE GUEST DEMO" title={title}><p className="feature-text">This is a local preview. It does not read or modify a member account.</p>{kind==='profile'&&<><h2>{demo.profile.display_name}</h2><p>{demo.profile.bio}</p><p>{demo.profile.interests}</p></>}{rows.map(([a,b],i)=><article className="notification-item" key={i}><div className="notification-copy"><strong>{a}</strong><p>{b}</p></div>{kind==='saved'&&<button className="button secondary" onClick={()=>setDemo(writeGuestDemo({saved:demo.saved.includes(i)?demo.saved.filter(x=>x!==i):[...demo.saved,i]}))}>{demo.saved.includes(i)?'Saved':'Save'}</button>}</article>)}</Card>
+
+function GuestSettings({ guestState, setGuestState, onExit }) {
+  const colors = [['Electric Blue','#287BFF'],['Neon Cyan','#00D9FF'],['Electric Purple','#9B5CFF'],['Hot Pink','#FF4FA3'],['Tangerine','#FF8A3D'],['Crimson','#F0445E'],['Acid Green','#B7F34A'],['Vivid Mint','#42E6B5']]
+  const profile = guestState.profile || GUEST_DEFAULT.profile
+  const apply = color => { setGuestState(state=>({...state,accentColor:color})); window.dispatchEvent(new CustomEvent('town-accent-change',{detail:color})) }
+  const updateProfile = patch => setGuestState(state=>({...state,profile:{...state.profile,...patch}}))
+  return <Card eyebrow="SETTINGS · GUEST SESSION" title="Make Town yours">
+    <p className="feature-text">These preferences exist only for this visit and are cleared when you exit guest mode.</p>
+    <h3>Accent colour</h3><div className="pet-choice-grid">{colors.map(([name,color])=><button type="button" key={color} className={guestState.accentColor===color?'selected':''} aria-pressed={guestState.accentColor===color} onClick={()=>apply(color)}><span style={{display:'block',width:32,height:32,borderRadius:'50%',background:color,margin:'auto'}}/><small>{name}</small></button>)}</div>
+    <h3>Guest profile preview</h3>
+    <label>Display name<input value={profile.display_name} maxLength={40} onChange={e=>updateProfile({display_name:e.target.value})}/></label>
+    <label>Bio<textarea value={profile.bio} maxLength={240} onChange={e=>updateProfile({bio:e.target.value})}/></label>
+    <label>Interests<input value={profile.interests} maxLength={160} onChange={e=>updateProfile({interests:e.target.value})}/></label>
+    <p className="status notice">Temporary guest settings. Nothing is written to your account.</p>
+    <button className="button secondary" type="button" onClick={onExit}>Exit guest mode</button>
+  </Card>
+}
+
+function GuestSavedPostsPage({ guestState, setGuestState }) {
+  const [posts,setPosts] = useState([])
+  const [loading,setLoading] = useState(true)
+  const [error,setError] = useState('')
+  const ids = guestState.savedPostIds || []
+  useEffect(() => {
+    let active = true
+    const load = async () => {
+      if (!ids.length) { setPosts([]); setLoading(false); return }
+      setLoading(true); setError('')
+      const {data,error:fetchError} = await supabase.from('posts').select('id,title,body,community_id,created_at,status').in('id',ids).eq('status','published')
+      if (!active) return
+      if (fetchError) setError(fetchError.message)
+      const communityIds=[...new Set((data||[]).map(x=>x.community_id).filter(Boolean))]
+      const {data:communities}=communityIds.length?await supabase.from('communities').select('id,name,slug').in('id',communityIds):{data:[]}
+      const byId=new Map((communities||[]).map(x=>[x.id,x]))
+      setPosts((data||[]).map(x=>({...x,community:byId.get(x.community_id)})))
+      setLoading(false)
+    }
+    load()
+    return ()=>{active=false}
+  },[ids.join('|')])
+  const remove = id => setGuestState(state=>({...state,savedPostIds:(state.savedPostIds||[]).filter(x=>x!==id)}))
+  return <section className="town-page"><div className="town-page-heading"><div><p className="eyebrow">GUEST SESSION</p><h1>Saved posts</h1><p className="feature-text">Saved items are available only until you exit this visit.</p></div><a className="button secondary" href="#/feed">Browse feed</a></div>
+    {error&&<div className="town-error">{error}</div>}{loading?<div className="town-state">Loading saved posts…</div>:!posts.length?<div className="town-empty">You have not saved any posts in this visit. Use Save on a feed item to keep it here temporarily.</div>:<div className="saved-post-list">{posts.map(post=><article className="saved-post-card" key={post.id}><div><p className="eyebrow">{post.community?.name||'DOWNTOWN'} · {new Date(post.created_at).toLocaleDateString()}</p><h2><a href={`#/post/${post.id}`}>{post.title}</a></h2><p>{post.body||'No body text.'}</p></div><button className="button secondary" onClick={()=>remove(post.id)}>Unsave</button></article>)}</div>}
+  </section>
+}
+
+function GuestAccountFeature({ kind }) {
+  const details = {
+    notifications: ['Notifications','Notifications are tied to a member account. You can explore Town as a guest, but there are no personal alerts to display until you sign in.'],
+    reputation: ['Reputation','Reputation is earned through account-linked contributions and community feedback. Guest activity does not create reputation points.']
+  }
+  const [title,description] = details[kind] || ['Town','This feature is available when you sign in.']
+  return <section className="town-page"><div className="town-page-heading"><div><p className="eyebrow">GUEST SESSION</p><h1>{title}</h1></div></div><div className="town-empty"><p>{description}</p><a className="button primary" href="#/signin">Sign in to continue</a></div></section>
+}
+
+function GuestChatPage({ guestState, setGuestState }) {
+  const [draft,setDraft] = useState('')
+  const messages = guestState.chatMessages || []
+  const send = event => { event.preventDefault(); const value=draft.trim(); if(!value)return; setGuestState(state=>({...state,chatMessages:[...(state.chatMessages||[]),{id:Date.now(),body:value,created_at:new Date().toISOString()}]})); setDraft('') }
+  return <section className="town-page"><div className="town-page-heading"><div><p className="eyebrow">GUEST SESSION</p><h1>Chat</h1><p className="feature-text">Try the composer locally. Guest messages are not delivered or retained after this visit.</p></div></div>
+    <div className="town-side-card"><strong>Town Guide · Guest sandbox</strong><p>This is a private interaction preview, not a live conversation with another member.</p>
+      <div className="notification-list">{messages.map(item=><article className="notification-item" key={item.id}><div className="notification-copy"><strong>You</strong><p>{item.body}</p><small>{new Date(item.created_at).toLocaleTimeString()}</small></div></article>)}</div>
+      <form className="comment-composer" onSubmit={send}><textarea value={draft} onChange={e=>setDraft(e.target.value)} maxLength={1000} placeholder="Try writing a message…" required/><button className="button primary">Add to this session</button></form>
+    </div>
+  </section>
+}
+
+function GuestProfilePage({ guestState, setGuestState }) {
+  const profile=guestState.profile||GUEST_DEFAULT.profile
+  const update=patch=>setGuestState(state=>({...state,profile:{...state.profile,...patch}}))
+  return <section className="town-page"><div className="town-page-heading"><div><p className="eyebrow">GUEST PROFILE</p><h1>{profile.display_name||'Town Explorer'}</h1><p className="feature-text">A temporary profile preview. It is not publicly published.</p></div></div>
+    <div className="town-side-card"><label>Display name<input value={profile.display_name} onChange={e=>update({display_name:e.target.value})}/></label><label>Bio<textarea value={profile.bio} onChange={e=>update({bio:e.target.value})}/></label><label>Interests<input value={profile.interests} onChange={e=>update({interests:e.target.value})}/></label></div>
+  </section>
 }
 
 function App() {
   const [session, setSession] = useState(null)
   const [checking, setChecking] = useState(true)
+  const [entryMode, setEntryMode] = useState('choose')
+  const [guestState, setGuestState] = useState(() => ({...GUEST_DEFAULT, profile:{...GUEST_DEFAULT.profile}, petProfile:{...GUEST_DEFAULT.petProfile}, petCompanion:{...GUEST_DEFAULT.petCompanion}}))
   const route = useHashRoute()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [canModerate, setCanModerate] = useState(false)
@@ -1615,7 +1681,9 @@ function App() {
   useEffect(() => {
     const resolveAccent = (candidate) => PROFILE_COLORS.find(([value]) => value.toLowerCase() === String(candidate || '').toLowerCase())?.[0] || '#287BFF'
     const syncAccent = (event) => {
-      const stored = localStorage.getItem(session?.user?.id ? `town-accent:${session.user.id}` : 'town-accent')
+      const stored = session?.user?.id
+        ? localStorage.getItem(`town-accent:${session.user.id}`)
+        : entryMode === 'guest' ? guestState.accentColor : '#287BFF'
       setGlobalAccent(resolveAccent(event?.detail || stored))
     }
     syncAccent()
@@ -1625,7 +1693,7 @@ function App() {
       window.removeEventListener('town-accent-change', syncAccent)
       window.removeEventListener('storage', syncAccent)
     }
-  }, [session?.user?.id])
+  }, [session?.user?.id, entryMode, guestState.accentColor])
   useEffect(() => {
     // Apply the selected member accent to the shared design tokens used by components.
     const root = document.documentElement
@@ -1670,6 +1738,8 @@ function App() {
   const username = session?.user?.user_metadata?.username || session?.user?.email?.split('@')[0] || 'Guest'
   const signOut = async () => { await supabase.auth.signOut() }
   const [routeName, routeParam] = route.split('/')
+  const guestMode = !session && entryMode === 'guest'
+  const exitGuestMode = () => { setGuestState({...GUEST_DEFAULT,profile:{...GUEST_DEFAULT.profile},petProfile:{...GUEST_DEFAULT.petProfile},petCompanion:{...GUEST_DEFAULT.petCompanion}}); setEntryMode('choose'); window.location.hash='#/home' }
   const currentProfileHref = session?.user?.id ? `#/profile/${session.user.id}` : '#/profile/demo'
 
   const isActive = (id) => {
@@ -1695,22 +1765,24 @@ function App() {
     ['pet', 'Pet companion']
   ]
 
+  if (!session && entryMode === 'choose' && routeName !== 'signin') return <GuestEntryScreen onGuest={() => { setEntryMode('guest'); window.location.hash='#/home' }} onSignIn={() => { window.location.hash='#/signin' }} />
+
   let page
   if (routeName === 'home') page = <HomePage currentUserId={session?.user?.id} />
-  else if (routeName === 'feed') page = <FeedPage currentUserId={session?.user?.id} />
-  else if (routeName === 'post' && routeParam) page = <PostPage postId={routeParam} currentUserId={session?.user?.id} />
+  else if (routeName === 'feed') page = <FeedPage currentUserId={session?.user?.id} guestMode={guestMode} guestState={guestState} setGuestState={setGuestState} />
+  else if (routeName === 'post' && routeParam) page = <PostPage postId={routeParam} currentUserId={session?.user?.id} guestMode={guestMode} />
   else if (routeName === 'create-post') page = <CreatePostPage currentUserId={session?.user?.id} />
   else if (routeName === 'signin') page = session ? <InfoPage title="You are already signed in"><p className="feature-text">You can continue browsing Town or return to the discussion.</p><a className="button primary" href={window.sessionStorage.getItem('town-auth-return') || '#/feed'}>Continue</a></InfoPage> : <Auth onLogin={() => { const returnTo = window.sessionStorage.getItem('town-auth-return') || '#/feed'; window.sessionStorage.removeItem('town-auth-return'); window.location.hash = returnTo; window.location.reload() }} />
-  else if (routeName === 'communities') page = <CommunitiesPage currentUserId={session?.user?.id} />
-  else if (routeName === 'community' && routeParam) page = <CommunityPage slug={routeParam} currentUserId={session?.user?.id} />
+  else if (routeName === 'communities') page = <CommunitiesPage currentUserId={session?.user?.id} guestMode={guestMode} guestState={guestState} />
+  else if (routeName === 'community' && routeParam) page = <CommunityPage slug={routeParam} currentUserId={session?.user?.id} guestMode={guestMode} guestState={guestState} setGuestState={setGuestState} />
   else if (routeName === 'create-community') page = <CreateCommunityPage currentUserId={session?.user?.id} />
   else if (routeName === 'search') page = <SearchPage currentUserId={session?.user?.id} />
-  else if (routeName === 'social') page = session ? <SocialSection currentUserId={session.user.id} /> : <GuestPersonalDemo kind="social" />
-  else if (routeName === 'saved') page = session ? <SavedPostsPage currentUserId={session.user.id} /> : <GuestPersonalDemo kind="saved" />
-  else if (routeName === 'notifications') page = session ? <NotificationsPage currentUserId={session.user.id} /> : <GuestPersonalDemo kind="notifications" />
-  else if (routeName === 'profile' && routeParam) page = session ? <UserProfilePage userId={routeParam} currentUserId={session.user.id} /> : <GuestPersonalDemo kind="profile" />
+  else if (routeName === 'social') page = session ? <SocialSection currentUserId={session.user.id} /> : <GuestChatPage guestState={guestState} setGuestState={setGuestState} />
+  else if (routeName === 'saved') page = session ? <SavedPostsPage currentUserId={session.user.id} /> : <GuestSavedPostsPage guestState={guestState} setGuestState={setGuestState} />
+  else if (routeName === 'notifications') page = session ? <NotificationsPage currentUserId={session.user.id} /> : <GuestAccountFeature kind="notifications" />
+  else if (routeName === 'profile' && routeParam) page = session ? <UserProfilePage userId={routeParam} currentUserId={session.user.id} /> : routeParam === 'demo' ? <GuestProfilePage guestState={guestState} setGuestState={setGuestState} /> : <UserProfilePage userId={routeParam} />
   else if (routeName === 'community-manage' && routeParam) page = <CommunityManagePage communityId={routeParam} currentUserId={session?.user?.id} />
-  else if (routeName === 'reputation') page = session ? <ReputationPage currentUserId={session.user.id} /> : <GuestPersonalDemo kind="reputation" />
+  else if (routeName === 'reputation') page = session ? <ReputationPage currentUserId={session.user.id} /> : <GuestAccountFeature kind="reputation" />
   else if (routeName === 'moderation') page = <ModerationPage currentUserId={session?.user?.id} />
   else if (routeName === 'beta-feedback') page = <BetaFeedbackPage currentUserId={session?.user?.id} />
   else if (routeName === 'beta') page = <BetaLaunchPage currentUserId={session?.user?.id} />
@@ -1719,8 +1791,8 @@ function App() {
   else if (routeName === 'terms') page = <LegalPage kind="terms" />
   else if (routeName === 'privacy') page = <LegalPage kind="privacy" />
   else if (routeName === 'accessibility') page = <LegalPage kind="accessibility" />
-  else if (routeName === 'settings') page = session ? <SettingsPage currentUserId={session.user.id} /> : <GuestSettings />
-  else if (routeName === 'pet') page = session ? <PetCompanionExperience currentUserId={session.user.id} /> : <GuestPetDemo />
+  else if (routeName === 'settings') page = session ? <SettingsPage currentUserId={session.user.id} /> : <GuestSettings guestState={guestState} setGuestState={setGuestState} onExit={exitGuestMode} />
+  else if (routeName === 'pet') page = session ? <PetCompanionExperience currentUserId={session.user.id} /> : <PetCompanionExperience guestMode guestState={guestState} setGuestState={setGuestState} />
   else if (routeName === 'about') page = <InfoPage title="About Town"><p className="feature-text">Town is a community discussion platform built around downtowns: spaces for shared interests, local topics, questions, and conversations.</p><p className="feature-text">You can browse public discussions and choose how posts are sorted. Town’s goal is to make discovery deliberate and give people more control over what they see.</p><p className="feature-text">Town is an early-stage project. Features and community activity are still developing, and feedback helps shape what comes next.</p></InfoPage>
   else if (routeName === 'help') page = <InfoPage title="How Town works"><p className="feature-text">1. Explore downtowns to find communities around topics you care about.</p><p className="feature-text">2. Open a downtown or post to read the conversation before creating an account.</p><p className="feature-text">3. Use the feed’s sorting controls—such as Latest or Most Discussed—to choose how posts are ordered.</p><p className="feature-text">4. Browse Town without an account. Sign in only when you want to publish a post or join a discussion with a comment or reply.</p><p className="feature-text">Town is in early development. Public activity depends on the communities and members who contribute; we do not fabricate activity to make the site look busy.</p><div className="town-hero-actions"><a className="button primary" href="#/communities">Explore Communities</a><a className="button secondary" href="#/feed">Browse the feed</a></div></InfoPage>
   else page = <NotFoundPage />
@@ -1742,7 +1814,7 @@ function App() {
             ? <a className="ps2-user-link" href={currentProfileHref}>USER: {username}</a>
             : <span>GUEST MODE</span>}
         </div>
-        {session && <button className="ps2-top-signout" onClick={signOut}>SIGN OUT</button>}
+        {session ? <button className="ps2-top-signout" onClick={signOut}>SIGN OUT</button> : <><a className="ps2-top-signout" href="#/signin">SIGN IN</a>{guestMode && <button className="ps2-top-signout" onClick={exitGuestMode}>EXIT GUEST</button>}</>}
       </div>
     </header>
 

@@ -22,7 +22,7 @@ const CATALOG = [
 ]
 const safeArray = value => Array.isArray(value) ? value : []
 
-export function PetCompanionExperience({ currentUserId }) {
+export function PetCompanionExperience({ currentUserId, guestMode = false, guestState, setGuestState }) {
   const [loading,setLoading] = useState(true)
   const [saving,setSaving] = useState(false)
   const [error,setError] = useState('')
@@ -39,6 +39,26 @@ export function PetCompanionExperience({ currentUserId }) {
   const [refreshKey,setRefreshKey] = useState(0)
 
   const load = useCallback(async () => {
+    if (guestMode) {
+      setLoading(true); setError(''); setNotice('')
+      try {
+        const [{data: publicCommunities, error: communityError}, {data: publicPosts, error: postError}] = await Promise.all([
+          supabase.from('communities').select('id,name,slug,description,category').eq('status','active').eq('visibility','public').order('name').limit(12),
+          supabase.from('posts').select('id,title,body,community_id,created_at,communities(name,slug)').eq('status','published').order('created_at',{ascending:false}).limit(12)
+        ])
+        if (communityError) throw communityError
+        if (postError) throw postError
+        setProfile(guestState?.petProfile || {pet_id:'cat',pet_name:'Pixel',created_at:null})
+        setCompanion(guestState?.petCompanion || {color_id:'default',outfit_id:'none',home_items:[],active_emote:'wave'})
+        setUnlocks([{reward_key:'welcome-wave',source:'Welcome gift'},{reward_key:'toy-ball',source:'Welcome gift'}])
+        setSouvenirs(guestState?.petSouvenirs || [])
+        setCommunities(publicCommunities || [])
+        setJoinedCommunityIds(guestState?.joinedCommunityIds || [])
+        setPosts(publicPosts || [])
+      } catch (e) { setError(e.message || 'Could not load the guest companion.') }
+      finally { setLoading(false) }
+      return
+    }
     if (!currentUserId) return
     setLoading(true); setError(''); setNotice('')
     try {
@@ -75,7 +95,7 @@ export function PetCompanionExperience({ currentUserId }) {
       setPosts(postData || [])
     } catch (e) { setError(e.message || 'Could not load your companion.') }
     finally { setLoading(false) }
-  },[currentUserId,refreshKey])
+  },[currentUserId,refreshKey,guestMode])
 
   useEffect(()=>{load()},[load])
 
@@ -90,6 +110,7 @@ export function PetCompanionExperience({ currentUserId }) {
   const progress = membershipProgress.map(x=>({label:`${x.days}-day member`,done:x.done,detail:`${Math.min(days,x.days)}/${x.days} days`}))
 
   const savePet = async (patch={}) => {
+    if (guestMode) { const nextProfile={...profile,...patch,pet_name:String(patch.pet_name ?? profile.pet_name ?? '').trim().slice(0,20)||'Pixel'}; setProfile(nextProfile); setGuestState?.(state=>({...state,petProfile:nextProfile})); setNotice('Companion updated for this guest session.'); return }
     setSaving(true);setError('');setNotice('')
     try {
       const nextProfile={...profile,...patch,pet_name:String(patch.pet_name ?? profile.pet_name ?? '').trim().slice(0,20) || 'Pixel'}
@@ -104,6 +125,7 @@ export function PetCompanionExperience({ currentUserId }) {
     finally{setSaving(false)}
   }
   const saveCompanion = async patch => {
+    if (guestMode) { const next={...companion,...patch}; setCompanion(next); setGuestState?.(state=>({...state,petCompanion:next})); setNotice('Pet home updated for this guest session.'); return }
     setSaving(true);setError('');setNotice('')
     const next={...companion,...patch}
     try{
@@ -114,6 +136,7 @@ export function PetCompanionExperience({ currentUserId }) {
     finally{setSaving(false)}
   }
   const refreshRewards = async () => {
+    if (guestMode) { setNotice('Guest progress is temporary and does not unlock permanent account rewards.'); return }
     setSaving(true);setError('');setNotice('')
     try{
       const {data,error:e}=await supabase.rpc('refresh_pet_rewards')
@@ -125,6 +148,7 @@ export function PetCompanionExperience({ currentUserId }) {
     finally{setSaving(false)}
   }
   const collectFromCommunity = async id => {
+    if (guestMode) { const community=communities.find(x=>x.id===id); if (!community) return; if (!joinedCommunityIds.includes(id)) { setNotice('Join this downtown first.'); return }; const item={id:`guest-${id}`,community_id:id,souvenir_key:'guest-visit',collected_at:new Date().toISOString(),communities:{name:community.name,slug:community.slug}}; const next=[item,...souvenirs.filter(x=>x.community_id!==id)]; setSouvenirs(next); setGuestState?.(state=>({...state,petSouvenirs:next})); setNotice('A temporary souvenir was added to your guest collection.'); return }
     setSaving(true);setError('');setNotice('')
     try{
       const {data,error:e}=await supabase.rpc('record_pet_community_visit',{p_community_id:id})
@@ -168,6 +192,6 @@ export function PetCompanionExperience({ currentUserId }) {
     </div>}
     {activeTab==='souvenirs' && <article className="pet-panel"><h2>Souvenir shelf</h2><p>Keep a memento of the downtowns you join. Each item shows where it came from.</p>{visibleSouvenirs.length ? <div className="pet-souvenir-grid">{visibleSouvenirs.map(s=><article className="pet-collectible-card" key={s.id}><div className="pet-collectible-art"><span className="pet-collectible-stamp">TOWN<br/>MEMBER</span><span className="pet-collectible-mark">✦</span><small>COMMUNITY SERIES · 01</small></div><div className="pet-collectible-info"><span className="pet-collectible-kicker">DOWNTOWN COLLECTIBLE</span><strong>{s.communities?.name || 'Town community'}</strong><p>A keepsake marking your membership in this downtown. This collectible is permanently yours.</p><div className="pet-collectible-meta"><span>COLLECTED</span><b>{new Date(s.collected_at).toLocaleDateString()}</b></div><a href={s.communities?.slug? `#/community/${s.communities.slug}`:'#/communities'}>Visit downtown ↗</a></div></article>)}</div>:<div className="pet-empty">No souvenirs yet. Explore a downtown below and collect your first keepsake.</div>}</article>}
     {activeTab==='discover' && <div className="pet-discovery-grid"><article className="pet-panel"><h2>Downtowns to explore</h2>{communities.length?communities.map(c=><div className="pet-discovery-item" key={c.id}><div><strong>{c.name}</strong><small>{c.category || 'Community'} · {c.description || 'A place to meet and exchange ideas.'}</small></div><div className="pet-inline-actions"><a className="button secondary" href={`#/community/${c.slug}`}>Explore</a>{collectedCommunityIds.has(c.id)?<span className="pet-collected-state" aria-label="Souvenir collected">✓ Souvenir collected</span>:joinedCommunityIds.includes(c.id)?<button className="button secondary" disabled={saving} onClick={()=>collectFromCommunity(c.id)}>Collect souvenir</button>:<a className="button secondary" href={`#/community/${c.slug}`}>Join downtown</a>}</div></div>):<p>No public downtowns are available yet.</p>}</article><article className="pet-panel"><h2>Conversations worth a look</h2>{posts.length?posts.map(p=><div className="pet-discovery-item" key={p.id}><div><strong>{p.title}</strong><small>{p.communities?.name || 'Town discussion'} · {(p.body||'').slice(0,120)}</small></div><a className="button secondary" href={`#/post/${p.id}`}>Read</a></div>):<p>No published discussions to recommend yet.</p>}</article></div>}
-    <p className="pet-footnote">Town companion is optional. No streaks, decay, illness or inactivity penalties. Rewards are permanent once earned.</p>
+    <p className="pet-footnote">{guestMode ? 'Guest companion changes and souvenirs last only for this visit. Nothing is written to your Town account.' : 'Town companion is optional. No streaks, decay, illness or inactivity penalties. Rewards are permanent once earned.'}</p>
   </section>
 }
