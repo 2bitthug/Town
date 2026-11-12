@@ -95,7 +95,7 @@ export function FeedPage({ currentUserId, guestMode = false, guestState, setGues
     } catch (err) { setError(err.message || 'Unable to update vote.') } finally { setBusyVote(null) }
   }
   const toggleSave = async post => {
-    if (guestMode) { const next = new Set(saved); next.has(post.id) ? next.delete(post.id) : next.add(post.id); setSaved(next); setGuestState?.(state => ({ ...state, savedPostIds: [...next] })); return }
+    if (guestMode) { const next = new Set(saved); const wasSaved = next.has(post.id); wasSaved ? next.delete(post.id) : next.add(post.id); setSaved(next); setGuestState?.(state => ({ ...state, savedPostIds: [...next], guestNotifications: wasSaved ? (state.guestNotifications || []) : [...(state.guestNotifications || []), { id: `guest-save-${post.id}-${Date.now()}`, title: 'Post saved for this visit', body: `“${post.title}” is now in your temporary Saved posts.`, created_at: new Date().toISOString(), read: false }] })); return }
     if (!currentUserId) return
     const isSaved = saved.has(post.id), next = new Set(saved)
     try {
