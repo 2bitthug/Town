@@ -22,7 +22,7 @@ function VoteBar({ postId, currentUserId, initialScore = 0, initialVote = 0, com
       if (!next) { const { error } = await supabase.from('post_votes').delete().eq('post_id', postId).eq('user_id', currentUserId); if (error) throw error }
       else { const { error } = await supabase.from('post_votes').upsert({ post_id: postId, user_id: currentUserId, value: next }, { onConflict: 'post_id,user_id' }); if (error) throw error }
       setScore(score + next - vote); setVote(next)
-    } catch (e) { console.error(e) } finally { setBusy(false) }
+    } catch (e) { notifyTown({ type: 'error', title: 'Vote not saved', message: `Your vote was not saved. ${e.message || 'The request failed.'} Check your connection and try again.` }) } finally { setBusy(false) }
   }
   return <div className={`discussion-votes ${compact ? 'compact' : ''}`}><button disabled={!currentUserId || busy} className={vote === 1 ? 'selected' : ''} onClick={() => change(1)}>▲</button><strong>{score}</strong><button disabled={!currentUserId || busy} className={vote === -1 ? 'selected down' : ''} onClick={() => change(-1)}>▼</button></div>
 }
@@ -32,6 +32,7 @@ function ReportDialog({ currentUserId, communityId, postId = null, commentId = n
   const [reason, setReason] = useState(''), [busy, setBusy] = useState(false), [done, setDone] = useState(false)
   const dialogRef = useRef(null)
   useDialogFocus(dialogRef, onClose)
+  useEffect(() => { if (done) dialogRef.current?.querySelector('button')?.focus() }, [done])
   const submit = async e => {
     e.preventDefault(); if (!reason.trim() || !currentUserId) return
     setBusy(true)
