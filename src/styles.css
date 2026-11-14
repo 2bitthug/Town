@@ -6205,7 +6205,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .ps2-create-action,
 .auth-shell .button.primary,
 .auth-shell button.button.primary {
-  color: #0a0c0b !important;
+  color: var(--town-accent-contrast, #050608) !important;
   background: var(--town-accent, var(--accent, #A3DFC1)) !important;
   border-color: var(--town-accent, var(--accent, #A3DFC1)) !important;
   box-shadow: none !important;
@@ -6215,7 +6215,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .ps2-create-action:hover,
 .ps2-shell .ps2-create-action.active,
 .auth-shell .button.primary:hover:not(:disabled) {
-  color: #080a09 !important;
+  color: var(--town-accent-contrast, #050608) !important;
   background: var(--town-accent-hover, color-mix(in srgb, var(--town-accent, var(--accent)) 82%, white)) !important;
   border-color: var(--town-accent-hover, color-mix(in srgb, var(--town-accent, var(--accent)) 82%, white)) !important;
 }
@@ -6277,12 +6277,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .ps2-create-action,
 .ps2-shell .ps2-create-action:hover,
 .ps2-shell .ps2-create-action.active {
-  color: #0a0c0b !important;
+  color: var(--town-accent-contrast, #050608) !important;
 }
 .ps2-shell .ps2-create-action span:first-child,
 .ps2-shell .ps2-create-action:hover span:first-child,
 .ps2-shell .ps2-create-action.active span:first-child {
-  color: #0a0c0b !important;
+  color: var(--town-accent-contrast, #050608) !important;
 }
 .ps2-shell .ps2-top-search {
   color: #cbd1ce !important;
@@ -6291,7 +6291,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 .ps2-shell .ps2-top-search:hover,
 .ps2-shell .ps2-top-search.active {
-  color: #0a0c0b !important;
+  color: var(--town-accent-contrast, #050608) !important;
   background: var(--accent) !important;
   border-color: var(--accent) !important;
 }
@@ -6468,12 +6468,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .button.primary *,
 .ps2-shell button.button.primary *,
 .ps2-shell .ps2-create-action * {
-  color: #0a0c0b !important;
+  color: var(--town-accent-contrast, #050608) !important;
 }
 .ps2-shell .button.primary:hover *,
 .ps2-shell .ps2-create-action:hover *,
 .ps2-shell .ps2-create-action.active * {
-  color: #080a09 !important;
+  color: var(--town-accent-contrast, #050608) !important;
 }
 .ps2-shell .message {
   border-color: var(--accent-border) !important;
@@ -7249,7 +7249,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
   font-weight: 720; transition: background .16s, border-color .16s, transform .16s;
 }
 .ps2-shell .button.primary {
-  background: var(--town-accent); color: #07100e;
+  background: var(--town-accent); color: var(--town-accent-contrast, #050608);
   border: 1px solid var(--town-accent); box-shadow: none;
 }
 .ps2-shell .button.primary:hover:not(:disabled) { filter: brightness(1.07); transform: translateY(-1px); box-shadow: none; }
@@ -7544,7 +7544,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
 .feed-filter-toggle,.feed-sort select{min-height:42px;padding:0 13px;border:1px solid var(--town-border,#30253a);border-radius:10px;background:var(--town-surface,#0d0a11);color:var(--town-text,#eee);font-size:.82rem}
 .feed-filter-toggle{display:flex;align-items:center;gap:8px;cursor:pointer}
 .feed-filter-toggle.active{border-color:var(--town-accent,#287bff)}
-.feed-filter-count{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:var(--town-accent,#287bff);color:#fff;font-size:.68rem;font-weight:800}
+.feed-filter-count{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:var(--town-accent,#287bff);color:var(--town-accent-contrast,#050608);font-size:.68rem;font-weight:800}
 .feed-sort{margin:0}
 .feed-sort select{min-width:145px}
 .feed-filter-panel{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:0 0 12px;padding:16px;border:1px solid var(--town-border,#30253a);border-radius:14px;background:var(--town-surface,#0d0a11)}
