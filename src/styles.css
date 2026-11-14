@@ -6134,10 +6134,19 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* Site-wide member accent binding. All interactive chrome derives from the saved profile colour. */
 :root {
-  --town-accent: #A3DFC1;
+  --town-accent: #287BFF;
+  --town-accent-contrast: #050608;
   --accent: var(--town-accent);
   --focus: var(--town-accent);
-  --success: var(--town-accent);
+  --status-success: #42D392;
+  --status-warning: #F5C451;
+  --status-error: #FF737A;
+  --status-info: #70B8FF;
+  --success: var(--status-success);
+  --text-primary: #F1F2F5;
+  --text-secondary: #C4C9D2;
+  --text-muted: #AEB4BF;
+  --text-disabled: #727985;
   --town-accent-hover: color-mix(in srgb, var(--town-accent) 82%, white);
   --town-accent-border: color-mix(in srgb, var(--town-accent) 48%, #303438);
   --town-accent-faint: color-mix(in srgb, var(--town-accent) 12%, #0c0e10);
@@ -6145,10 +6154,31 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell {
   --accent: var(--town-accent, #A3DFC1);
   --profile-accent: var(--town-accent, #A3DFC1);
+  --status-success: #42D392;
+  --status-warning: #F5C451;
+  --status-error: #FF737A;
+  --status-info: #70B8FF;
+  --success: var(--status-success);
+  --text-primary: #F1F2F5;
+  --text-secondary: #C4C9D2;
+  --text-muted: #AEB4BF;
+  --text-disabled: #727985;
   --accent-soft: color-mix(in srgb, var(--accent) 14%, #070809);
   --accent-hover: color-mix(in srgb, var(--accent) 82%, white);
   --accent-border: color-mix(in srgb, var(--accent) 48%, #303438);
   --accent-faint: color-mix(in srgb, var(--accent) 12%, #0c0e10);
+}
+
+
+/* Shared text hierarchy: secondary and muted text remain readable on dark surfaces. */
+.ps2-shell .ps2-main :is(small,time,.meta,.feed-card-footer,.discussion-meta,.community-card-topline,.community-discovery-stats,.town-side-card li span,.ps2-menu-label,.ps2-section-label) {
+  color: var(--text-muted);
+}
+.ps2-shell .ps2-main :is(.widget-help,.feature-text,.town-page p,.town-empty,.town-state) {
+  color: var(--text-secondary);
+}
+.ps2-shell :is(button:disabled,[aria-disabled="true"]) {
+  color: var(--text-disabled);
 }
 
 /* Button and control borders use a tinted version of the chosen colour, not a fixed neon colour. */
