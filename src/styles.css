@@ -7605,3 +7605,23 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
 @media (prefers-reduced-motion: reduce) {
   .town-toast, .town-confirm-dialog { animation: none !important; transition: none !important; }
 }
+
+
+/* Native discussion-card links retain the existing neutral card treatment. */
+.ps2-shell .post-card {
+  display: block;
+  color: inherit;
+  text-decoration: none;
+}
+.ps2-shell .post-card:focus-visible {
+  outline: 2px solid var(--town-accent);
+  outline-offset: 3px;
+}
+.ps2-shell .post-card > span:last-child,
+.ps2-shell .feed-card-footer,
+.ps2-shell .discussion-meta,
+.ps2-shell .discussion-footer,
+.ps2-shell .community-card-topline,
+.ps2-shell .community-discovery-stats {
+  color: var(--text-muted);
+}
