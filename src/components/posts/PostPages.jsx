@@ -1,5 +1,6 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import { confirmTown, notifyTown, useDialogFocus } from '../ui/Feedback'
 
 function Frame({ eyebrow = 'DISCUSSION', title, actions, children }) {
   return <section className="town-page"><div className="town-page-heading"><div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1></div>{actions && <div className="town-page-actions">{actions}</div>}</div>{children}</section>
@@ -29,16 +30,19 @@ function VoteBar({ postId, currentUserId, initialScore = 0, initialVote = 0, com
 
 function ReportDialog({ currentUserId, communityId, postId = null, commentId = null, onClose }) {
   const [reason, setReason] = useState(''), [busy, setBusy] = useState(false), [done, setDone] = useState(false)
+  const dialogRef = useRef(null)
+  useDialogFocus(dialogRef, onClose)
   const submit = async e => {
     e.preventDefault(); if (!reason.trim() || !currentUserId) return
     setBusy(true)
     const { error } = await supabase.from('reports').insert({ reporter_id: currentUserId, community_id: communityId, post_id: postId, comment_id: commentId, reason: reason.trim() })
-    if (error) alert(error.message); else setDone(true)
+    if (error) notifyTown({ type: 'error', title: 'Report not submitted', message: `Your report was not saved. ${error.message || 'The request failed.'} Check your connection and try again.` })
+    else { setDone(true); notifyTown({ type: 'success', title: 'Report submitted', message: 'Your report was saved and can be reviewed by a moderator.' }) }
     setBusy(false)
   }
-  return <div className="report-backdrop" role="dialog" aria-modal="true" aria-label="Report content"><div className="report-dialog">
-    {done ? <><h3>Report submitted</h3><p>Thanks. A moderator can review it from the downtown moderation queue.</p><button className="button primary" onClick={onClose}>Close</button></> : <form onSubmit={submit}><p className="eyebrow">REPORT</p><h3>What is wrong with this content?</h3><textarea value={reason} onChange={e => setReason(e.target.value)} maxLength={500} placeholder="Briefly explain the problem…" required /><div className="town-form-actions"><button className="button primary" disabled={busy}>{busy ? 'Submitting…' : 'Submit report'}</button><button type="button" className="button secondary" onClick={onClose}>Cancel</button></div></form>}
-  </div></div>
+  return <div className="report-backdrop"><section className="report-dialog" ref={dialogRef} role="dialog" aria-modal="true" aria-labelledby="report-dialog-title" tabIndex={-1}>
+    {done ? <><h3 id="report-dialog-title">Report submitted</h3><p>Thanks. A moderator can review it from the downtown moderation queue.</p><button className="button primary" onClick={onClose}>Close</button></> : <form onSubmit={submit}><p className="eyebrow">REPORT</p><h3 id="report-dialog-title">What is wrong with this content?</h3><textarea aria-label="Reason for reporting this content" value={reason} onChange={e => setReason(e.target.value)} maxLength={500} placeholder="Briefly explain the problem…" required /><div className="town-form-actions"><button className="button primary" disabled={busy}>{busy ? 'Submitting…' : 'Submit report'}</button><button type="button" className="button secondary" onClick={onClose}>Cancel</button></div></form>}
+  </section></div>
 }
 
 function Comment({ comment, children, currentUserId, communityId, onChanged, acceptedAnswerId, canAcceptAnswer, onAcceptAnswer }) {
@@ -52,23 +56,33 @@ function Comment({ comment, children, currentUserId, communityId, onChanged, acc
     e.preventDefault(); if (!text.trim() || !currentUserId) return
     setBusy(true)
     const { error } = await supabase.from('comments').insert({ post_id: comment.post_id, parent_id: comment.id, author_id: currentUserId, body: text.trim() })
-    if (!error) { setText(''); setReplyOpen(false); onChanged() } else alert(error.message)
+    if (!error) { setText(''); setReplyOpen(false); notifyTown({ type: 'success', title: 'Reply posted', message: 'Your reply was saved.' }); onChanged() }
+    else notifyTown({ type: 'error', title: 'Reply not posted', message: `Your reply was not saved. ${error.message || 'The request failed.'} Check your connection and try again.` })
     setBusy(false)
   }
   const saveEdit = async e => {
     e.preventDefault(); if (!editText.trim()) return
     setBusy(true)
     const { error } = await supabase.from('comments').update({ body: editText.trim(), edited_at: new Date().toISOString() }).eq('id', comment.id).eq('author_id', currentUserId)
-    if (!error) { setEditing(false); onChanged() } else alert(error.message)
+    if (!error) { setEditing(false); notifyTown({ type: 'success', title: 'Comment updated', message: 'Your changes were saved.' }); onChanged() }
+    else notifyTown({ type: 'error', title: 'Comment not updated', message: `Your changes were not saved. ${error.message || 'The request failed.'} Check your connection and try again.` })
     setBusy(false)
   }
   const blockMember = async () => {
     if (!comment.author_id || comment.author_id === currentUserId) return
-    if (!confirm('Block this member? Their connection with you will be removed.')) return
+    const approved = await confirmTown({ title: 'Block this member?', message: 'Their connection with you will be removed. You can unblock them later in your settings.', confirmLabel: 'Block member' })
+    if (!approved) return
     const { error } = await supabase.rpc('block_town_member', { p_blocked_id: comment.author_id })
-    if (error) alert(error.message); else onChanged()
+    if (error) notifyTown({ type: 'error', title: 'Member not blocked', message: `The member was not blocked. ${error.message || 'The request failed.'} Check your connection and try again.` })
+    else { notifyTown({ type: 'success', title: 'Member blocked', message: 'Their connection with you has been removed.' }); onChanged() }
   }
-  const remove = async () => { if (!confirm('Delete this comment?')) return; const { error } = await supabase.from('comments').update({ status: 'removed' }).eq('id', comment.id).eq('author_id', currentUserId); if (!error) onChanged(); else alert(error.message) }
+  const remove = async () => {
+    const approved = await confirmTown({ title: 'Delete this comment?', message: 'This comment will be removed from the discussion. This action cannot be undone.', confirmLabel: 'Delete comment' })
+    if (!approved) return
+    const { error } = await supabase.from('comments').update({ status: 'removed' }).eq('id', comment.id).eq('author_id', currentUserId)
+    if (!error) { notifyTown({ type: 'success', title: 'Comment deleted', message: 'The comment was removed.' }); onChanged() }
+    else notifyTown({ type: 'error', title: 'Comment not deleted', message: `The comment was not removed. ${error.message || 'The request failed.'} Check your connection and try again.` })
+  }
   const accepted = acceptedAnswerId === comment.id
   return <article className={`comment-item ${accepted ? 'accepted-answer' : ''}`}>
     {accepted && <p className="accepted-answer-label">✓ ACCEPTED ANSWER</p>}
@@ -122,32 +136,53 @@ export function PostPage({ postId, currentUserId, guestMode = false }) {
   const grouped = useMemo(() => { const map = new Map(); comments.forEach(c => map.set(c.id, { ...c, children: [] })); const roots = []; map.forEach(c => { if (c.parent_id && map.has(c.parent_id)) map.get(c.parent_id).children.push(c); else roots.push(c) }); return roots }, [comments])
   const blockAuthor = async () => {
     if (!post?.author_id || post.author_id === currentUserId) return
-    if (!confirm('Block this member? Their connection with you will be removed.')) return
+    const approved = await confirmTown({ title: 'Block this member?', message: 'Their connection with you will be removed. You can unblock them later in your settings.', confirmLabel: 'Block member' })
+    if (!approved) return
     setBusy(true)
     const { error: blockError } = await supabase.rpc('block_town_member', { p_blocked_id: post.author_id })
-    if (blockError) alert(blockError.message)
-    else window.location.hash = '#/feed'
+    if (blockError) notifyTown({ type: 'error', title: 'Member not blocked', message: `The member was not blocked. ${blockError.message || 'The request failed.'} Check your connection and try again.` })
+    else { notifyTown({ type: 'success', title: 'Member blocked', message: 'Their connection with you has been removed.' }); window.location.hash = '#/feed' }
     setBusy(false)
   }
   const acceptAnswer = async commentId => {
     if (!post || currentUserId !== post.author_id) return
     setBusy(true)
     const { error: acceptError } = await supabase.rpc('accept_town_answer', { p_post_id: post.id, p_comment_id: commentId })
-    if (acceptError) alert(acceptError.message)
-    else await load()
+    if (acceptError) notifyTown({ type: 'error', title: 'Answer not accepted', message: `The answer was not marked as accepted. ${acceptError.message || 'The request failed.'} Check your connection and try again.` })
+    else { notifyTown({ type: 'success', title: 'Answer accepted', message: 'The answer was marked as accepted.' }); await load() }
     setBusy(false)
   }
   const changeQuestionStatus = async nextStatus => {
     if (!post || post.post_type !== 'question' || statusBusy) return
     setStatusBusy(true)
     const { error: statusError } = await supabase.rpc('set_town_question_status', { p_post_id: post.id, p_status: nextStatus })
-    if (statusError) alert(statusError.message)
-    else await load()
+    if (statusError) notifyTown({ type: 'error', title: 'Question status not updated', message: `The question status was not changed. ${statusError.message || 'The request failed.'} Check your connection and try again.` })
+    else { notifyTown({ type: 'success', title: 'Question status updated', message: `The question is now ${nextStatus}.` }); await load() }
     setStatusBusy(false)
   }
-  const submitComment = async e => { e.preventDefault(); if (!commentText.trim() || !currentUserId) return; setBusy(true); const { error } = await supabase.from('comments').insert({ post_id: post.id, author_id: currentUserId, body: commentText.trim() }); if (!error) { setCommentText(''); load() } else alert(error.message); setBusy(false) }
-  const savePost = async e => { e.preventDefault(); if (!editTitle.trim()) return; setBusy(true); const { error } = await supabase.from('posts').update({ title: editTitle.trim(), body: editBody.trim(), updated_at: new Date().toISOString() }).eq('id', post.id).eq('author_id', currentUserId); if (!error) { setEditing(false); load() } else alert(error.message); setBusy(false) }
-  const deletePost = async () => { if (!confirm('Delete this post?')) return; const { error } = await supabase.from('posts').update({ status: 'removed' }).eq('id', post.id).eq('author_id', currentUserId); if (!error) window.location.hash = `#/community/${post.community.slug}`; else alert(error.message) }
+  const submitComment = async e => {
+    e.preventDefault(); if (!commentText.trim() || !currentUserId) return
+    setBusy(true)
+    const { error } = await supabase.from('comments').insert({ post_id: post.id, author_id: currentUserId, body: commentText.trim() })
+    if (!error) { setCommentText(''); notifyTown({ type: 'success', title: 'Comment posted', message: 'Your comment was saved.' }); await load() }
+    else notifyTown({ type: 'error', title: 'Comment not posted', message: `Your comment was not saved. ${error.message || 'The request failed.'} Check your connection and try again.` })
+    setBusy(false)
+  }
+  const savePost = async e => {
+    e.preventDefault(); if (!editTitle.trim()) return
+    setBusy(true)
+    const { error } = await supabase.from('posts').update({ title: editTitle.trim(), body: editBody.trim(), updated_at: new Date().toISOString() }).eq('id', post.id).eq('author_id', currentUserId)
+    if (!error) { setEditing(false); notifyTown({ type: 'success', title: 'Post updated', message: 'Your changes were saved.' }); await load() }
+    else notifyTown({ type: 'error', title: 'Post not updated', message: `Your changes were not saved. ${error.message || 'The request failed.'} Check your connection and try again.` })
+    setBusy(false)
+  }
+  const deletePost = async () => {
+    const approved = await confirmTown({ title: 'Delete this post?', message: 'The post will be removed from the discussion. This action cannot be undone.', confirmLabel: 'Delete post' })
+    if (!approved) return
+    const { error } = await supabase.from('posts').update({ status: 'removed' }).eq('id', post.id).eq('author_id', currentUserId)
+    if (!error) { notifyTown({ type: 'success', title: 'Post deleted', message: 'The post was removed.' }); window.location.hash = `#/community/${post.community.slug}` }
+    else notifyTown({ type: 'error', title: 'Post not deleted', message: `The post was not removed. ${error.message || 'The request failed.'} Check your connection and try again.` })
+  }
   if (loading) return <Frame title="Loading discussion…"><State>Loading…</State></Frame>
   if (error || !post) return <Frame title="Discussion unavailable"><ErrorBox message={error || 'Post not found.'} retry={load} /></Frame>
   const canEdit = currentUserId === post.author_id
