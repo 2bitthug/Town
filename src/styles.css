@@ -6136,8 +6136,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 :root {
   --town-accent: #A3DFC1;
   --accent: var(--town-accent);
-  --focus: var(--town-accent);
-  --success: var(--town-accent);
+  --focus: #b8ead2;
+  --status-success: #70d6a0;
+  --status-warning: #f5c451;
+  --status-error: #ff737a;
+  --status-info: #70b8ff;
+  --success: var(--status-success);
   --town-accent-hover: color-mix(in srgb, var(--town-accent) 82%, white);
   --town-accent-border: color-mix(in srgb, var(--town-accent) 48%, #303438);
   --town-accent-faint: color-mix(in srgb, var(--town-accent) 12%, #0c0e10);
