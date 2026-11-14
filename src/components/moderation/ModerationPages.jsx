@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import { notifyTown } from '../ui/Feedback'
 
 function Frame({ title, children }) { return <section className="town-page"><div className="town-page-heading"><div><p className="eyebrow">MODERATION</p><h1>{title}</h1></div></div>{children}</section> }
 function State({ children }) { return <div className="town-state">{children}</div> }
@@ -50,7 +51,7 @@ export function ModerationPage({ currentUserId }) {
       if (action === 'remove_post' && report.post_id) { const { error: removeError } = await supabase.from('posts').update({ status: 'removed' }).eq('id', report.post_id); if (removeError) throw removeError }
       if (action === 'remove_comment' && report.comment_id) { const { error: removeError } = await supabase.from('comments').update({ status: 'removed' }).eq('id', report.comment_id); if (removeError) throw removeError }
       await load()
-    } catch (e) { alert(e.message || 'Moderation action failed.') } finally { setBusy('') }
+    } catch (e) { notifyTown({ type: 'error', title: 'Moderation action failed', message: `The moderation action was not confirmed as completed. An audit entry may already exist if a later step failed. Review the report before retrying. ${e.message || 'The request failed.'}` }) } finally { setBusy('') }
   }
   if (loading) return <Frame title="Moderation queue"><State>Loading…</State></Frame>
   if (error) return <Frame title="Moderation queue"><div className="town-error">{error}</div></Frame>

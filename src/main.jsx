@@ -18,6 +18,7 @@ import { ShareProfileCard } from './components/profile/ShareProfileCard'
 import { PetCompanionExperience } from './components/pet/PetCompanionExperience'
 import PetSprite from './components/pet/PetSprite'
 import { NotificationsPage } from './components/notifications/NotificationsPage'
+import { TownFeedbackHost, confirmTown, notifyTown } from './components/ui/Feedback'
 
 const LEGACY_SOURCES = {
   pokemon: (name) => `https://pokeapi.co/api/v2/pokemon/${encodeURIComponent(name.toLowerCase())}`,
@@ -669,10 +670,11 @@ function SocialSection({ currentUserId }) {
   }
 
   const deleteMessage = async (id) => {
-    if (!window.confirm('Delete this message?')) return
+    const approved = await confirmTown({ title: 'Delete this message?', message: 'This message will be permanently removed from the chat. This action cannot be undone.', confirmLabel: 'Delete message' })
+    if (!approved) return
     const { error: e } = await supabase.from('messages').delete().eq('id', id).eq('sender_id', currentUserId)
-    if (e) setError('That message could not be deleted.')
-    else setMessages(prev => prev.filter(m => m.id !== id))
+    if (e) notifyTown({ type: 'error', title: 'Message not deleted', message: 'Your message was not removed. Check your connection and try again.' })
+    else { setMessages(prev => prev.filter(m => m.id !== id)); notifyTown({ type: 'success', title: 'Message deleted', message: 'The message was removed from this chat.' }) }
   }
 
   const pinMessage = async (id) => {
@@ -1179,6 +1181,17 @@ const PROFILE_COLORS = [
   ['#00FFC6', 'Vivid Mint']
 ]
 
+const PROFILE_ACCENT_CONTRAST = {
+  '#287BFF': '#050608',
+  '#00E5FF': '#050608',
+  '#9B3DFF': '#FFFFFF',
+  '#FF3CAC': '#050608',
+  '#FF9100': '#050608',
+  '#FF3158': '#050608',
+  '#B6FF00': '#050608',
+  '#00FFC6': '#050608'
+}
+
 const PROFILE_PETS = [
   ['none', 'No pet', ''],
   ['lion', 'Lion', 'lion.svg'],
@@ -1311,7 +1324,7 @@ function SettingsPage({ currentUserId }) {
     root.style.setProperty('--accent', value)
     root.style.setProperty('--profile-accent', value)
     root.style.setProperty('--focus', value)
-    root.style.setProperty('--success', value)
+    root.style.setProperty('--town-accent-contrast', PROFILE_ACCENT_CONTRAST[value] || '#050608')
     document.querySelector('.ps2-shell')?.style.setProperty('--accent', value)
     document.querySelector('.ps2-shell')?.style.setProperty('--profile-accent', value)
     window.dispatchEvent(new CustomEvent('town-accent-change', { detail: value }))
@@ -1713,7 +1726,7 @@ function App() {
     root.style.setProperty('--accent', globalAccent)
     root.style.setProperty('--profile-accent', globalAccent)
     root.style.setProperty('--focus', globalAccent)
-    root.style.setProperty('--success', globalAccent)
+    root.style.setProperty('--town-accent-contrast', PROFILE_ACCENT_CONTRAST[globalAccent] || '#050608')
     root.style.setProperty('--town-accent', globalAccent)
     document.querySelector('.ps2-shell')?.style.setProperty('--accent', globalAccent)
     document.querySelector('.ps2-shell')?.style.setProperty('--profile-accent', globalAccent)
@@ -1886,5 +1899,5 @@ function App() {
   </div>
 }
 
-createRoot(document.getElementById('root')).render(<App />)
+createRoot(document.getElementById('root')).render(<><App /><TownFeedbackHost /></>)
 

@@ -1,5 +1,6 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { supabase } from '../../lib/supabase'
+import { notifyTown } from '../ui/Feedback'
 import { avatarUrl } from '../../avatar'
 
 function Frame({ title, eyebrow = 'TOWN', actions, children }) {
@@ -157,7 +158,7 @@ export function CommunityManagePage({ communityId, currentUserId }) {
   const [community,setCommunity]=useState(null),[members,setMembers]=useState([]),[loading,setLoading]=useState(true),[error,setError]=useState(''),[allowed,setAllowed]=useState(false)
   const load=async()=>{setLoading(true); const {data:c,error:ce}=await supabase.from('communities').select('id,name,slug,description,creator_id').eq('id',communityId).maybeSingle(); if(ce) {setError(ce.message);setLoading(false);return} setCommunity(c); const {data:m,error:me}=await supabase.from('community_memberships').select('community_id,user_id,role,joined_at').eq('community_id',communityId).order('joined_at',{ascending:true}); if(me){setError(me.message);setLoading(false);return} const ids=(m||[]).map(x=>x.user_id); const {data:p}=ids.length?await supabase.from('profiles').select('id,username,display_name').in('id',ids):{data:[]}; const pm=new Map((p||[]).map(x=>[x.id,x])); const rows=(m||[]).map(x=>({...x,profile:pm.get(x.user_id)})); setMembers(rows); setAllowed(c?.creator_id===currentUserId || rows.some(x=>x.user_id===currentUserId&&x.role==='owner'));setLoading(false)}
   useEffect(()=>{load()},[communityId,currentUserId])
-  const changeRole=async(userId,role)=>{const {error:e}=await supabase.from('community_memberships').update({role}).eq('community_id',communityId).eq('user_id',userId);if(e)alert(e.message);else load()}
+  const changeRole=async(userId,role)=>{const {error:e}=await supabase.from('community_memberships').update({role}).eq('community_id',communityId).eq('user_id',userId);if(e)notifyTown({type:'error',title:'Member role not updated',message:`The role change was not saved. ${e.message || 'The request failed.'} Check your connection and try again.`});else{notifyTown({type:'success',title:'Member role updated',message:'The new role was saved.'});load()}}
   if(loading)return <Frame title="Downtown management"><State>Loading…</State></Frame>
   if(error)return <Frame title="Downtown management"><ErrorBox>{error}</ErrorBox></Frame>
   if(!community||!allowed)return <Frame title="Downtown management"><ErrorBox>You do not have permission to manage this downtown.</ErrorBox></Frame>

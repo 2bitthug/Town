@@ -159,10 +159,10 @@
 .ps2-shell .ps2-create-action:hover,
 .ps2-shell .ps2-create-action.active {
   background: var(--town-accent);
-  color: #08090b;
+  color: var(--town-accent-contrast, #050608);
 }
 .ps2-shell .ps2-create-action:hover span:first-child,
-.ps2-shell .ps2-create-action.active span:first-child { color: #08090b; }
+.ps2-shell .ps2-create-action.active span:first-child { color: var(--town-accent-contrast, #050608); }
 
 .ps2-shell .ps2-main {
   width: 100%;
@@ -238,7 +238,7 @@
 .ps2-shell .ps2-main .button.primary {
   border: 1px solid var(--town-accent) !important;
   background: var(--town-accent);
-  color: #08090b;
+  color: var(--town-accent-contrast, #050608);
   box-shadow: 0 7px 22px color-mix(in srgb, var(--town-accent) 17%, transparent) !important;
 }
 .ps2-shell .ps2-main .button.primary:hover:not(:disabled) {
