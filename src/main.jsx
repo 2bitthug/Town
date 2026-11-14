@@ -18,6 +18,7 @@ import { ShareProfileCard } from './components/profile/ShareProfileCard'
 import { PetCompanionExperience } from './components/pet/PetCompanionExperience'
 import PetSprite from './components/pet/PetSprite'
 import { NotificationsPage } from './components/notifications/NotificationsPage'
+import { TownFeedbackHost } from './components/ui/Feedback'
 
 const LEGACY_SOURCES = {
   pokemon: (name) => `https://pokeapi.co/api/v2/pokemon/${encodeURIComponent(name.toLowerCase())}`,
@@ -1897,5 +1898,5 @@ function App() {
   </div>
 }
 
-createRoot(document.getElementById('root')).render(<App />)
+createRoot(document.getElementById('root')).render(<><App /><TownFeedbackHost /></>)
 
