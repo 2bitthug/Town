@@ -18,7 +18,7 @@ import { ShareProfileCard } from './components/profile/ShareProfileCard'
 import { PetCompanionExperience } from './components/pet/PetCompanionExperience'
 import PetSprite from './components/pet/PetSprite'
 import { NotificationsPage } from './components/notifications/NotificationsPage'
-import { TownFeedbackHost } from './components/ui/Feedback'
+import { TownFeedbackHost, confirmTown, notifyTown } from './components/ui/Feedback'
 
 const LEGACY_SOURCES = {
   pokemon: (name) => `https://pokeapi.co/api/v2/pokemon/${encodeURIComponent(name.toLowerCase())}`,
@@ -670,10 +670,11 @@ function SocialSection({ currentUserId }) {
   }
 
   const deleteMessage = async (id) => {
-    if (!window.confirm('Delete this message?')) return
+    const approved = await confirmTown({ title: 'Delete this message?', message: 'This message will be permanently removed from the chat. This action cannot be undone.', confirmLabel: 'Delete message' })
+    if (!approved) return
     const { error: e } = await supabase.from('messages').delete().eq('id', id).eq('sender_id', currentUserId)
-    if (e) setError('That message could not be deleted.')
-    else setMessages(prev => prev.filter(m => m.id !== id))
+    if (e) notifyTown({ type: 'error', title: 'Message not deleted', message: 'Your message was not removed. Check your connection and try again.' })
+    else { setMessages(prev => prev.filter(m => m.id !== id)); notifyTown({ type: 'success', title: 'Message deleted', message: 'The message was removed from this chat.' }) }
   }
 
   const pinMessage = async (id) => {
