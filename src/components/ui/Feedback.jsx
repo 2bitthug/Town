@@ -48,9 +48,14 @@ export function useDialogFocus(dialogRef, onClose) {
         firstNode.focus()
       }
     }
+    const onFocusIn = event => {
+      if (!dialog.contains(event.target)) (focusables()[0] || dialog).focus()
+    }
     document.addEventListener('keydown', onKeyDown)
+    document.addEventListener('focusin', onFocusIn)
     return () => {
       document.removeEventListener('keydown', onKeyDown)
+      document.removeEventListener('focusin', onFocusIn)
       if (previousFocus?.isConnected && typeof previousFocus.focus === 'function') previousFocus.focus()
     }
   }, [dialogRef])
