@@ -6147,7 +6147,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   --text-secondary: #C4C9D2;
   --text-muted: #AEB4BF;
   --text-disabled: #727985;
-  --town-accent-hover: color-mix(in srgb, var(--town-accent) 82%, white);
+  --town-accent-hover: color-mix(in srgb, var(--town-accent) 92%, black);
   --town-accent-border: color-mix(in srgb, var(--town-accent) 48%, #303438);
   --town-accent-faint: color-mix(in srgb, var(--town-accent) 12%, #0c0e10);
 }
@@ -6164,7 +6164,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   --text-muted: #AEB4BF;
   --text-disabled: #727985;
   --accent-soft: color-mix(in srgb, var(--accent) 14%, #070809);
-  --accent-hover: color-mix(in srgb, var(--accent) 82%, white);
+  --accent-hover: color-mix(in srgb, var(--accent) 92%, black);
   --accent-border: color-mix(in srgb, var(--accent) 48%, #303438);
   --accent-faint: color-mix(in srgb, var(--accent) 12%, #0c0e10);
 }
@@ -7624,4 +7624,14 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
 .ps2-shell .community-card-topline,
 .ps2-shell .community-discovery-stats {
   color: var(--text-muted);
+}
+
+/* Accent-filled controls retain their selected AA foreground on hover. */
+.ps2-shell .ps2-nav-index,
+.ps2-shell .ps2-menu-label,
+.ps2-shell .ps2-section-label {
+  color: var(--text-muted);
+}
+.ps2-shell .feed-filter-count {
+  color: var(--town-accent-contrast, #050608);
 }
