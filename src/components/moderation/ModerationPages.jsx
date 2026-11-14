@@ -51,7 +51,7 @@ export function ModerationPage({ currentUserId }) {
       if (action === 'remove_post' && report.post_id) { const { error: removeError } = await supabase.from('posts').update({ status: 'removed' }).eq('id', report.post_id); if (removeError) throw removeError }
       if (action === 'remove_comment' && report.comment_id) { const { error: removeError } = await supabase.from('comments').update({ status: 'removed' }).eq('id', report.comment_id); if (removeError) throw removeError }
       await load()
-    } catch (e) { notifyTown({ type: 'error', title: 'Moderation action failed', message: `The moderation action was not completed. ${e.message || 'The request failed.'} Review the report and try again.` }) } finally { setBusy('') }
+    } catch (e) { notifyTown({ type: 'error', title: 'Moderation action failed', message: `The moderation action was not confirmed as completed. An audit entry may already exist if a later step failed. Review the report before retrying. ${e.message || 'The request failed.'}` }) } finally { setBusy('') }
   }
   if (loading) return <Frame title="Moderation queue"><State>Loading…</State></Frame>
   if (error) return <Frame title="Moderation queue"><div className="town-error">{error}</div></Frame>
