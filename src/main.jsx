@@ -1403,7 +1403,7 @@ function SettingsPage({ currentUserId }) {
           .engagement-panel h3{margin:0 0 7px;color:#f4eaff;font-size:1rem}
           .engagement-muted{color:#aaa1b7;font-size:.88rem;margin:0}
           .member-line{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
-          .member-days{font-size:1.55rem;font-weight:700;color:var(--profile-accent,#287BFF)}
+          .member-days{font-size:1.55rem;font-weight:700;color:var(--profile-accent-text,#287BFF)}
           .badge-row,.suggestion-row{display:flex;gap:8px;flex-wrap:wrap}
           .engagement-badge{padding:7px 10px;border:1px solid var(--profile-accent,#287BFF);border-radius:999px;background:#0d0b11;color:#f5eff8;font-size:.8rem}
           .engagement-badge.locked{opacity:.45;border-color:#4a4052}
@@ -1412,7 +1412,7 @@ function SettingsPage({ currentUserId }) {
           .suggestion-row span{padding:5px 8px;border:1px solid #40344a;border-radius:999px;color:#c8c0ce;font-size:.78rem}
           .profile-toggle-list{display:grid;gap:12px}
           .profile-toggle-list .profile-toggle{display:flex!important;align-items:center!important;gap:10px!important;width:100%!important;margin:0!important}
-          .profile-toggle-list .profile-toggle input[type="checkbox"]{width:18px!important;height:18px!important;min-width:18px!important;flex:0 0 18px!important;margin:0!important;accent-color:var(--profile-accent,#287BFF)}
+          .profile-toggle-list .profile-toggle input[type="checkbox"]{width:18px!important;height:18px!important;min-width:18px!important;flex:0 0 18px!important;margin:0!important;accent-color:var(--profile-accent-text,#287BFF)}
           .profile-toggle-list .profile-toggle span{display:block!important;margin:0!important}
           .profile-editor-compact{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
           .profile-editor-layout{display:grid;grid-template-columns:minmax(0,190px) minmax(0,1fr);gap:16px;align-items:start;width:100%;min-width:0}
@@ -1431,13 +1431,13 @@ function SettingsPage({ currentUserId }) {
           .profile-avatar-popover{margin-top:12px;padding:12px;border:1px solid #33283d;border-radius:14px;background:#09070c;max-height:300px;overflow:auto}
           .profile-avatar-grid-compact{display:grid;grid-template-columns:repeat(5,minmax(52px,1fr));gap:8px}
           .profile-avatar-grid-compact button{position:relative;min-height:58px;border:1px solid #33283d;border-radius:12px;background:#0e0b12;padding:5px;cursor:pointer}
-          .profile-avatar-grid-compact button.selected{border-color:var(--profile-accent,#287BFF);box-shadow:0 0 10px color-mix(in srgb,var(--profile-accent,#287BFF) 25%,transparent)}
+          .profile-avatar-grid-compact button.selected{border-color:var(--profile-accent-text,#287BFF);box-shadow:0 0 10px color-mix(in srgb,var(--profile-accent,#287BFF) 25%,transparent)}
           .profile-avatar-grid-compact img{width:48px;height:48px;display:block;margin:auto}
           .profile-avatar-grid-compact button:focus-visible{outline:2px solid var(--profile-accent,#287BFF);outline-offset:2px}
 .profile-avatar-grid-compact button{display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;min-width:0;min-height:78px}
           .profile-avatar-grid-compact img{width:48px;height:48px;object-fit:contain}
           .profile-avatar-grid-compact small{font-size:10px;line-height:1.15;color:#ddd;text-align:center;overflow-wrap:anywhere}
-          .profile-avatar-grid-compact button.selected small{color:var(--profile-accent,#287BFF)}
+          .profile-avatar-grid-compact button.selected small{color:var(--profile-accent-text,#287BFF)}
           @media(max-width:760px){.engagement-grid{grid-template-columns:1fr}.profile-avatar-grid-compact{grid-template-columns:repeat(4,minmax(52px,1fr))}}
         `}</style>
 
