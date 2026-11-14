@@ -7252,7 +7252,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
   background: var(--town-accent); color: var(--town-accent-contrast, #050608);
   border: 1px solid var(--town-accent); box-shadow: none;
 }
-.ps2-shell .button.primary:hover:not(:disabled) { filter: brightness(1.07); transform: translateY(-1px); box-shadow: none; }
+.ps2-shell .button.primary:hover:not(:disabled) { background: var(--town-accent-hover); color: var(--town-accent-contrast, #050608); border-color: var(--town-accent-hover); transform: translateY(-1px); box-shadow: none; }
 .ps2-shell .button.secondary {
   background: var(--town-surface-raised); color: var(--town-text);
   border: 1px solid var(--town-border-strong);
