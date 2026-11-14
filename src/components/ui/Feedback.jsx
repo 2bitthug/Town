@@ -15,6 +15,8 @@ export function confirmTown({ title = 'Confirm action', message, confirmLabel = 
 }
 
 export function useDialogFocus(dialogRef, onClose) {
+  const onCloseRef = useRef(onClose)
+  onCloseRef.current = onClose
   useEffect(() => {
     const dialog = dialogRef.current
     if (!dialog) return undefined
@@ -26,7 +28,7 @@ export function useDialogFocus(dialogRef, onClose) {
     const onKeyDown = event => {
       if (event.key === 'Escape') {
         event.preventDefault()
-        onClose()
+        onCloseRef.current()
         return
       }
       if (event.key !== 'Tab') return
@@ -51,7 +53,7 @@ export function useDialogFocus(dialogRef, onClose) {
       document.removeEventListener('keydown', onKeyDown)
       if (previousFocus?.isConnected && typeof previousFocus.focus === 'function') previousFocus.focus()
     }
-  }, [dialogRef, onClose])
+  }, [dialogRef])
 }
 
 function ConfirmationDialog({ confirmation, onResolve }) {
