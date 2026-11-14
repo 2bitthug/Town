@@ -6149,6 +6149,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   --town-accent-border: color-mix(in srgb, var(--town-accent) 48%, #303438);
   --town-accent-faint: color-mix(in srgb, var(--town-accent) 12%, #0c0e10);
 }
+.ps2-shell [style*="--profile-accent"] {
+  --profile-accent-text: color-mix(in srgb, var(--profile-accent, var(--accent)) 85%, white);
+}
+.ps2-shell .button.primary,
+.ps2-shell .ps2-create-action {
+  color: var(--accent-on, #08110d);
+}
 .ps2-shell {
   --accent: var(--town-accent, #A3DFC1);
   --profile-accent: var(--town-accent, #A3DFC1);
