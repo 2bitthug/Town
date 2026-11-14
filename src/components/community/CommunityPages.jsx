@@ -413,13 +413,13 @@ export function CommunityPage({ slug, currentUserId, guestMode = false, guestSta
         <section>
           <div className="town-section-heading"><div><p className="eyebrow">DISCUSSION</p><h2>Recent posts</h2></div></div>
           {!posts.length ? <Empty>No posts yet. Be the first person to start a discussion.</Empty> : <div className="post-list">
-            {posts.map(post => <article className="post-card" key={post.id} onClick={() => window.location.hash = `#/post/${post.id}`} style={{ cursor: 'pointer' }}>
+            {posts.map(post => <a className="post-card" key={post.id} href={`#/post/${post.id}`}>
               {post.is_pinned && <span className="post-pin">PINNED</span>}
               <span className="post-type">{post.post_type}</span>
-              <h3><a className="post-title-link" href={`#/post/${post.id}`}>{post.title}</a></h3>
+              <h3>{post.title}</h3>
               <p>{post.body || 'No body text.'}</p>
               <span>{new Date(post.created_at).toLocaleString()}</span>
-            </article>)}
+            </a>)}
           </div>}
         </section>
         <aside className="community-sidebar">
