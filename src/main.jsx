@@ -1179,6 +1179,17 @@ const PROFILE_COLORS = [
   ['#00FFC6', 'Vivid Mint']
 ]
 
+const PROFILE_ACCENT_CONTRAST = {
+  '#287BFF': '#050608',
+  '#00E5FF': '#050608',
+  '#9B3DFF': '#FFFFFF',
+  '#FF3CAC': '#050608',
+  '#FF9100': '#050608',
+  '#FF3158': '#050608',
+  '#B6FF00': '#050608',
+  '#00FFC6': '#050608'
+}
+
 const PROFILE_PETS = [
   ['none', 'No pet', ''],
   ['lion', 'Lion', 'lion.svg'],
@@ -1311,7 +1322,7 @@ function SettingsPage({ currentUserId }) {
     root.style.setProperty('--accent', value)
     root.style.setProperty('--profile-accent', value)
     root.style.setProperty('--focus', value)
-    root.style.setProperty('--success', value)
+    root.style.setProperty('--town-accent-contrast', PROFILE_ACCENT_CONTRAST[value] || '#050608')
     document.querySelector('.ps2-shell')?.style.setProperty('--accent', value)
     document.querySelector('.ps2-shell')?.style.setProperty('--profile-accent', value)
     window.dispatchEvent(new CustomEvent('town-accent-change', { detail: value }))
@@ -1713,7 +1724,7 @@ function App() {
     root.style.setProperty('--accent', globalAccent)
     root.style.setProperty('--profile-accent', globalAccent)
     root.style.setProperty('--focus', globalAccent)
-    root.style.setProperty('--success', globalAccent)
+    root.style.setProperty('--town-accent-contrast', PROFILE_ACCENT_CONTRAST[globalAccent] || '#050608')
     root.style.setProperty('--town-accent', globalAccent)
     document.querySelector('.ps2-shell')?.style.setProperty('--accent', globalAccent)
     document.querySelector('.ps2-shell')?.style.setProperty('--profile-accent', globalAccent)
