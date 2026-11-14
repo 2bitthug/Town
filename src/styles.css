@@ -610,7 +610,7 @@ td {
 }
 
 .game-frame-note a {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 @media (max-width: 800px) {
@@ -922,7 +922,7 @@ td {
 
 .chat-select:hover,
 .chat-select.selected {
-  border-color: var(--accent);
+  border-color: var(--accent-text);
   background: var(--panel-2)
 }
 
@@ -1040,7 +1040,7 @@ body {
 }
 
 a {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 
 a.button {
@@ -1059,7 +1059,7 @@ audio:focus-visible {
 }
 
 input:focus-visible {
-  border-color: var(--accent);
+  border-color: var(--accent-text);
   box-shadow: 0 0 0 3px rgba(118, 169, 255, .16);
 }
 
@@ -1512,7 +1512,7 @@ table caption {
 }
 
 .news-item:hover {
-  border-color: var(--accent);
+  border-color: var(--accent-text);
   background: var(--panel-2);
 }
 
@@ -1533,7 +1533,7 @@ table caption {
 
 .news-read {
   flex: 0 0 auto;
-  color: var(--accent) !important;
+  color: var(--accent-text) !important;
   font-weight: 700;
 }
 
@@ -1616,7 +1616,7 @@ table caption {
 }
 
 .meme-select.selected {
-  border-color: var(--accent);
+  border-color: var(--accent-text);
   box-shadow: 0 0 0 2px rgba(118, 169, 255, .16);
 }
 
@@ -1773,7 +1773,7 @@ table caption {
   position: absolute;
   right: 18px;
   bottom: 15px;
-  color: var(--accent);
+  color: var(--accent-text);
   font-size: 1.25rem
 }
 
@@ -1802,7 +1802,7 @@ table caption {
 }
 
 .trivia-option:hover:not(:disabled) {
-  border-color: var(--accent);
+  border-color: var(--accent-text);
   background: var(--panel-2)
 }
 
@@ -2014,7 +2014,7 @@ table caption {
 }
 
 .food-card:hover {
-  border-color: var(--accent)
+  border-color: var(--accent-text)
 }
 
 .food-card img {
@@ -4898,7 +4898,7 @@ textarea {
   border: 2px solid var(--profile-accent, #39ff14);
   border-radius: 18px;
   background: #050505;
-  color: var(--profile-accent, #39ff14);
+  color: var(--profile-accent-text, #39ff14);
   font-size: 34px;
   line-height: 1;
   box-shadow: 0 0 12px rgba(57,255,20,.2);
@@ -4936,7 +4936,7 @@ textarea {
 
 .profile-preview-section h4 {
   margin: 0 0 9px;
-  color: var(--profile-accent, #39ff14);
+  color: var(--profile-accent-text, #39ff14);
   font-size: .82rem;
   letter-spacing: .08em;
   text-transform: uppercase;
@@ -5014,7 +5014,7 @@ textarea {
 }
 
 .profile-interest-option.selected {
-  border-color: var(--profile-accent, #39ff14) !important;
+  border-color: var(--profile-accent-text, #39ff14) !important;
   color: #fff !important;
 }
 
@@ -5044,12 +5044,12 @@ textarea {
 }
 
 .profile-avatar-choice.selected {
-  border-color: var(--profile-accent, #39ff14) !important;
+  border-color: var(--profile-accent-text, #39ff14) !important;
   color: #fff !important;
 }
 
 .profile-avatar-choice.selected span {
-  color: var(--profile-accent, #39ff14);
+  color: var(--profile-accent-text, #39ff14);
 }
 
 .profile-color-grid {
@@ -5159,7 +5159,7 @@ textarea {
 
 .profile-toggle input {
   width: auto !important;
-  accent-color: var(--profile-accent, #39ff14);
+  accent-color: var(--profile-accent-text, #39ff14);
 }
 
 .profile-data-note p {
@@ -5506,12 +5506,12 @@ textarea {
 
 /* Town UX refinement: consistent hero, search, and account customisation. */
 .town-hero{grid-template-columns:minmax(0,1.45fr) minmax(250px,.8fr);gap:clamp(22px,4vw,48px);align-items:center;padding:clamp(22px,4vw,42px);border-color:#29212f;background:#09090b;box-shadow:none}
-.town-hero-copy{max-width:780px}.town-hero h2{max-width:760px;font-size:clamp(1.8rem,3.5vw,3.15rem);line-height:1.08;letter-spacing:-.035em}.town-hero p:not(.town-kicker){max-width:620px;font-size:1rem}.town-kicker{color:var(--accent,#39ff14)}
-.town-principles{list-style:none;padding:0;margin:0;display:grid;gap:0;border-top:1px solid #2a2430}.town-principles li{display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid #2a2430;color:#ddd6e3}.town-principles li strong{font:700 .75rem/1 monospace;color:var(--accent,#39ff14);letter-spacing:.08em}.town-principles li span{font-size:.92rem}
+.town-hero-copy{max-width:780px}.town-hero h2{max-width:760px;font-size:clamp(1.8rem,3.5vw,3.15rem);line-height:1.08;letter-spacing:-.035em}.town-hero p:not(.town-kicker){max-width:620px;font-size:1rem}.town-kicker{color:var(--accent-text,#39ff14)}
+.town-principles{list-style:none;padding:0;margin:0;display:grid;gap:0;border-top:1px solid #2a2430}.town-principles li{display:flex;align-items:center;gap:14px;padding:15px 0;border-bottom:1px solid #2a2430;color:#ddd6e3}.town-principles li strong{font:700 .75rem/1 monospace;color:var(--accent-text,#39ff14);letter-spacing:.08em}.town-principles li span{font-size:.92rem}
 .town-directory-intro{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:0 0 16px;padding:14px 16px;border:1px solid #29212f;background:#0b0a0d}.town-directory-intro p{margin:0;color:#aaa1b1;font-size:.9rem;line-height:1.5}.town-directory-intro .button{white-space:nowrap}
-.town-global-search{position:relative;margin:0 auto 20px;max-width:1180px;padding:14px 16px;border:1px solid #29212f;background:#09090b;border-radius:12px}.town-global-search form>label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#aaa1b1;margin-bottom:8px}.town-global-search form>div{display:flex;gap:10px}.town-global-search input{flex:1;min-width:0;width:100%;box-sizing:border-box}.town-global-search-message{margin:10px 0 0;color:#ffb8b8;font-size:.88rem}.town-global-results{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid #29212f}.town-global-result-group h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;margin:0 0 8px;color:var(--accent,#39ff14)}.town-global-result-group>a{display:grid;gap:4px;padding:10px 0;border-bottom:1px solid #211a28;text-decoration:none;color:inherit}.town-global-result-group>a strong{font-size:.9rem}.town-global-result-group>a span,.town-global-result-group>p{margin:0;font-size:.8rem;color:#aaa1b1;line-height:1.45}.town-global-results>.button{justify-self:start;grid-column:1/-1}
-.profile-pet-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-top:12px}.profile-pet-choice{display:grid;justify-items:center;gap:5px;min-width:0;padding:10px 5px;border:1px solid #33283d;border-radius:10px;background:#0e0b12;color:#e9e1ec;cursor:pointer}.profile-pet-choice>span{font-size:1.55rem;line-height:1.3;filter:grayscale(.2)}.profile-pet-choice small{font-size:.72rem;color:#bcb3c4}.profile-pet-choice.selected{border-color:var(--profile-accent,var(--accent,#39ff14));box-shadow:0 0 0 1px var(--profile-accent,var(--accent,#39ff14)) inset}.profile-pet-choice:focus-visible{outline:2px solid var(--profile-accent,var(--accent,#39ff14));outline-offset:2px}.profile-pet-preview{display:inline-grid;place-items:center;margin-top:10px;width:42px;height:42px;border:1px solid var(--profile-accent,var(--accent,#39ff14));border-radius:10px;background:#09090b;font-size:1.55rem}.optional-label{font-size:.72rem;color:#91879a;font-weight:400;margin-left:6px}
-.ps2-shell .ps2-nav a.active,.ps2-shell .ps2-nav a:hover,.ps2-shell .ps2-create-action,.ps2-shell .ps2-nav-index,.ps2-shell .ps2-top-settings,.ps2-shell .ps2-online i{border-color:var(--accent,#39ff14);color:var(--accent,#39ff14)}.ps2-shell .ps2-nav a:focus-visible,.ps2-shell button:focus-visible,.ps2-shell a:focus-visible{outline-color:var(--accent,#39ff14)}.ps2-shell .button.primary{background:var(--accent,#39ff14);border-color:var(--accent,#39ff14);color:#050505}.ps2-shell .town-global-result-group h2,.ps2-shell .community-open,.ps2-shell .town-kicker{color:var(--accent,#39ff14)}
+.town-global-search{position:relative;margin:0 auto 20px;max-width:1180px;padding:14px 16px;border:1px solid #29212f;background:#09090b;border-radius:12px}.town-global-search form>label{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:#aaa1b1;margin-bottom:8px}.town-global-search form>div{display:flex;gap:10px}.town-global-search input{flex:1;min-width:0;width:100%;box-sizing:border-box}.town-global-search-message{margin:10px 0 0;color:#ffb8b8;font-size:.88rem}.town-global-results{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px;padding-top:16px;border-top:1px solid #29212f}.town-global-result-group h2{font-size:.85rem;text-transform:uppercase;letter-spacing:.08em;margin:0 0 8px;color:var(--accent-text,#39ff14)}.town-global-result-group>a{display:grid;gap:4px;padding:10px 0;border-bottom:1px solid #211a28;text-decoration:none;color:inherit}.town-global-result-group>a strong{font-size:.9rem}.town-global-result-group>a span,.town-global-result-group>p{margin:0;font-size:.8rem;color:#aaa1b1;line-height:1.45}.town-global-results>.button{justify-self:start;grid-column:1/-1}
+.profile-pet-grid{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:8px;margin-top:12px}.profile-pet-choice{display:grid;justify-items:center;gap:5px;min-width:0;padding:10px 5px;border:1px solid #33283d;border-radius:10px;background:#0e0b12;color:#e9e1ec;cursor:pointer}.profile-pet-choice>span{font-size:1.55rem;line-height:1.3;filter:grayscale(.2)}.profile-pet-choice small{font-size:.72rem;color:#bcb3c4}.profile-pet-choice.selected{border-color:var(--profile-accent-text,var(--accent,#39ff14));box-shadow:0 0 0 1px var(--profile-accent,var(--accent,#39ff14)) inset}.profile-pet-choice:focus-visible{outline:2px solid var(--profile-accent,var(--accent,#39ff14));outline-offset:2px}.profile-pet-preview{display:inline-grid;place-items:center;margin-top:10px;width:42px;height:42px;border:1px solid var(--profile-accent,var(--accent,#39ff14));border-radius:10px;background:#09090b;font-size:1.55rem}.optional-label{font-size:.72rem;color:#91879a;font-weight:400;margin-left:6px}
+.ps2-shell .ps2-nav a.active,.ps2-shell .ps2-nav a:hover,.ps2-shell .ps2-create-action,.ps2-shell .ps2-nav-index,.ps2-shell .ps2-top-settings,.ps2-shell .ps2-online i{border-color:var(--accent-text,#39ff14);color:var(--accent-text,#39ff14)}.ps2-shell .ps2-nav a:focus-visible,.ps2-shell button:focus-visible,.ps2-shell a:focus-visible{outline-color:var(--accent-text,#39ff14)}.ps2-shell .button.primary{background:var(--accent,#39ff14);border-color:var(--accent-text,#39ff14);color:#050505}.ps2-shell .town-global-result-group h2,.ps2-shell .community-open,.ps2-shell .town-kicker{color:var(--accent-text,#39ff14)}
 @media(max-width:760px){.town-hero{grid-template-columns:1fr}.town-directory-intro{align-items:flex-start;flex-direction:column}.town-global-results{grid-template-columns:1fr}.profile-pet-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.town-global-search form>div{align-items:stretch}.town-global-search form>div .button{flex:0 0 auto}}
 @media(max-width:420px){.town-global-search form>div{flex-direction:column}.town-global-search form>div .button{width:100%}.profile-pet-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 
@@ -5561,7 +5561,7 @@ a, button, input[type="button"], input[type="submit"], select, summary, [role="b
 @keyframes pet-celebrate{0%,100%{transform:translateY(0) rotate(0)}35%{transform:translateY(-7px) rotate(-5deg)}70%{transform:translateY(-3px) rotate(5deg)}}
 @keyframes pet-sleep{0%,100%{transform:scaleY(.92) translateY(1px)}50%{transform:scaleY(.88) translateY(2px)}}
 @keyframes pet-zzz{0%{opacity:0;transform:translate(0,5px)}50%{opacity:1}100%{opacity:0;transform:translate(5px,-9px)}}
-.share-card-preview{padding:22px;border:1px solid var(--profile-accent,#39ff14);border-radius:12px;background:#050505;color:#f7f3fa;display:grid;gap:7px;box-shadow:0 0 18px #39ff1412}.share-card-preview[data-style="paper"]{background:#f3f0e8;color:#181818;border-color:#555}.share-card-preview>span{font:11px monospace;letter-spacing:.1em;color:var(--profile-accent,#39ff14)}.share-card-preview>strong{font:700 clamp(20px,3vw,30px) monospace;overflow-wrap:anywhere}.share-card-preview>small{color:#aaa;font:13px monospace}.share-card-preview>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid #44384b}.share-card-preview>div span{display:grid;gap:5px;font:10px monospace;color:#aaa}.share-card-preview>div b{font:700 15px monospace;color:var(--profile-accent,#39ff14);overflow-wrap:anywhere}.share-card-preview[data-style="paper"]>div span,.share-card-preview[data-style="paper"]>small{color:#555}.share-card-preview[data-style="paper"]>div b{color:#171717}.share-card-actions{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap}.share-card-actions label{display:grid;gap:5px;min-width:180px;color:#d4cbdc;font-size:12px}.share-card-actions .button{white-space:normal}
+.share-card-preview{padding:22px;border:1px solid var(--profile-accent,#39ff14);border-radius:12px;background:#050505;color:#f7f3fa;display:grid;gap:7px;box-shadow:0 0 18px #39ff1412}.share-card-preview[data-style="paper"]{background:#f3f0e8;color:#181818;border-color:#555}.share-card-preview>span{font:11px monospace;letter-spacing:.1em;color:var(--profile-accent-text,#39ff14)}.share-card-preview>strong{font:700 clamp(20px,3vw,30px) monospace;overflow-wrap:anywhere}.share-card-preview>small{color:#aaa;font:13px monospace}.share-card-preview>div{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid #44384b}.share-card-preview>div span{display:grid;gap:5px;font:10px monospace;color:#aaa}.share-card-preview>div b{font:700 15px monospace;color:var(--profile-accent-text,#39ff14);overflow-wrap:anywhere}.share-card-preview[data-style="paper"]>div span,.share-card-preview[data-style="paper"]>small{color:#555}.share-card-preview[data-style="paper"]>div b{color:#171717}.share-card-actions{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin-top:12px;flex-wrap:wrap}.share-card-actions label{display:grid;gap:5px;min-width:180px;color:#d4cbdc;font-size:12px}.share-card-actions .button{white-space:normal}
 @media(max-width:520px){.pet-companion-panel{left:0;width:min(330px,calc(100vw - 52px))}.share-card-preview>div{grid-template-columns:1fr}.share-card-actions{align-items:stretch;flex-direction:column}.share-card-actions .button{width:100%}}
 @media(prefers-reduced-motion:reduce){.pet-companion *{animation:none!important;transition:none!important}}
 
@@ -5742,7 +5742,7 @@ a, button, input[type="button"], input[type="submit"], select, summary, [role="b
 
 /* Town creature identity and picker */
 .profile-creature-copy { min-width: 0; }
-.profile-creature-trait { display: block; margin-top: 3px; color: var(--profile-accent, #00ff66); font-size: .86rem; font-weight: 700; }
+.profile-creature-trait { display: block; margin-top: 3px; color: var(--profile-accent-text, #00ff66); font-size: .86rem; font-weight: 700; }
 .profile-creature-purpose { margin: 7px 0 0; max-width: 560px; color: #a9a5b6; font-size: .82rem; line-height: 1.5; }
 .profile-avatar-grid-compact button { position: relative; display: flex; flex-direction: column; align-items: center; gap: 5px; min-width: 0; }
 .profile-avatar-grid-compact button img { width: 100%; aspect-ratio: 1; object-fit: cover; border-radius: 9px; }
@@ -5904,7 +5904,7 @@ body{line-height:1.55}
 .ps2-nav a.active{color:#e5f4eb;background:var(--accent-soft);text-shadow:none}
 .ps2-nav a.active::before{width:3px;left:0;top:7px;bottom:7px;border-radius:0 3px 3px 0;background:var(--accent);box-shadow:none}
 .ps2-nav-index,.ps2-nav a.active .ps2-nav-index{color:#758079;font-size:.63rem}
-.ps2-nav b{color:var(--accent);font-size:.56rem}
+.ps2-nav b{color:var(--accent-text);font-size:.56rem}
 .ps2-create-action{min-height:42px;margin-top:18px;padding:8px 12px;border:1px solid transparent;border-radius:9px;background:var(--accent);color:#08110d;font-family:Inter,sans-serif;font-size:.75rem;font-weight:750;letter-spacing:0;box-shadow:none}
 .ps2-create-action span:first-child{color:#08110d;font-size:1rem}
 .ps2-create-action:hover,.ps2-create-action.active{border-color:var(--accent-hover);background:var(--accent-hover);color:#08110d}
@@ -5916,7 +5916,7 @@ body{line-height:1.55}
 .ps2-footer .footer-links a:hover{color:#f2f4f3!important;text-decoration:none}
 .ps2-shell h1,.ps2-shell h2,.ps2-shell h3,.ps2-shell h4{color:var(--text);font-family:Inter,ui-sans-serif,system-ui,sans-serif;letter-spacing:-.035em}
 .ps2-shell p{overflow-wrap:anywhere}
-.eyebrow,.town-kicker{color:var(--accent);font-family:Inter,sans-serif;font-size:.68rem;font-weight:750;letter-spacing:.12em;line-height:1.4}
+.eyebrow,.town-kicker{color:var(--accent-text);font-family:Inter,sans-serif;font-size:.68rem;font-weight:750;letter-spacing:.12em;line-height:1.4}
 .button,.ps2-shell .button{min-height:42px;border-radius:9px;padding:0 15px;font-family:Inter,sans-serif;font-size:.82rem;font-weight:680;letter-spacing:0;box-shadow:none;transition:background .15s ease,border-color .15s ease,color .15s ease,transform .15s ease}
 .button.primary,.ps2-shell .button.primary{color:#08110d;background:var(--accent);border:1px solid var(--accent)}
 .button.primary:hover:not(:disabled),.ps2-shell .button.primary:hover:not(:disabled){background:var(--accent-hover);border-color:var(--accent-hover);transform:translateY(-1px)}
@@ -5952,7 +5952,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .town-home-section-heading .eyebrow{margin:0 0 4px;font-size:.62rem}
 .town-home-section-heading h2{margin:0;color:#f0f2f1;font-size:1.17rem;line-height:1.25}
 .town-home-section-heading.compact{align-items:center;margin-bottom:10px}
-.town-home-text-link{color:var(--accent);font-size:.76rem;font-weight:650;text-decoration:none;white-space:nowrap}
+.town-home-text-link{color:var(--accent-text);font-size:.76rem;font-weight:650;text-decoration:none;white-space:nowrap}
 .town-home-text-link:hover{color:#d4eee0}
 .town-home-community-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
 .town-home-community-card{min-width:0;overflow:hidden;border:1px solid #252a2f;border-radius:11px;background:#0c0e10;color:inherit;text-decoration:none;transition:border-color .16s ease,transform .16s ease,background .16s ease}
@@ -5968,7 +5968,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .town-home-community-category{display:inline-block;margin-bottom:4px;color:#9ca7a2;font-size:.62rem;font-weight:650;letter-spacing:.08em;text-transform:uppercase}
 .town-home-community-copy h3{margin:0 0 5px;overflow:hidden;color:#f0f2f1;font-size:.91rem;line-height:1.25;text-overflow:ellipsis;white-space:nowrap}
 .town-home-community-copy p{display:-webkit-box;min-height:2.6em;margin:0 0 9px;overflow:hidden;color:#9ca5a9;font-size:.72rem;line-height:1.35;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.town-home-card-link{color:var(--accent);font-size:.72rem;font-weight:650}
+.town-home-card-link{color:var(--accent-text);font-size:.72rem;font-weight:650}
 .town-home-empty,.town-home-side-empty{padding:16px;border:1px dashed #30363b;border-radius:10px;color:#a1a9ad;background:rgba(12,14,16,.7);font-size:.82rem;line-height:1.5}
 .town-home-notice{margin:0 0 12px;color:var(--tone-coral);font-size:.8rem}
 .town-home-side-column{gap:14px}
@@ -5976,7 +5976,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .town-home-discussion{display:grid;gap:5px;padding:13px 0;border-bottom:1px solid rgba(255,255,255,.07);color:inherit;text-decoration:none}
 .town-home-discussion:last-of-type{border-bottom:0}
 .town-home-discussion:hover strong{color:#d9ece2}
-.town-home-discussion-community{color:var(--accent);font-size:.64rem;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
+.town-home-discussion-community{color:var(--accent-text);font-size:.64rem;font-weight:750;letter-spacing:.08em;text-transform:uppercase}
 .town-home-discussion strong{color:#e8ecea;font-size:.86rem;font-weight:650;line-height:1.35}
 .town-home-discussion-excerpt{display:-webkit-box;overflow:hidden;color:#9ba4a8;font-size:.74rem;line-height:1.45;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .town-home-discussion-meta{display:flex;align-items:center;justify-content:space-between;margin-top:2px;color:#778187;font-size:.65rem}
@@ -6004,7 +6004,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .community-card-topline{color:#99a5a0;font-size:.64rem;letter-spacing:.08em}
 .community-card h2{margin:5px 0 8px;font-size:1rem}
 .community-card p{min-height:2.7em;margin:0 0 12px;color:#a4acaf;font-size:.82rem;line-height:1.5}
-.community-open{color:var(--accent);font-size:.76rem;font-weight:650}
+.community-open{color:var(--accent-text);font-size:.76rem;font-weight:650}
 .community-header,.town-side-card,.town-form,.post-card,.feed-card,.discussion-post,.comment-composer,.reply-form,.comment-item,.chat-box,.user-row,.engagement-panel,.profile-editor-section,.profile-preview-card,.growth-card{border-color:#282e32;border-radius:12px;background:#0b0d0f;box-shadow:none}
 .community-header p{color:#bac0c1}
 .community-header span,.town-side-card li span{color:#90999d}
@@ -6014,8 +6014,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .post-list{gap:10px}
 .post-card{padding:17px 18px}
 .post-card:hover,.feed-card:hover{border-color:#46534c;background:#0e1113}
-.post-type,.post-pin,.post-pin-inline,.discussion-meta span:first-child{color:var(--accent)}
-.post-title-link:hover,.comment-actions button:hover,.discussion-link{color:var(--accent)}
+.post-type,.post-pin,.post-pin-inline,.discussion-meta span:first-child{color:var(--accent-text)}
+.post-title-link:hover,.comment-actions button:hover,.discussion-link{color:var(--accent-text)}
 .feed-principle{gap:10px;border-color:#29332e;border-radius:10px;background:#0b0f0d;color:#aab4ae}
 .feed-principle strong{color:#c7e9d6}
 .feed-controls{grid-template-columns:minmax(0,1fr) 200px 175px auto;gap:9px}
@@ -6023,7 +6023,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .feed-list{gap:10px}
 .feed-card{padding:18px}
 .feed-card-meta{color:#929b9f}
-.feed-card-meta a{color:var(--accent)}
+.feed-card-meta a{color:var(--accent-text)}
 .feed-card h2{font-size:1.12rem;line-height:1.32}
 .feed-card>p{color:#adb5b6}
 .feed-card-footer{color:#879195}
@@ -6038,17 +6038,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .comment-children{border-color:#30373b}
 .comment-actions button{color:#a4adaf}
 .town-global-search{padding:16px}
-.town-global-result-group h2{color:var(--accent)}
+.town-global-result-group h2{color:var(--accent-text)}
 .town-global-result-group>a{border-color:rgba(255,255,255,.07)}
 .town-global-result-group>a span,.town-global-result-group>p{color:#9da6a8}
 .pill.bullish{color:#b9e5ce;background:#172b22}
 .pill.bearish{color:#e6b2a7;background:#30201e}
 .status.notice{color:#c1e7d2;background:#14231c;border-color:#30483b}
 .status.error,.town-error{color:#e2b1a8;border-color:#513a36;background:#1b1211}
-.profile-color-choice.selected,.profile-pet-choice.selected{border-color:var(--profile-accent,var(--accent));box-shadow:0 0 0 1px var(--profile-accent,var(--accent)) inset}
-.ps2-shell .community-open,.ps2-shell .town-kicker{color:var(--accent)}
+.profile-color-choice.selected,.profile-pet-choice.selected{border-color:var(--profile-accent-text,var(--accent));box-shadow:0 0 0 1px var(--profile-accent,var(--accent)) inset}
+.ps2-shell .community-open,.ps2-shell .town-kicker{color:var(--accent-text)}
 .ps2-shell .ps2-nav a.active{color:#e5f4eb}
-.ps2-shell .ps2-nav a.active .ps2-nav-index{color:var(--accent)}
+.ps2-shell .ps2-nav a.active .ps2-nav-index{color:var(--accent-text)}
 .ps2-shell .ps2-online i{background:var(--accent);box-shadow:none}
 
 @media(max-width:1120px){
@@ -6136,6 +6136,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 :root {
   --town-accent: #A3DFC1;
   --accent: var(--town-accent);
+  --accent-text: color-mix(in srgb, var(--accent) 85%, white);
+  --town-accent-text: color-mix(in srgb, var(--town-accent) 85%, white);
+  --profile-accent-text: color-mix(in srgb, var(--profile-accent, var(--accent)) 85%, white);
   --focus: #b8ead2;
   --status-success: #70d6a0;
   --status-warning: #f5c451;
@@ -6172,7 +6175,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .button:not(:disabled):hover,
 .ps2-shell .ps2-nav a:hover,
 .ps2-shell [role="button"]:hover {
-  border-color: var(--accent) !important;
+  border-color: var(--accent-text) !important;
 }
 .ps2-shell .button.primary,
 .ps2-shell button.button.primary,
@@ -6181,7 +6184,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .auth-shell button.button.primary {
   color: #0a0c0b !important;
   background: var(--town-accent, var(--accent, #A3DFC1)) !important;
-  border-color: var(--town-accent, var(--accent, #A3DFC1)) !important;
+  border-color: var(--town-accent-text, var(--accent, #A3DFC1)) !important;
   box-shadow: none !important;
 }
 .ps2-shell .button.primary:hover:not(:disabled),
@@ -6208,9 +6211,9 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .ps2-top-signout:hover,
 .ps2-shell .mobile-nav-toggle:hover,
 .auth-shell .button.secondary:hover:not(:disabled) {
-  color: var(--town-accent, var(--accent)) !important;
+  color: var(--town-accent-text, var(--accent)) !important;
   background: var(--accent-faint, var(--town-accent-faint)) !important;
-  border-color: var(--town-accent, var(--accent)) !important;
+  border-color: var(--town-accent-text, var(--accent)) !important;
 }
 .ps2-shell button:focus-visible,
 .ps2-shell a:focus-visible,
@@ -6228,7 +6231,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell select:focus,
 .ps2-shell textarea:focus,
 .auth-shell input:focus {
-  border-color: var(--town-accent, var(--accent, #A3DFC1)) !important;
+  border-color: var(--town-accent-text, var(--accent, #A3DFC1)) !important;
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--town-accent, var(--accent)) 14%, transparent) !important;
 }
 
@@ -6246,7 +6249,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .ps2-nav a.active .ps2-nav-index,
 .ps2-shell .ps2-nav a.active b,
 .ps2-shell .ps2-create-action span:first-child {
-  color: var(--accent) !important;
+  color: var(--accent-text) !important;
 }
 .ps2-shell .ps2-create-action,
 .ps2-shell .ps2-create-action:hover,
@@ -6267,7 +6270,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .ps2-top-search.active {
   color: #0a0c0b !important;
   background: var(--accent) !important;
-  border-color: var(--accent) !important;
+  border-color: var(--accent-text) !important;
 }
 .ps2-shell .eyebrow,
 .ps2-shell .town-kicker,
@@ -6295,7 +6298,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .beta-context code,
 .ps2-shell .pet-saved-note,
 .ps2-shell .pet-progress progress {
-  color: var(--accent) !important;
+  color: var(--accent-text) !important;
 }
 .ps2-shell .town-home-text-link:hover,
 .ps2-shell .town-home-card-link:hover {
@@ -6307,8 +6310,8 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   background: rgba(6,8,9,.58) !important;
 }
 .ps2-shell .town-home-hero .button.secondary:hover:not(:disabled) {
-  color: var(--accent) !important;
-  border-color: var(--accent) !important;
+  color: var(--accent-text) !important;
+  border-color: var(--accent-text) !important;
   background: rgba(6,8,9,.78) !important;
 }
 .ps2-shell .community-card:hover,
@@ -6340,13 +6343,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .profile-avatar-grid-compact button.selected,
 .ps2-shell .profile-pet-choice:focus-visible,
 .ps2-shell .profile-avatar-grid-compact button:focus-visible {
-  border-color: var(--accent) !important;
+  border-color: var(--accent-text) !important;
   box-shadow: 0 0 0 1px color-mix(in srgb, var(--accent) 72%, transparent) inset !important;
 }
 .ps2-shell .feed-action.active,
 .ps2-shell .discussion-votes button.selected,
 .ps2-shell .profile-pet-choice.selected small {
-  color: var(--accent) !important;
+  color: var(--accent-text) !important;
 }
 .ps2-shell .feed-principle {
   border-color: color-mix(in srgb, var(--accent) 30%, #29332e) !important;
@@ -6361,7 +6364,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .town-share-card-neon .town-share-card-inner,
 .ps2-shell .share-card-preview:not([data-style="paper"]),
 .ps2-shell .share-card-preview:not([data-style="paper"])>span {
-  border-color: var(--accent) !important;
+  border-color: var(--accent-text) !important;
 }
 .ps2-shell .profile-creature-trait,
 .ps2-shell .trophy-icon,
@@ -6369,20 +6372,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .town-share-card-inner .town-share-card-edition,
 .ps2-shell .town-share-card-inner .town-share-bio strong,
 .ps2-shell .town-share-card-inner .town-share-values strong {
-  color: var(--accent);
+  color: var(--accent-text);
 }
 .ps2-shell .pet-companion-panel header small,
 .ps2-shell .pet-name-tag,
 .ps2-shell .pet-saved-note,
 .ps2-shell .pet-companion-panel .pet-chat-link {
-  color: var(--accent) !important;
+  color: var(--accent-text) !important;
 }
 .ps2-shell .pet-companion-panel progress,
 .ps2-shell .pet-progress progress,
 .ps2-shell input[type="checkbox"],
 .ps2-shell input[type="radio"],
 .ps2-shell input[type="range"] {
-  accent-color: var(--accent) !important;
+  accent-color: var(--accent-text) !important;
 }
 .ps2-shell .launch-badge,
 .ps2-shell .launch-check.done,
@@ -6393,7 +6396,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 .ps2-shell .beta-check.done strong,
 .ps2-shell .growth-success {
-  color: var(--accent) !important;
+  color: var(--accent-text) !important;
 }
 .ps2-shell .town-hero,
 .ps2-shell .town-directory-intro,
@@ -6420,10 +6423,10 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 .auth-shell .eyebrow,
 .auth-shell .switch-auth {
-  color: var(--town-accent, #A3DFC1) !important;
+  color: var(--town-accent-text, #A3DFC1) !important;
 }
 .auth-shell input:focus {
-  border-color: var(--town-accent, #A3DFC1) !important;
+  border-color: var(--town-accent-text, #A3DFC1) !important;
 }
 
 
@@ -6454,7 +6457,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   box-shadow: none !important;
 }
 .ps2-shell .message.mine {
-  border-color: var(--accent) !important;
+  border-color: var(--accent-text) !important;
 }
 .ps2-shell .pet-companion {
   border-color: var(--accent-border) !important;
@@ -6462,13 +6465,13 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 }
 .ps2-shell .town-home-pet:hover,
 .ps2-shell .pet-companion-panel header > button:hover {
-  border-color: var(--accent) !important;
+  border-color: var(--accent-text) !important;
 }
 .ps2-shell .pet-actions button:hover:not(:disabled),
 .ps2-shell .profile-pet-choice:hover,
 .ps2-shell .profile-color-choice:hover,
 .ps2-shell .profile-avatar-grid-compact button:hover {
-  border-color: var(--accent) !important;
+  border-color: var(--accent-text) !important;
 }
 
 
@@ -6593,7 +6596,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .ps2-shell .town-page .feed-card:hover,
 .ps2-shell .town-page .user-row:hover,
 .ps2-shell .town-page .town-global-result-group > a:hover {
-  border-color: var(--town-accent, var(--accent, #C6B8EC)) !important;
+  border-color: var(--town-accent-text, var(--accent, #C6B8EC)) !important;
 }
 
 /* Downtown creator-managed profile picture */
@@ -6613,7 +6616,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
   border: 1px solid var(--town-accent-border, var(--accent-border, #554a70));
   border-radius: 16px;
   background: #101014;
-  color: var(--accent, #C6B8EC);
+  color: var(--accent-text, #C6B8EC);
   font-size: 1.8rem;
   font-weight: 750;
 }
@@ -6719,7 +6722,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 
 /* Town achievement collectible cabinet */
 .achievement-count{display:inline-grid;place-items:center;min-width:58px;padding:10px 13px;border:1px solid color-mix(in srgb,var(--accent) 42%,#34303a);border-radius:12px;background:color-mix(in srgb,var(--accent) 12%,rgba(10,10,12,.75));font:700 18px Georgia,serif}
-.achievement-section-label{margin:20px 0 11px;color:var(--accent);font:10px monospace;letter-spacing:1.4px}
+.achievement-section-label{margin:20px 0 11px;color:var(--accent-text);font:10px monospace;letter-spacing:1.4px}
 .achievement-collection{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:13px}
 .achievement-card{position:relative;display:flex;flex-direction:column;min-width:0;overflow:hidden;padding:15px;border:1px solid color-mix(in srgb,var(--accent) 35%,#34303a);border-radius:14px;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 13%,rgba(18,17,20,.94)),rgba(8,9,11,.94));box-shadow:inset 0 1px 0 rgba(255,255,255,.1),0 8px 24px rgba(0,0,0,.18)}
 .achievement-card:before{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(115deg,transparent 15%,rgba(255,255,255,.055) 42%,transparent 66%);opacity:.75}
@@ -6729,12 +6732,12 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,te
 .achievement-serial{opacity:.65}
 .achievement-art{position:relative;display:flex;align-items:center;justify-content:center;gap:16px;min-height:86px;margin:12px 0 9px;border:1px solid color-mix(in srgb,var(--accent) 27%,transparent);border-radius:10px;background:radial-gradient(ellipse at center,color-mix(in srgb,var(--accent) 19%,transparent),transparent 72%),rgba(255,255,255,.018)}
 .achievement-art strong{display:grid;place-items:center;width:57px;height:57px;border:2px solid color-mix(in srgb,var(--accent) 70%,#fff);border-radius:50%;background:linear-gradient(145deg,color-mix(in srgb,var(--accent) 36%,#171719),#090a0b);box-shadow:0 0 22px color-mix(in srgb,var(--accent) 22%,transparent),inset 0 0 12px rgba(255,255,255,.08);font:700 20px Georgia,serif;color:#fff8e8;text-shadow:0 1px 10px color-mix(in srgb,var(--accent) 75%,transparent)}
-.achievement-laurel{color:var(--accent);font-size:19px;opacity:.9}
+.achievement-laurel{color:var(--accent-text);font-size:19px;opacity:.9}
 .achievement-card-copy{position:relative;min-height:72px}
 .achievement-card-copy h3{margin:0 0 5px;font:700 16px Georgia,serif}
 .achievement-card-copy p{margin:0;color:#b9b4bd;font-size:11px;line-height:1.5}
 .achievement-earned,.achievement-progress{position:relative;display:grid;gap:6px;margin-top:auto;padding:10px 0 9px;border-top:1px solid rgba(255,255,255,.1)}
-.achievement-earned span,.achievement-progress span{font:9px monospace;letter-spacing:.8px;color:var(--accent)}
+.achievement-earned span,.achievement-progress span{font:9px monospace;letter-spacing:.8px;color:var(--accent-text)}
 .achievement-earned strong,.achievement-progress b{font-size:11px;font-weight:600}
 .achievement-progress-track{height:5px;overflow:hidden;border-radius:99px;background:rgba(255,255,255,.1)}
 .achievement-progress-track i{display:block;height:100%;border-radius:99px;background:var(--accent);box-shadow:0 0 10px color-mix(in srgb,var(--accent) 60%,transparent)}
@@ -6828,7 +6831,7 @@ select {
 input:focus,
 textarea:focus,
 select:focus {
-  border-color: var(--accent, #76a9ff);
+  border-color: var(--accent-text, #76a9ff);
   box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent, #76a9ff) 16%, transparent);
 }
 
@@ -6983,12 +6986,12 @@ html, body { background: #050507; }
   transition: background .18s ease, border-color .18s ease, box-shadow .18s ease, transform .18s ease;
 }
 .ps2-shell :is(button, .button, .profile-color-choice, .profile-pet-choice, .nav-link, .ps2-nav a):not(.profile-color-choice span):hover {
-  border-color: var(--accent, #287BFF);
+  border-color: var(--accent-text, #287BFF);
   box-shadow: 0 0 0 1px var(--town-glass-glow), 0 0 18px var(--town-glass-glow);
 }
 .ps2-shell :is(.button.primary, button.primary, .profile-color-choice.selected, .profile-pet-choice.selected, .ps2-nav a.active, .nav-link.active) {
   background: color-mix(in srgb, var(--accent, #287BFF) 22%, rgba(8,9,13,.82));
-  border-color: var(--accent, #287BFF);
+  border-color: var(--accent-text, #287BFF);
   color: #fff;
   box-shadow: inset 0 1px 0 rgba(255,255,255,.08), 0 0 16px var(--town-glass-glow);
 }
@@ -6996,11 +6999,11 @@ html, body { background: #050507; }
   border-color: color-mix(in srgb, var(--accent, #287BFF) 30%, #30343b);
 }
 .ps2-shell :is(input, textarea, select):focus {
-  border-color: var(--accent, #287BFF);
+  border-color: var(--accent-text, #287BFF);
   box-shadow: 0 0 0 3px var(--town-glass-glow);
 }
 .ps2-shell :is(.eyebrow, .section-kicker, .profile-editor-section legend, .ps2-nav a.active) {
-  color: var(--accent, #287BFF);
+  color: var(--accent-text, #287BFF);
 }
 @media (prefers-reduced-motion: reduce) {
   .ps2-shell :is(button, .button, a.button, .profile-color-choice, .profile-pet-choice) { transition: none; }
@@ -7100,7 +7103,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
   color: var(--town-text); text-decoration: none;
   text-overflow: ellipsis; white-space: nowrap;
 }
-.ps2-shell .ps2-user-link:hover { color: var(--town-accent); }
+.ps2-shell .ps2-user-link:hover { color: var(--town-accent-text); }
 .ps2-shell .ps2-top-signout {
   flex: 0 0 auto; min-height: 38px; padding: 0 13px;
   border: 1px solid var(--town-border-strong); border-radius: var(--town-radius-sm);
@@ -7108,7 +7111,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
   font-size: .66rem; font-weight: 750; letter-spacing: .08em;
   white-space: nowrap;
 }
-.ps2-shell .ps2-top-signout:hover { border-color: var(--town-accent); color: var(--town-accent); }
+.ps2-shell .ps2-top-signout:hover { border-color: var(--town-accent-text); color: var(--town-accent-text); }
 
 /* Main application grid and navigation. */
 .ps2-shell .ps2-layout {
@@ -7149,7 +7152,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
 }
 .ps2-shell .ps2-nav-index { color: var(--town-subtle); font-size: .64rem; font-variant-numeric: tabular-nums; }
 .ps2-shell .ps2-nav a.active .ps2-nav-index,
-.ps2-shell .ps2-nav a.active b { color: var(--town-accent); }
+.ps2-shell .ps2-nav a.active b { color: var(--town-accent-text); }
 .ps2-shell .ps2-create-action {
   min-height: 44px; margin-top: 16px; padding: 0 12px;
   display: flex; align-items: center; gap: 10px;
@@ -7159,7 +7162,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
   color: var(--town-text); text-decoration: none;
   font-size: .7rem; font-weight: 850; letter-spacing: .06em;
 }
-.ps2-shell .ps2-create-action > span:first-child { color: var(--town-accent); font-size: 1.2rem; }
+.ps2-shell .ps2-create-action > span:first-child { color: var(--town-accent-text); font-size: 1.2rem; }
 .ps2-shell .ps2-main {
   min-width: 0; min-height: calc(100vh - 144px);
   padding: 0 clamp(20px, 3vw, 48px);
@@ -7176,7 +7179,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
   margin: 0; color: var(--town-text); font-size: clamp(1.8rem, 3.5vw, 2.65rem);
   line-height: 1.08; letter-spacing: -.045em; font-weight: 780;
 }
-.ps2-shell .town-page-heading .eyebrow { margin-bottom: 8px; color: var(--town-accent); }
+.ps2-shell .town-page-heading .eyebrow { margin-bottom: 8px; color: var(--town-accent-text); }
 .ps2-shell .town-page-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .ps2-shell .ps2-footer {
   margin-left: 232px; padding: 22px clamp(20px, 3vw, 48px);
@@ -7186,7 +7189,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
 }
 .ps2-shell .footer-links { display: flex; flex-wrap: wrap; gap: 10px 16px; }
 .ps2-shell .footer-links a { color: var(--town-muted); text-decoration: none; }
-.ps2-shell .footer-links a:hover { color: var(--town-accent); }
+.ps2-shell .footer-links a:hover { color: var(--town-accent-text); }
 
 /* Shared surfaces: quieter, consistent, readable. */
 .ps2-shell :is(.card,.community-card,.feed-card,.post-card,.town-side-card,
@@ -7215,7 +7218,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
 .ps2-shell :is(input,textarea,select)::placeholder { color: var(--town-subtle); }
 .ps2-shell :is(input,textarea,select):focus-visible {
   outline: 2px solid var(--town-accent); outline-offset: 2px;
-  border-color: var(--town-accent); box-shadow: none;
+  border-color: var(--town-accent-text); box-shadow: none;
 }
 .ps2-shell textarea { padding: 12px 13px; resize: vertical; }
 .ps2-shell .button {
@@ -7247,7 +7250,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
   min-height: 34px; padding: 0 10px; border: 1px solid var(--town-border);
   border-radius: 7px; background: var(--town-surface-raised); color: var(--town-muted);
 }
-.ps2-shell .feed-action:hover,.ps2-shell .feed-action.active { border-color: var(--town-accent); color: var(--town-accent); box-shadow: none; }
+.ps2-shell .feed-action:hover,.ps2-shell .feed-action.active { border-color: var(--town-accent-text); color: var(--town-accent-text); box-shadow: none; }
 .ps2-shell .community-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 14px; }
 .ps2-shell .community-card { padding: 20px; transition: border-color .16s, background .16s; }
 .ps2-shell .community-card:hover { border-color: color-mix(in srgb, var(--town-accent) 60%, var(--town-border)); background: var(--town-surface-raised); }
@@ -7262,7 +7265,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
 .ps2-shell .comment-children { margin-left: 20px; padding-left: 15px; border-left: 1px solid var(--town-border); }
 .ps2-shell .search-results { display: grid; gap: 10px; }
 .ps2-shell .search-result { display: block; padding: 18px; color: inherit; text-decoration: none; }
-.ps2-shell .search-result:hover { border-color: var(--town-accent); background: var(--town-surface-raised); }
+.ps2-shell .search-result:hover { border-color: var(--town-accent-text); background: var(--town-surface-raised); }
 .ps2-shell .profile-stat-grid { display: grid; gap: 10px; }
 .ps2-shell .profile-stat-grid > div { padding: 18px; }
 .ps2-shell .profile-stat-grid strong { color: var(--town-text); font-size: 1.55rem; }
@@ -7364,7 +7367,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
   outline-offset: 3px;
 }
 .ps2-shell .ps2-topbar :focus-visible,
-.ps2-shell .ps2-sidebar :focus-visible { outline-color: var(--town-accent); }
+.ps2-shell .ps2-sidebar :focus-visible { outline-color: var(--town-accent-text); }
 .ps2-shell .ps2-main > * { min-width: 0; }
 .ps2-shell img, .ps2-shell video, .ps2-shell iframe { max-width: 100%; }
 @media (max-width: 420px) {
@@ -7426,8 +7429,8 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
   border: 1px solid color-mix(in srgb, var(--town-accent) 58%, var(--town-border));
   background: color-mix(in srgb, var(--town-accent) 7%, var(--town-surface));
 }
-.ps2-shell .accepted-answer-label { color: var(--town-accent); font-size: .7rem; font-weight: 800; letter-spacing: .1em; }
-.ps2-shell .accepted-answer-action { color: var(--town-accent); border-color: var(--town-accent); }
+.ps2-shell .accepted-answer-label { color: var(--town-accent-text); font-size: .7rem; font-weight: 800; letter-spacing: .1em; }
+.ps2-shell .accepted-answer-action { color: var(--town-accent-text); border-color: var(--town-accent-text); }
 .ps2-shell .notification-toolbar,.ps2-shell .notification-actions,.ps2-shell .saved-collection-filters {
   display:flex;align-items:center;flex-wrap:wrap;gap:8px;
 }
@@ -7465,7 +7468,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
  display:grid;grid-template-columns:58px minmax(0,1fr) auto;align-items:center;gap:14px;
  padding:14px;border:1px solid var(--town-border);border-radius:var(--town-radius-md);background:var(--town-surface);
 }
-.ps2-shell .community-event-date { display:grid;place-items:center;align-content:center;min-height:58px;border-radius:8px;background:var(--town-surface-raised);color:var(--town-accent); }
+.ps2-shell .community-event-date { display:grid;place-items:center;align-content:center;min-height:58px;border-radius:8px;background:var(--town-surface-raised);color:var(--town-accent-text); }
 .ps2-shell .community-event-date strong { font-size:1.25rem; }
 .ps2-shell .community-event-item h3,.ps2-shell .community-event-item p { margin:0 0 4px; }
 .ps2-shell .community-event-item p,.ps2-shell .community-event-item span { color:var(--town-muted);font-size:.82rem; }
@@ -7489,7 +7492,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
  display:inline-flex;align-items:center;min-height:26px;padding:3px 9px;border:1px solid var(--town-border);
  border-radius:999px;color:var(--town-muted);font-size:.68rem;font-weight:700;letter-spacing:.04em;
 }
-.ps2-shell .post-type-question { color:var(--town-accent);border-color:var(--town-accent); }
+.ps2-shell .post-type-question { color:var(--town-accent-text);border-color:var(--town-accent-text); }
 .ps2-shell .question-answer-state { border-color:color-mix(in srgb,var(--town-accent) 45%,var(--town-border)); }
 
 
@@ -7517,7 +7520,7 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
 .feed-toolbar-actions{display:flex;align-items:center;gap:8px}
 .feed-filter-toggle,.feed-sort select{min-height:42px;padding:0 13px;border:1px solid var(--town-border,#30253a);border-radius:10px;background:var(--town-surface,#0d0a11);color:var(--town-text,#eee);font-size:.82rem}
 .feed-filter-toggle{display:flex;align-items:center;gap:8px;cursor:pointer}
-.feed-filter-toggle.active{border-color:var(--town-accent,#287bff)}
+.feed-filter-toggle.active{border-color:var(--town-accent-text,#287bff)}
 .feed-filter-count{display:inline-grid;place-items:center;min-width:19px;height:19px;padding:0 5px;border-radius:20px;background:var(--town-accent,#287bff);color:#fff;font-size:.68rem;font-weight:800}
 .feed-sort{margin:0}
 .feed-sort select{min-width:145px}
