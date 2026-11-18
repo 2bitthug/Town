@@ -1670,7 +1670,7 @@ function GuestProfilePage({ guestState, setGuestState }) {
 function App() {
   const [session, setSession] = useState(null)
   const [checking, setChecking] = useState(true)
-  const [entryMode, setEntryMode] = useState('choose')
+  const [entryMode, setEntryMode] = useState('guest')
   const [guestState, setGuestState] = useState(() => ({...GUEST_DEFAULT, profile:{...GUEST_DEFAULT.profile}, petProfile:{...GUEST_DEFAULT.petProfile}, petCompanion:{...GUEST_DEFAULT.petCompanion}}))
   const route = useHashRoute()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
@@ -1748,8 +1748,8 @@ function App() {
   const username = session?.user?.user_metadata?.username || session?.user?.email?.split('@')[0] || 'Guest'
   const signOut = async () => { await supabase.auth.signOut() }
   const [routeName, routeParam] = route.split('/')
-  const guestMode = !session && entryMode === 'guest'
-  const exitGuestMode = () => { setGuestState({...GUEST_DEFAULT,profile:{...GUEST_DEFAULT.profile},petProfile:{...GUEST_DEFAULT.petProfile},petCompanion:{...GUEST_DEFAULT.petCompanion}}); setEntryMode('choose'); window.location.hash='#/home' }
+  const guestMode = !session
+  const exitGuestMode = () => { setGuestState({...GUEST_DEFAULT,profile:{...GUEST_DEFAULT.profile},petProfile:{...GUEST_DEFAULT.petProfile},petCompanion:{...GUEST_DEFAULT.petCompanion}}); setEntryMode('guest'); window.location.hash='#/home' }
   const currentProfileHref = session?.user?.id ? `#/profile/${session.user.id}` : '#/profile/demo'
 
   const isActive = (id) => {
@@ -1775,7 +1775,7 @@ function App() {
     ['pet', 'Pet companion']
   ]
 
-  if (!session && entryMode === 'choose' && routeName !== 'signin') return <GuestEntryScreen onGuest={() => { setEntryMode('guest'); window.location.hash='#/home' }} onSignIn={() => { window.location.hash='#/signin' }} />
+  // Public routes open directly; authentication is requested only for account-dependent actions.
 
   let page
   if (routeName === 'home') page = <HomePage currentUserId={session?.user?.id} />
