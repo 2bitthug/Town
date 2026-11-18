@@ -611,3 +611,183 @@
   .ps2-shell .comment-children { margin-left: 7px; padding-left: 9px; }
   .ps2-shell .guest-comment-prompt { align-items: flex-start; flex-direction: column; }
 }
+
+
+/* Complete light-theme coverage: final layer overrides legacy dark component rules. */
+:root {
+  color-scheme: light;
+  color: #17212b;
+  background: #f5f7fa;
+}
+body { background: #f5f7fa; color: #17212b; }
+
+.auth-shell {
+  background: radial-gradient(circle at 12% 0, #e8f1fb, transparent 42%), #f5f7fa !important;
+  color: #17212b !important;
+}
+.auth-card {
+  background: #ffffff !important;
+  color: #17212b !important;
+  border: 1px solid #dce3ea !important;
+  box-shadow: 0 12px 36px rgba(15, 23, 42, .08) !important;
+}
+.auth-card :is(h1,h2,h3,label,strong) { color: #17212b !important; }
+.auth-card .lead, .auth-card p { color: #526274 !important; }
+.auth-card input, .auth-card textarea, .auth-card select {
+  background: #ffffff !important; color: #17212b !important; border-color: #cbd5e1 !important;
+}
+.auth-card input::placeholder { color: #718096 !important; }
+
+/* Shared page shell and legacy surfaces. */
+.ps2-shell {
+  color-scheme: light;
+  --town-ink: #17212b;
+  --town-panel: #ffffff;
+  --town-panel-raised: #f8fafc;
+  --town-glass-border: #dce3ea;
+  --town-glass-highlight: rgba(15, 23, 42, .02);
+  --town-shadow: 0 5px 18px rgba(15, 23, 42, .05);
+  background: #f5f7fa !important;
+  color: #17212b !important;
+}
+.ps2-shell :is(.ps2-main,.ps2-content,.ps2-main-content,.page-content,.content-area) {
+  background: transparent !important;
+  color: #17212b !important;
+}
+.ps2-shell :is(.card,.town-page,.town-hero,.feed-card,.feed-post-card,.community-card,.community-panel,.reputation-card,.moderation-card,.chat-box,.notification-item,.saved-post-card,.search-result,.town-empty,.town-state,.post-card,.discussion-card,.town-side-card,.town-home-side-card,.town-home-community-card,.community-detail-card,.profile-card,.settings-card,.panel,.surface,.empty-state,.status) {
+  background-color: #ffffff !important;
+  color: #17212b !important;
+  border-color: #dce3ea !important;
+  box-shadow: 0 5px 18px rgba(15, 23, 42, .045) !important;
+  -webkit-backdrop-filter: none !important;
+  backdrop-filter: none !important;
+}
+.ps2-shell .ps2-main .card,
+.ps2-shell .ps2-main .card h2 { color: #17212b !important; }
+.ps2-shell :is(h1,h2,h3,h4,h5,h6,.town-page-heading,.town-home-headline,.town-home-section-heading,.town-section-heading,.section-title,.card-title,.post-title,.community-title) {
+  color: #17212b !important;
+  text-shadow: none !important;
+}
+.ps2-shell :is(p,li,label,dt,dd,.feature-text,.town-home-subhead,.town-home-community-copy p,.post-excerpt,.comment-body,.discussion-body,.description,.body-copy) {
+  color: #344256;
+}
+.ps2-shell :is(small,.eyebrow,.muted,.town-meta,.post-meta,.meta,.timestamp,.helper-text,.subtle) {
+  color: #64748b !important;
+}
+.ps2-shell :is(input,textarea,select) {
+  background: #ffffff !important;
+  color: #17212b !important;
+  border-color: #cbd5e1 !important;
+  box-shadow: none !important;
+}
+.ps2-shell :is(input,textarea,select)::placeholder { color: #718096 !important; }
+.ps2-shell select option { background: #ffffff; color: #17212b; }
+.ps2-shell :is(button,.button) { color: #243447; }
+.ps2-shell :is(.button.primary,.ps2-create-action,.primary-action) {
+  background: var(--town-accent, #287BFF) !important;
+  border-color: var(--town-accent, #287BFF) !important;
+  color: var(--accent-on, #08110d) !important;
+}
+.ps2-shell :is(.button.secondary,.button.ghost,.secondary-action) {
+  background: #f1f5f9 !important;
+  color: #243447 !important;
+  border: 1px solid #d5dee8 !important;
+}
+.ps2-shell :is(.button.secondary,.button.ghost,.secondary-action):hover {
+  background: #e8eef5 !important;
+}
+.ps2-shell a { color: #145b9b; }
+.ps2-shell a:hover { color: #0f4778; }
+.ps2-shell :is(.ps2-topbar,.ps2-sidebar,.ps2-footer) {
+  background: #ffffff !important;
+  color: #17212b !important;
+  border-color: #e3e8ee !important;
+  box-shadow: none !important;
+}
+.ps2-shell .ps2-footer { border-top: 1px solid #e3e8ee !important; }
+.ps2-shell .ps2-footer a { color: #365a7c !important; }
+.ps2-shell :is(.ps2-nav a,.ps2-menu-label,.ps2-section-label) { color: #425164 !important; }
+.ps2-shell .ps2-nav a.active { background: #eaf1f8 !important; color: #173b63 !important; }
+.ps2-shell :is(.dropdown-menu,.popover,.modal,.dialog,.menu-panel,.tooltip-panel) {
+  background: #ffffff !important;
+  color: #17212b !important;
+  border-color: #dce3ea !important;
+  box-shadow: 0 14px 40px rgba(15, 23, 42, .14) !important;
+}
+.ps2-shell :is(.dropdown-menu,.popover,.modal,.dialog,.menu-panel,.tooltip-panel) :is(h1,h2,h3,p,span,label,button) {
+  color: inherit;
+}
+.ps2-shell :is(.reputation-breakdown-row,.profile-contribution-event,.profile-contribution-metric,.suggestion-row span) {
+  background: #f8fafc !important;
+  border-color: #dce3ea !important;
+  color: #344256 !important;
+}
+.ps2-shell :is(.reputation-breakdown-row strong,.profile-contribution-event strong,.profile-contribution-metric span) {
+  color: #243447 !important;
+}
+.ps2-shell .profile-contribution-breakdown strong { color: var(--town-accent, #2563eb) !important; }
+.ps2-shell .guest-mode-shell .town-directory-intro,
+.guest-mode-shell .town-directory-intro {
+  background: #f0f6fc !important;
+  border-color: #d5e2ef !important;
+}
+.guest-mode-shell .town-directory-intro :is(strong,p) { color: #263648 !important; }
+.guest-mode-shell .guest-community-grid .community-card {
+  background: #ffffff !important;
+  border-color: #dce3ea !important;
+  color: #17212b !important;
+}
+.guest-mode-shell .guest-community-grid .community-card-icon {
+  background: #eaf1f8 !important;
+  color: var(--town-accent, #2563eb) !important;
+}
+.ps2-shell :is(.community-membership-help,.guest-comment-prompt) {
+  background: #f0f6fc !important;
+  border-color: #d3e2f0 !important;
+}
+.ps2-shell .community-membership-help :is(p,strong) { color: #344b62 !important; }
+.ps2-shell .guest-comment-prompt p { color: #344b62 !important; }
+.ps2-shell :is(.status.error,.error-state) {
+  background: #fff1f1 !important;
+  color: #8f2525 !important;
+  border-color: #f0caca !important;
+}
+.ps2-shell :is(.status.success,.success-state) {
+  background: #effaf3 !important;
+  color: #216a45 !important;
+  border-color: #c8e8d4 !important;
+}
+.ps2-shell :is(.status.warning,.warning-state) {
+  background: #fff8e8 !important;
+  color: #805b12 !important;
+  border-color: #f0dfb4 !important;
+}
+.ps2-shell :is(.status.info,.info-state) {
+  background: #eff6ff !important;
+  color: #1e4f8a !important;
+  border-color: #cfe0f5 !important;
+}
+.ps2-shell :is(.discussion-post,.comment-composer,.reply-form,.comment-item) {
+  background: #ffffff !important;
+  color: #17212b !important;
+  border-color: #dce3ea !important;
+}
+.ps2-shell .comment-children { border-left-color: #dbe5ef !important; }
+.ps2-shell .comment-item.accepted-answer { background: #f4fbf6 !important; }
+.ps2-shell .guest-comment-prompt { background: #f0f6fc !important; }
+.ps2-shell :focus-visible { outline: 3px solid #2563eb !important; outline-offset: 3px; }
+
+@media (max-width: 760px) {
+  .ps2-shell .ps2-layout { grid-template-columns: minmax(0, 1fr) !important; }
+  .ps2-shell .ps2-sidebar {
+    position: static !important; height: auto !important; padding: 12px 16px !important;
+    border-right: 0 !important; border-bottom: 1px solid #e3e8ee !important;
+    background: #ffffff !important;
+  }
+  .ps2-shell .ps2-nav { display: flex; overflow-x: auto; gap: 6px; }
+  .ps2-shell .ps2-nav a { flex: 0 0 auto; white-space: nowrap; }
+  .ps2-shell .ps2-main { min-width: 0; padding: 20px 14px !important; }
+}
+@media (prefers-color-scheme: dark) {
+  :root { color-scheme: light; }
+}
