@@ -791,3 +791,19 @@ body { background: #f5f7fa; color: #17212b; }
 @media (prefers-color-scheme: dark) {
   :root { color-scheme: light; }
 }
+
+
+/* Legacy profile widgets that carry their own dark palette. */
+.ps2-shell :is(.engagement-panel,.profile-preview-card,.profile-avatar-popover,.profile-avatar-grid-compact button,.profile-current-avatar) {
+  background: #ffffff !important;
+  color: #17212b !important;
+  border-color: #dce3ea !important;
+  box-shadow: 0 5px 18px rgba(15, 23, 42, .06) !important;
+}
+.ps2-shell .engagement-panel h3 { color: #17212b !important; }
+.ps2-shell .engagement-muted,
+.ps2-shell .suggestion-row span,
+.ps2-shell .profile-avatar-grid-compact small { color: #526274 !important; }
+.ps2-shell .engagement-badge { background: #f1f5f9 !important; color: #344256 !important; border-color: #d5dee8 !important; }
+.ps2-shell .completion-track { background: #e8edf3 !important; }
+.ps2-shell .profile-avatar-grid-compact button.selected { background: #eff6ff !important; }
