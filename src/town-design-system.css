@@ -521,3 +521,93 @@
 }
 .ps2-shell .community-membership-help p + p { margin-top: 6px; }
 .ps2-shell .community-membership-help strong { color: #17212b; }
+
+
+/* Discussion redesign: readable hierarchy, clear reply structure, and guest boundaries. */
+.ps2-shell .discussion-post,
+.ps2-shell .comment-composer,
+.ps2-shell .reply-form,
+.ps2-shell .comment-item {
+  background: #ffffff !important;
+  color: #17212b !important;
+  border: 1px solid #dce3ea !important;
+  box-shadow: 0 3px 12px rgba(15, 23, 42, .035) !important;
+}
+.ps2-shell .discussion-post { padding: clamp(20px, 3vw, 30px); }
+.ps2-shell .discussion-meta { color: #64748b !important; line-height: 1.6; }
+.ps2-shell .discussion-meta span:first-child { color: #1d5f9e !important; font-weight: 700; }
+.ps2-shell .discussion-body { color: #263648 !important; line-height: 1.8; font-size: 1.02rem; }
+.ps2-shell .discussion-link { color: #145b9b !important; font-weight: 600; }
+.ps2-shell .discussion-footer {
+  border-top: 1px solid #e5eaf0 !important;
+  color: #64748b !important;
+  padding-top: 16px;
+}
+.ps2-shell .discussion-votes { gap: 7px; }
+.ps2-shell .discussion-votes button {
+  min-width: 36px; min-height: 34px;
+  border: 1px solid #d6dee8 !important;
+  background: #f8fafc !important;
+  color: #425466 !important;
+}
+.ps2-shell .discussion-votes button.selected {
+  border-color: #2563eb !important;
+  color: #174ea6 !important;
+  background: #eff6ff !important;
+}
+.ps2-shell .discussion-votes button.selected.down {
+  border-color: #b45353 !important;
+  color: #9b2c2c !important;
+  background: #fff1f1 !important;
+}
+.ps2-shell .discussion-votes strong { color: #17212b !important; }
+.ps2-shell .discussion-comments { margin-top: 32px; }
+.ps2-shell .discussion-comments .town-section-heading { margin-bottom: 16px; }
+.ps2-shell .discussion-comments .town-section-heading h2 { display: flex; align-items: center; gap: 10px; }
+.ps2-shell .discussion-count {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 27px; height: 27px; padding: 0 7px;
+  border-radius: 999px; background: #edf2f7; color: #425466;
+  font-size: .78rem; font-weight: 700;
+}
+.ps2-shell .discussion-section-help { margin: 5px 0 0; color: #64748b !important; font-size: .9rem; }
+.ps2-shell .comment-composer,
+.ps2-shell .reply-form { padding: 18px; gap: 12px; }
+.ps2-shell .comment-composer label { color: #263648; font-weight: 650; }
+.ps2-shell .comment-composer textarea,
+.ps2-shell .reply-form textarea,
+.ps2-shell .comment-edit textarea {
+  min-height: 112px; border-color: #cbd5e1 !important;
+  background: #fff !important; color: #17212b !important;
+}
+.ps2-shell .comment-tree { gap: 14px; }
+.ps2-shell .comment-item { padding: 18px; border-radius: 12px; }
+.ps2-shell .comment-head { flex-wrap: wrap; justify-content: space-between; }
+.ps2-shell .comment-head strong { color: #17212b; }
+.ps2-shell .comment-head span { color: #64748b !important; }
+.ps2-shell .comment-item > p { color: #344256 !important; line-height: 1.75; }
+.ps2-shell .comment-actions { flex-wrap: wrap; gap: 8px 16px; margin-top: 12px; }
+.ps2-shell .comment-actions button { color: #365a7c !important; font-weight: 600; }
+.ps2-shell .comment-actions button:hover { color: #174ea6 !important; text-decoration: underline; }
+.ps2-shell .comment-children {
+  margin-left: 18px; padding-left: 16px;
+  border-left: 2px solid #dbe5ef !important;
+  gap: 12px;
+}
+.ps2-shell .comment-item.accepted-answer {
+  border-color: #8ab8a1 !important;
+  background: #f4fbf6 !important;
+}
+.ps2-shell .accepted-answer-label { color: #216a45 !important; font-size: .72rem; font-weight: 800; letter-spacing: .06em; }
+.ps2-shell .guest-comment-prompt {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; padding: 18px 20px;
+  background: #f0f6fc !important; border: 1px solid #d3e2f0 !important;
+}
+.ps2-shell .guest-comment-prompt p { margin: 0; color: #344b62 !important; line-height: 1.55; }
+@media (max-width: 600px) {
+  .ps2-shell .discussion-footer { gap: 10px 14px; }
+  .ps2-shell .comment-item { padding: 14px; }
+  .ps2-shell .comment-children { margin-left: 7px; padding-left: 9px; }
+  .ps2-shell .guest-comment-prompt { align-items: flex-start; flex-direction: column; }
+}
