@@ -433,3 +433,73 @@
   .guest-mode-shell .town-directory-intro { align-items: flex-start; flex-direction: column; }
   .guest-mode-shell .guest-community-grid { grid-template-columns: 1fr; }
 }
+
+
+/* Guest-first readability refresh: light surfaces, restrained accents, clear hierarchy. */
+.ps2-shell {
+  --town-ink: #f5f7fa;
+  --town-panel: #ffffff;
+  --town-panel-raised: #f8fafc;
+  --town-glass-border: #dce3ea;
+  --town-glass-highlight: rgba(15, 23, 42, .025);
+  --town-shadow: 0 8px 28px rgba(15, 23, 42, .07);
+  background: #f5f7fa !important;
+  color: #17212b !important;
+}
+.ps2-shell::before { display: none; }
+.ps2-shell .ps2-scanlines { display: none; }
+.ps2-shell .ps2-topbar,
+.ps2-shell .ps2-sidebar {
+  background: #ffffff !important;
+  color: #17212b !important;
+  border-color: #e3e8ee !important;
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+}
+.ps2-shell .ps2-brand-title { color: #17212b !important; text-shadow: none; }
+.ps2-shell .ps2-top-search { background: #f5f7fa !important; color: #526170 !important; border-color: #d8e0e8 !important; }
+.ps2-shell .ps2-top-search:hover,
+.ps2-shell .ps2-top-search.active { background: #edf3fa !important; color: #17212b !important; }
+.ps2-shell .ps2-menu-label,
+.ps2-shell .ps2-section-label { color: #657383 !important; }
+.ps2-shell .ps2-nav a { color: #425164 !important; }
+.ps2-shell .ps2-nav a:hover { background: #f1f5f9 !important; color: #17212b !important; }
+.ps2-shell .ps2-nav a.active { background: #eaf1f8 !important; color: #173b63 !important; border-color: #d5e2ef !important; }
+.ps2-shell .ps2-main,
+.ps2-shell .ps2-content { color: #17212b !important; }
+.ps2-shell .ps2-card,
+.ps2-shell .town-page,
+.ps2-shell .town-side-card,
+.ps2-shell .town-home-side-card,
+.ps2-shell .town-home-community-card,
+.ps2-shell .post-card,
+.ps2-shell .community-card,
+.ps2-shell .community-detail-card,
+.ps2-shell .discussion-card {
+  background: #ffffff !important;
+  color: #17212b !important;
+  border-color: #e1e7ed !important;
+  box-shadow: 0 5px 18px rgba(15, 23, 42, .045) !important;
+}
+.ps2-shell h1, .ps2-shell h2, .ps2-shell h3,
+.ps2-shell .town-page-heading, .ps2-shell .town-home-headline,
+.ps2-shell .town-home-section-heading { color: #17212b !important; text-shadow: none !important; }
+.ps2-shell p, .ps2-shell li, .ps2-shell .feature-text,
+.ps2-shell .town-home-subhead, .ps2-shell .town-home-community-copy p,
+.ps2-shell .post-excerpt, .ps2-shell .comment-body { color: #465568; }
+.ps2-shell small, .ps2-shell .eyebrow, .ps2-shell .muted,
+.ps2-shell .town-meta, .ps2-shell .post-meta { color: #64748b !important; }
+.ps2-shell input, .ps2-shell textarea, .ps2-shell select {
+  background: #ffffff !important; color: #17212b !important; border-color: #cbd5e1 !important;
+}
+.ps2-shell input::placeholder, .ps2-shell textarea::placeholder { color: #718096 !important; }
+.ps2-shell .button.secondary { background: #f1f5f9 !important; color: #243447 !important; border: 1px solid #d5dee8 !important; }
+.ps2-shell a { text-underline-offset: 3px; }
+.ps2-shell :focus-visible { outline: 3px solid #2563eb !important; outline-offset: 3px; }
+@media (max-width: 760px) {
+  .ps2-shell .ps2-layout { grid-template-columns: minmax(0, 1fr) !important; }
+  .ps2-shell .ps2-sidebar { position: static; height: auto; padding: 12px 16px; border-right: 0; border-bottom: 1px solid #e3e8ee; }
+  .ps2-shell .ps2-nav { display: flex; overflow-x: auto; gap: 6px; }
+  .ps2-shell .ps2-nav a { flex: 0 0 auto; white-space: nowrap; }
+  .ps2-shell .ps2-main { min-width: 0; padding: 20px 14px !important; }
+}
