@@ -503,3 +503,21 @@
   .ps2-shell .ps2-nav a { flex: 0 0 auto; white-space: nowrap; }
   .ps2-shell .ps2-main { min-width: 0; padding: 20px 14px !important; }
 }
+
+.ps2-shell .community-membership-help {
+  flex: 1 1 100%;
+  max-width: 560px;
+  padding: 10px 13px;
+  margin: 0 0 8px;
+  border: 1px solid #dce5ee;
+  border-radius: 10px;
+  background: #f7f9fc;
+}
+.ps2-shell .community-membership-help p {
+  margin: 0;
+  color: #465568;
+  font-size: .82rem;
+  line-height: 1.5;
+}
+.ps2-shell .community-membership-help p + p { margin-top: 6px; }
+.ps2-shell .community-membership-help strong { color: #17212b; }
