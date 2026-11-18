@@ -87,11 +87,11 @@ export function TownHomePage({ currentUserId }) {
               <p className="town-kicker">YOUR SPACE. YOUR CONVERSATIONS.</p>
               <h1 className="town-home-headline">A place for better conversations.</h1>
               <p className="town-home-subhead">
-                Join communities, follow the topics you care about, and choose how discussions are sorted. Your attention stays yours.
+                Explore public communities and read discussions without an account. Choose what interests you, then sort conversations by latest or most discussed.
               </p>
               <div className="town-hero-actions">
                 <a className="button primary" href="#/communities">Explore downtowns <span aria-hidden="true">→</span></a>
-                <a className="button secondary" href={currentUserId ? "#/create-post" : "#/signin"}>{currentUserId ? "Create a post" : "Sign in to post"}</a>
+                <a className="button secondary" href={currentUserId ? "#/create-post" : "#/signin"}>{currentUserId ? "Create a post" : "Sign in to contribute"}</a>
               </div>
             </div>
             <span className="town-home-hero-caption">LOCAL VOICES · SHARED INTERESTS</span>
@@ -139,12 +139,6 @@ export function TownHomePage({ currentUserId }) {
             ))}
             {!loading && !posts.length && <div className="town-home-side-empty">No published discussions in the preview yet. Start with a downtown that interests you.</div>}
             {loading && <div className="town-home-side-empty">Loading recent discussions…</div>}
-          </section>
-          <section className="town-home-side-card town-home-principle-card">
-            <p className="eyebrow">BUILT AROUND CHOICE</p>
-            <h2>Your feed, your rules.</h2>
-            <p>Choose a downtown and sort discussions by latest or most discussed. Town keeps the controls visible instead of hiding the ranking logic.</p>
-            <a className="town-home-text-link" href="#/help">How Town works <span aria-hidden="true">→</span></a>
           </section>
         </aside>
       </div>
