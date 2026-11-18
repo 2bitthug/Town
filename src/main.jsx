@@ -1670,7 +1670,7 @@ function GuestProfilePage({ guestState, setGuestState }) {
 function App() {
   const [session, setSession] = useState(null)
   const [checking, setChecking] = useState(true)
-  const [entryMode, setEntryMode] = useState('choose')
+  const [entryMode, setEntryMode] = useState('guest')
   const [guestState, setGuestState] = useState(() => ({...GUEST_DEFAULT, profile:{...GUEST_DEFAULT.profile}, petProfile:{...GUEST_DEFAULT.petProfile}, petCompanion:{...GUEST_DEFAULT.petCompanion}}))
   const route = useHashRoute()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
@@ -1775,7 +1775,6 @@ function App() {
     ['pet', 'Pet companion']
   ]
 
-  if (!session && entryMode === 'choose' && routeName !== 'signin') return <GuestEntryScreen onGuest={() => { setEntryMode('guest'); window.location.hash='#/home' }} onSignIn={() => { window.location.hash='#/signin' }} />
 
   let page
   if (routeName === 'home') page = <HomePage currentUserId={session?.user?.id} />
