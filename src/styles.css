@@ -7545,3 +7545,41 @@ body { min-width: 320px; background: var(--town-bg); color: var(--town-text); }
 /* Strict monochrome foundation. */
 :root { color-scheme:light; --accent:#000; --accent-text:#000; --town-accent:#000; --town-ink:#000; --town-body:#000; --town-muted:#000; --town-faint:#000; --town-line:#000; --town-line-strong:#000; }
 html,body,#root { background:#fff !important; color:#000 !important; }
+
+
+/* User-controlled discovery surfaces. Scoped to these pages to preserve existing Town layouts. */
+.town-discovery-page .town-page-heading .feature-text{max-width:720px;margin:10px 0 0;color:var(--muted,#666);line-height:1.6}
+.town-bulletin-section,.town-preference-group{margin:28px 0}
+.town-discovery-section-head{display:flex;align-items:end;justify-content:space-between;gap:16px;margin-bottom:14px}
+.town-discovery-section-head h2,.town-preference-group h2{margin:0;font-size:1.25rem}
+.town-discovery-section-head>a{font-size:.88rem;color:inherit;text-decoration:underline;text-underline-offset:3px}
+.town-discovery-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:14px}
+.town-discovery-list{display:grid;gap:12px}
+.town-discovery-card{min-width:0;padding:18px;border:1px solid var(--border,#d8d8d8);border-radius:14px;background:var(--surface,#fff);color:var(--text,#111)}
+.town-discovery-card h2,.town-discovery-card h3{margin:9px 0;font-size:1.12rem;line-height:1.35}
+.town-discovery-card h2 a,.town-discovery-card h3 a{color:inherit;text-decoration:none}
+.town-discovery-card h2 a:hover,.town-discovery-card h3 a:hover{text-decoration:underline;text-underline-offset:3px}
+.town-discovery-card>p:not(.town-discovery-meta){color:var(--muted,#666);line-height:1.55}
+.town-discovery-meta{display:flex;flex-wrap:wrap;gap:7px;color:var(--muted,#666);font-size:.75rem;text-transform:uppercase;letter-spacing:.06em}
+.town-discovery-actions{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:14px;font-size:.82rem;color:var(--muted,#666)}
+.town-discovery-note{font-size:.84rem;font-weight:600;color:var(--text,#111)!important}
+.town-discovery-footnote{font-size:.82rem;color:var(--muted,#666);line-height:1.6;margin-top:22px}
+.town-discovery-controls{display:flex;justify-content:space-between;align-items:center;gap:14px;margin:16px 0;color:var(--muted,#666)}
+.town-discovery-controls label{display:flex;align-items:center;gap:10px}
+.town-discovery-controls select{min-width:220px}
+.town-discovery-community-art{width:44px;height:44px;border:1px solid var(--border,#ddd);border-radius:12px;display:grid;place-items:center;overflow:hidden;margin-bottom:12px;font-weight:700}
+.town-discovery-community-art img{width:100%;height:100%;object-fit:cover}
+.town-discovery-reasons{display:grid;gap:6px;margin-top:12px}
+.town-discovery-reasons span{font-size:.8rem;padding:7px 9px;border:1px solid var(--border,#ddd);border-radius:8px;color:var(--muted,#555)}
+.town-preferences-form{max-width:850px}
+.town-preference-group{padding:18px;border:1px solid var(--border,#ddd);border-radius:14px}
+.town-preference-group>p{color:var(--muted,#666);font-size:.88rem;line-height:1.55}
+.town-preference-list{display:grid;gap:0;margin-top:12px}
+.town-preference-row{display:flex;align-items:center;gap:16px;justify-content:space-between;padding:10px 0;border-top:1px solid var(--border,#eee)}
+.town-preference-row>strong{flex:1}.town-preference-row small{display:block;font-weight:400;color:var(--muted,#777);margin-top:3px}
+.town-preference-row label,.town-preference-chips label{display:flex;align-items:center;gap:7px;margin:0;font-size:.85rem;font-weight:500}
+.town-preference-row input,.town-preference-chips input{width:16px;min-height:16px;accent-color:#111}
+.town-preference-chips{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+.town-preference-chips label{border:1px solid var(--border,#ddd);border-radius:999px;padding:8px 11px}
+.town-discovery-success{padding:12px;border:1px solid var(--border,#ccc);border-radius:10px}
+@media(max-width:640px){.town-discovery-section-head{align-items:start;flex-direction:column}.town-preference-row{align-items:flex-start;flex-wrap:wrap}.town-preference-row>strong{flex-basis:100%}.town-discovery-controls{align-items:flex-start;flex-direction:column}.town-discovery-controls select{min-width:0}}

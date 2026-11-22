@@ -20,7 +20,7 @@ async function loadStats(ids) {
 export function FeedPage({ currentUserId, guestMode = false, guestState, setGuestState }) {
   const [posts, setPosts] = useState([]), [communities, setCommunities] = useState([]), [joinedIds, setJoinedIds] = useState(new Set())
   const [sort, setSort] = useState(() => guestMode ? 'latest' : (localStorage.getItem(SORT_KEY) || 'latest')), [communityFilter, setCommunityFilter] = useState('all'), [joinedOnly, setJoinedOnly] = useState(false), [query, setQuery] = useState(''), [searchInput, setSearchInput] = useState(''), [postType, setPostType] = useState('all'), [tagOptions, setTagOptions] = useState([]), [tagFilter, setTagFilter] = useState('all'), [feedMode,setFeedMode]=useState('all'), [followedUsers,setFollowedUsers]=useState(new Set()), [followedCommunities,setFollowedCommunities]=useState(new Set()), [followedTags,setFollowedTags]=useState(new Set())
-  const [loading, setLoading] = useState(true), [error, setError] = useState(''), [busyVote, setBusyVote] = useState(null), [saved, setSaved] = useState(new Set())
+  const [loading, setLoading] = useState(true), [error, setError] = useState(''), [busyVote, setBusyVote] = useState(null), [saved, setSaved] = useState(new Set()), [preferences, setPreferences] = useState({ feed_sort: 'latest', included_community_ids: [], excluded_community_ids: [], muted_tag_ids: [], hidden_post_types: [] })
 
   const load = async () => {
     setLoading(true); setError('')
@@ -33,6 +33,8 @@ export function FeedPage({ currentUserId, guestMode = false, guestState, setGues
       ])
       if (pe) throw pe; if (ce) throw ce
       const rows = rawPosts || [], ids = rows.map(p => p.id), authorIds = [...new Set(rows.map(p => p.author_id).filter(Boolean))]
+      let contentPreferences = { feed_sort: 'latest', included_community_ids: [], excluded_community_ids: [], muted_tag_ids: [], hidden_post_types: [] }
+      if (currentUserId) { const { data: preferenceRow, error: preferenceError } = await supabase.from('user_content_preferences').select('*').eq('user_id', currentUserId).maybeSingle(); if (preferenceError) throw preferenceError; if (preferenceRow) contentPreferences = { ...contentPreferences, ...preferenceRow } }
       const [{ data: profiles, error: pre }, { data: memberships, error: me }, { data: votes, error: ve }, { data: saves, error: se }, { data: blocks, error: be }, { data: postTagRows, error: te }, {data:userFollows,error:ufe}, {data:communityFollows,error:cfe}, {data:tagFollows,error:tfe}, stats] = await Promise.all([
         !guestMode && authorIds.length ? supabase.from('profiles').select('id,username,display_name').in('id', authorIds) : Promise.resolve({ data: [], error: null }),
         currentUserId ? supabase.from('community_memberships').select('community_id').eq('user_id', currentUserId) : Promise.resolve({ data: (guestState?.joinedCommunityIds || []).map(community_id => ({ community_id })), error: null }),
@@ -48,6 +50,8 @@ export function FeedPage({ currentUserId, guestMode = false, guestState, setGues
       if (pre) throw pre; if (me) throw me; if (ve) throw ve; if (se) throw se; if (be) throw be; if (te) throw te; if (ufe) throw ufe; if (cfe) throw cfe; if (tfe) throw tfe
       const pm = new Map((profiles || []).map(p => [p.id, p])), cm = new Map((cs || []).map(c => [c.id, c])), sm = new Map((stats || []).map(s => [s.post_id, s])), vm = new Map((votes || []).map(v => [v.post_id, v.value]))
       const tagsByPost = new Map(); (postTagRows || []).forEach(row => { const list = tagsByPost.get(row.post_id) || []; if (row.community_tags?.name) list.push({ id: row.tag_id, name: row.community_tags.name }); tagsByPost.set(row.post_id, list) })
+      setPreferences(contentPreferences)
+      if (contentPreferences.feed_sort) setSort(contentPreferences.feed_sort)
       setPosts(rows.filter(post => !(blocks || []).some(block => block.blocked_id === post.author_id)).map(post => ({ ...post, tags: tagsByPost.get(post.id) || [], author: pm.get(post.author_id), community: cm.get(post.community_id), stats: sm.get(post.id) || { comment_count: 0, upvote_score: 0, view_count: 0 }, myVote: vm.get(post.id) || 0 })))
       setCommunities(cs || []); setJoinedIds(new Set((memberships || []).map(m => m.community_id))); setSaved(new Set((saves || []).map(s => s.post_id))); setFollowedUsers(new Set((userFollows||[]).map(x=>x.followed_id))); setFollowedCommunities(new Set((communityFollows||[]).map(x=>x.community_id))); setFollowedTags(new Set((tagFollows||[]).map(x=>x.tag_id)))
     } catch (err) { setError(err.message || 'Unable to load the town feed.') } finally { setLoading(false) }
@@ -55,11 +59,13 @@ export function FeedPage({ currentUserId, guestMode = false, guestState, setGues
   useEffect(() => { const timer = setTimeout(() => setQuery(searchInput.trim()), 350); return () => clearTimeout(timer) }, [searchInput])
   useEffect(() => { load() }, [currentUserId, query, guestMode])
   useEffect(() => { let active = true; const fetchTags = async () => { let request = supabase.from('community_tags').select('id,name,community_id').eq('status','active').order('name'); if (communityFilter !== 'all') request = request.eq('community_id', communityFilter); const { data, error: tagError } = await request; if (active) { setTagOptions(tagError ? [] : data || []); if (tagFilter !== 'all' && !(data || []).some(tag => tag.id === tagFilter)) setTagFilter('all') } }; fetchTags(); return () => { active = false } }, [communityFilter])
-  useEffect(() => { if (!guestMode) localStorage.setItem(SORT_KEY, sort) }, [sort, guestMode])
+  useEffect(() => { if (!guestMode && !currentUserId) localStorage.setItem(SORT_KEY, sort) }, [sort, guestMode, currentUserId])
 
   const visiblePosts = useMemo(() => {
     const result = posts.filter(post => {
       if (feedMode==='following' && !(followedUsers.has(post.author_id)||followedCommunities.has(post.community_id)||(post.tags||[]).some(tag=>followedTags.has(tag.id)))) return false
+      const included = new Set(preferences.included_community_ids || []), excluded = new Set(preferences.excluded_community_ids || []), muted = new Set(preferences.muted_tag_ids || []), hidden = new Set(preferences.hidden_post_types || [])
+      if (excluded.has(post.community_id) || (included.size && !included.has(post.community_id)) || hidden.has(post.post_type) || (post.tags || []).some(tag => muted.has(tag.id))) return false
       if (communityFilter !== 'all' && post.community_id !== communityFilter) return false
       if (postType !== 'all' && post.post_type !== postType) return false
       if (tagFilter !== 'all' && !post.tags?.some(tag => tag.id === tagFilter)) return false
@@ -72,7 +78,7 @@ export function FeedPage({ currentUserId, guestMode = false, guestState, setGues
       if (sort === 'viewed') return Number(b.stats.view_count) - Number(a.stats.view_count) || new Date(b.created_at) - new Date(a.created_at)
       return new Date(b.created_at) - new Date(a.created_at)
     })
-  }, [posts, communityFilter, joinedOnly, joinedIds, query, sort, postType, tagFilter, feedMode, followedUsers, followedCommunities, followedTags])
+  }, [posts, communityFilter, joinedOnly, joinedIds, query, sort, postType, tagFilter, feedMode, followedUsers, followedCommunities, followedTags, preferences])
 
   const toggleTagFollow = async tagId => {
     if (guestMode) { const next = new Set(followedTags); next.has(tagId) ? next.delete(tagId) : next.add(tagId); setFollowedTags(next); setGuestState?.(state => ({ ...state, followedTagIds: [...next] })); return }
@@ -116,7 +122,7 @@ export function FeedPage({ currentUserId, guestMode = false, guestState, setGues
       <label className="feed-search"><span aria-hidden="true">⌕</span><input value={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder="Search posts…" aria-label="Search posts" /></label>
       <div className="feed-toolbar-actions">
         <button type="button" className={`feed-filter-toggle ${filtersOpen ? 'active' : ''}`} aria-expanded={filtersOpen} onClick={() => setFiltersOpen(open => !open)}><span>☷</span> Filters{[communityFilter !== 'all', tagFilter !== 'all', postType !== 'all', feedMode !== 'all', joinedOnly].filter(Boolean).length > 0 && <span className="feed-filter-count">{[communityFilter !== 'all', tagFilter !== 'all', postType !== 'all', feedMode !== 'all', joinedOnly].filter(Boolean).length}</span>}</button>
-        <label className="feed-sort"><span className="sr-only">Sort feed</span><select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select></label>
+        <label className="feed-sort"><span className="sr-only">Sort feed</span><select value={sort} onChange={e => { const next = e.target.value; setSort(next); if (currentUserId) supabase.from('user_content_preferences').upsert({ user_id: currentUserId, ...preferences, feed_sort: next, updated_at: new Date().toISOString() }, { onConflict: 'user_id' }).then(({ error: preferenceError }) => { if (preferenceError) setError(preferenceError.message) }) }} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select></label>
       </div>
     </div>
     {filtersOpen && <div className="feed-filter-panel">

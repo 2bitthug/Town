@@ -1,6 +1,9 @@
 import { test } from '@playwright/test';
 
+const hasCredentials = Boolean(process.env.TEST_USERNAME && process.env.TEST_PASSWORD);
+
 test('capture Town layout audit', async ({ page }) => {
+  test.skip(!hasCredentials, 'Set TEST_USERNAME and TEST_PASSWORD to run the authenticated layout audit');
   await page.setViewportSize({
     width: 1280,
     height: 720,
@@ -30,7 +33,7 @@ test('capture Town layout audit', async ({ page }) => {
   });
 
   // TOWN
-  await page.getByRole('link', { name: '01 Town' }).click();
+  await page.getByRole('link', { name: '01 Bulletin' }).click();
   await page.waitForTimeout(500);
   await page.screenshot({
     path: 'layout-audit/town.png',
@@ -46,7 +49,7 @@ test('capture Town layout audit', async ({ page }) => {
   });
 
   // COMMUNITIES
-  await page.getByRole('link', { name: '03 Communities' }).click();
+  await page.getByRole('link', { name: '03 Downtowns' }).click();
   await page.waitForTimeout(500);
   await page.screenshot({
     path: 'layout-audit/communities.png',
@@ -54,7 +57,7 @@ test('capture Town layout audit', async ({ page }) => {
   });
 
   // SEARCH
-  await page.getByRole('link', { name: '04 Search' }).click();
+  await page.getByRole('link', { name: 'Search Town' }).click();
   await page.waitForTimeout(500);
   await page.screenshot({
     path: 'layout-audit/search.png',
@@ -62,7 +65,7 @@ test('capture Town layout audit', async ({ page }) => {
   });
 
   // PROFILE
-  await page.getByRole('link', { name: '06 Profile' }).click();
+  await page.getByRole('link', { name: '11 Profile' }).click();
   await page.waitForTimeout(500);
   await page.screenshot({
     path: 'layout-audit/profile.png',
@@ -70,7 +73,7 @@ test('capture Town layout audit', async ({ page }) => {
   });
 
   // SETTINGS (secondary account destination)
-  await page.getByRole('link', { name: 'SETTINGS' }).click();
+  await page.getByRole('link', { name: '09 Settings' }).click();
   await page.waitForTimeout(500);
   await page.screenshot({
     path: 'layout-audit/settings.png',
