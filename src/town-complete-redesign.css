@@ -249,3 +249,40 @@ a:hover { color:var(--town-primary-hover); }
  html { scroll-behavior:auto; }
  *,*::before,*::after { animation-duration:.01ms!important; animation-iteration-count:1!important; transition-duration:.01ms!important; scroll-behavior:auto!important; }
 }
+
+/* FINAL THEME NORMALISATION — neutralise legacy black/neon rules left in styles.css.
+   Keep purpose-built artwork and avatar images intact; all structural surfaces use the same light system. */
+html, body, #root { min-height:100%; background:#f3f5f8!important; color:#182335!important; }
+.ps2-shell { background:#f3f5f8!important; color:#182335!important; }
+.ps2-shell .ps2-layout { background:#f3f5f8!important; }
+.ps2-shell .ps2-main { background:#f3f5f8!important; color:#182335!important; }
+.ps2-shell .ps2-sidebar { background:#fff!important; color:#435168!important; border-right:1px solid #e3e8ef!important; }
+.ps2-shell .ps2-footer { background:#fff!important; color:#748197!important; }
+.ps2-shell .ps2-create-action { background:#465bd8!important; color:#fff!important; border-color:#465bd8!important; }
+.ps2-shell .ps2-nav a { background:transparent!important; color:#5c687b!important; }
+.ps2-shell .ps2-nav a.active { background:#eef0ff!important; color:#465bd8!important; border-color:#e3e7ff!important; }
+.ps2-shell .ps2-top-search { background:#f7f8fb!important; color:#657187!important; border-color:#e3e8ef!important; }
+.ps2-shell .ps2-top-signout { background:#fff!important; color:#435168!important; border-color:#d2dae5!important; }
+.ps2-shell :is(.town-hero,.town-directory-intro,.town-global-search,.town-state,.town-empty,.town-error,.launch-summary,.launch-notice,.community-header,.town-side-card,.town-form,.post-card,.feed-card,.discussion-post,.comment-composer,.reply-form,.comment-item,.chat-box,.user-row,.engagement-panel,.profile-editor-section,.profile-preview-card,.growth-card,.beta-intro,.beta-report,.beta-launch-status,.beta-check,.town-principles li,.town-principles span,.town-home-principle-card,.town-home-side-card,.town-home-community-card,.profile-editor-note,.profile-data-note,.profile-interest-option,.profile-avatar-choice,.profile-color-choice,.profile-banner-choice,.pet-companion,.pet-companion-panel,.share-card-preview) {
+  background-color:#fff!important;
+  color:#435168!important;
+  border-color:#e3e8ef!important;
+  box-shadow:0 4px 14px rgba(24,35,53,.045)!important;
+}
+.ps2-shell :is(.town-hero,.launch-hero) { background:linear-gradient(115deg,#fff 0%,#f8f9ff 65%,#edf1ff 100%)!important; }
+.ps2-shell :is(.feed-action,.discussion-votes button,.profile-pet-choice,.pet-actions button,.pet-companion-panel header>button) { background:#f7f8fb!important; color:#435168!important; border-color:#d2dae5!important; }
+.ps2-shell :is(.profile-interest-option,.profile-avatar-choice,.profile-color-choice,.profile-banner-choice) { color:#435168!important; }
+.ps2-shell :is(.profile-section-description,.profile-editor-note,.profile-data-note) { color:#748197!important; }
+.ps2-shell :is(.profile-editor-note strong,.profile-data-note strong) { color:#182335!important; }
+.ps2-shell :is(.public-profile-hero,.public-profile-interests,.public-profile-pet,.profile-stat-grid>div,.reputation-stat-grid>div,.growth-metrics div) { background:#fff!important; color:#435168!important; border-color:#e3e8ef!important; box-shadow:0 4px 14px rgba(24,35,53,.045)!important; }
+.ps2-shell :is(.public-profile-hero,.public-profile-interests) { border:1px solid #e3e8ef!important; }
+.ps2-shell :is(.public-avatar,.profile-pet-preview,.share-card-preview) { background:#f1f3fa!important; color:#465bd8!important; box-shadow:none!important; }
+.ps2-shell :is(.share-card-builder .town-share-card,.share-card-builder .town-share-card-neon .town-share-card-inner) { background:linear-gradient(145deg,#fff,#f1f4fb)!important; color:#182335!important; border-color:#d2dae5!important; box-shadow:0 8px 28px rgba(24,35,53,.08)!important; }
+.ps2-shell :is(.share-card-builder .town-share-avatar,.share-card-builder .town-share-bio,.share-card-builder .town-share-labels span,.share-card-builder .town-share-values strong) { background:#f7f8fb!important; color:#435168!important; border-color:#d2dae5!important; }
+.ps2-shell input:not([type=checkbox]):not([type=radio]),.ps2-shell textarea,.ps2-shell select { background:#fff!important; color:#182335!important; border-color:#d2dae5!important; }
+.ps2-shell label,.ps2-shell .profile-toggle { color:#435168!important; }
+.ps2-shell .ps2-main :is(h1,h2,h3,h4,strong,b) { color:#182335!important; text-shadow:none!important; }
+.ps2-shell .ps2-main :is(p,li,span,small,label) { text-shadow:none!important; }
+@media(max-width:820px) {
+  .ps2-shell .ps2-sidebar { background:#fff!important; }
+}
