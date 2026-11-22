@@ -409,3 +409,13 @@ html,body,#root,.ps2-shell,.auth-shell,.auth-card { background:#fff !important; 
 .ps2-shell :is(a,button,input,textarea,select,[tabindex]):focus-visible { outline:2px solid #000 !important; outline-offset:2px !important; }
 .ps2-shell :is(img,svg) { filter:grayscale(1) !important; }
 .ps2-shell :is(.active,.selected,[aria-selected=true],[aria-pressed=true],[aria-current=page]) { background:#fff !important; color:#000 !important; border-color:#000 !important; }
+
+ 
+/* Community profile pictures are user-supplied identity artwork, not UI chrome.
+   Preserve their original colours in every community listing and header. */
+#root .ps2-shell .community-profile-picture img,
+#root .ps2-shell .community-card-icon img,
+#root .ps2-shell .town-home-community-art img {
+  filter: none !important;
+  -webkit-filter: none !important;
+}
