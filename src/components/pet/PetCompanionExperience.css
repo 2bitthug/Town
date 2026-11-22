@@ -101,4 +101,4 @@
 .pet-experience,.pet-experience * { color:#000 !important; text-shadow:none !important; }
 .pet-experience :is(section,article,aside,nav,header,footer,main,div,button,input,textarea,select) { background-color:#fff !important; border-color:#000 !important; box-shadow:none !important; }
 .pet-experience :is(button,.button) { color:#000 !important; background:#fff !important; border:1px solid #000 !important; }
-.pet-experience img,.pet-experience svg { filter:grayscale(1) !important; }
+.pet-experience img,.pet-experience svg { filter:none !important; -webkit-filter:none !important; }
