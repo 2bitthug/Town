@@ -55,3 +55,27 @@ with check (
 );
 grant select,insert,update on public.community_weekly_features to authenticated;
 grant select on public.community_weekly_features to anon;
+
+-- Keep nomination identity and scope immutable after insertion.
+create or replace function public.guard_town_weekly_feature_update()
+returns trigger
+language plpgsql
+set search_path = ''
+as $$
+begin
+  if new.community_id is distinct from old.community_id
+    or new.post_id is distinct from old.post_id
+    or new.week_start is distinct from old.week_start
+    or new.week_end is distinct from old.week_end
+    or new.nominated_by is distinct from old.nominated_by then
+    raise exception 'A weekly question nomination cannot be reassigned';
+  end if;
+  if old.status <> 'nominated' or new.status not in ('featured','rejected') then
+    raise exception 'Only pending nominations can be reviewed';
+  end if;
+  return new;
+end;
+$$;
+drop trigger if exists town_guard_weekly_feature_update on public.community_weekly_features;
+create trigger town_guard_weekly_feature_update before update on public.community_weekly_features
+for each row execute function public.guard_town_weekly_feature_update();
