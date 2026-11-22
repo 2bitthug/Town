@@ -1,5 +1,5 @@
 const CREATURES = [
-  ['avatar-01', 'Mosskin', '#9CFF6B', '#2D9B63', '#173D35', 'leaf'],
+  ['avatar-01', 'Mosskin', '#dddddd', '#777777', '#222222', 'leaf'],
   ['avatar-02', 'Emberfox', '#FFB15A', '#F05A35', '#722F32', 'fox'],
   ['avatar-03', 'Tidebit', '#72F2FF', '#2786D9', '#143F73', 'fin'],
   ['avatar-04', 'Moonmoth', '#E7D5FF', '#9E83F5', '#443A83', 'wing'],
