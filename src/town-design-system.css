@@ -932,3 +932,187 @@ html, body, #root {
   .ps2-shell .ps2-topbar { background: #fff !important; }
   .ps2-shell .ps2-main { padding: 20px 14px 44px !important; }
 }
+
+
+/* 2026-11 light Card Focus repair: deliberately placed last to neutralise legacy
+   monochrome/CRT rules without changing application behaviour or component markup. */
+:root, html, body, #root {
+  color-scheme: light !important;
+  background: #f5f7fa !important;
+  color: #202a35 !important;
+}
+body { min-width: 320px; }
+.ps2-shell, .ps2-shell * {
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+.ps2-shell {
+  --town-page-bg: #f5f7fa;
+  --town-surface: #ffffff;
+  --town-surface-soft: #f8fafc;
+  --town-border: #e2e8f0;
+  --town-text: #202a35;
+  --town-muted: #64748b;
+  --town-accent-safe: var(--town-accent, #2878d0);
+  background: var(--town-page-bg) !important;
+  color: var(--town-text) !important;
+}
+.ps2-shell :is(.ps2-topbar,.ps2-sidebar,.ps2-footer) {
+  background: rgba(255,255,255,.97) !important;
+  color: var(--town-text) !important;
+  border-color: #e5eaf0 !important;
+  box-shadow: 0 2px 12px rgba(20,35,52,.035) !important;
+  -webkit-backdrop-filter: blur(14px);
+  backdrop-filter: blur(14px);
+}
+.ps2-shell .ps2-topbar { min-height: 70px !important; }
+.ps2-shell .ps2-brand-title { color: #182433 !important; text-shadow: none !important; }
+.ps2-shell .ps2-top-search {
+  position: static !important;
+  transform: none !important;
+  width: min(440px, 42vw);
+  min-height: 40px;
+  border: 1px solid #dbe3ec !important;
+  border-radius: 999px !important;
+  background: #f7f9fc !important;
+  color: #536477 !important;
+  font: 500 .82rem Inter, ui-sans-serif, sans-serif !important;
+  letter-spacing: 0 !important;
+}
+.ps2-shell .ps2-top-search:hover,
+.ps2-shell .ps2-top-search.active { background: #eef4fb !important; border-color: #c6d7ea !important; color: #1d4f82 !important; }
+.ps2-shell .ps2-layout { background: #f5f7fa !important; grid-template-columns: 236px minmax(0,1fr) !important; }
+.ps2-shell .ps2-sidebar {
+  background: #fff !important;
+  border-right: 1px solid #e5eaf0 !important;
+  box-shadow: none !important;
+}
+.ps2-shell .ps2-menu-label, .ps2-shell .ps2-section-label {
+  color: #8491a1 !important; font-size: .66rem; letter-spacing: .12em;
+}
+.ps2-shell .ps2-nav a {
+  min-height: 42px !important; border: 1px solid transparent !important;
+  border-radius: 10px !important; background: transparent !important;
+  color: #4a596b !important; transform: none !important;
+}
+.ps2-shell .ps2-nav a:hover { background: #f3f6fa !important; color: #1e2c3b !important; }
+.ps2-shell .ps2-nav a.active {
+  background: color-mix(in srgb, var(--town-accent-safe) 10%, white) !important;
+  border-color: color-mix(in srgb, var(--town-accent-safe) 20%, white) !important;
+  color: #214d78 !important;
+}
+.ps2-shell .ps2-nav a.active::before { background: var(--town-accent-safe) !important; box-shadow: none !important; }
+.ps2-shell .ps2-nav-index { color: #9aa5b2 !important; }
+.ps2-shell .ps2-nav a.active .ps2-nav-index, .ps2-shell .ps2-nav b { color: var(--town-accent-safe) !important; }
+.ps2-shell .ps2-create-action {
+  background: var(--town-accent-safe) !important; color: #fff !important;
+  border: 1px solid var(--town-accent-safe) !important; border-radius: 11px !important;
+  box-shadow: 0 5px 14px color-mix(in srgb, var(--town-accent-safe) 18%, transparent) !important;
+}
+.ps2-shell .ps2-create-action * { color: #fff !important; }
+.ps2-shell .ps2-main {
+  min-width: 0 !important; max-width: 1500px !important;
+  padding: clamp(24px, 3vw, 44px) clamp(20px, 3vw, 48px) 64px !important;
+  background: transparent !important; color: var(--town-text) !important;
+}
+.ps2-shell .ps2-main :is(h1,h2,h3,h4,h5,h6) {
+  color: #1b2837 !important; text-shadow: none !important;
+  font-family: Inter, ui-sans-serif, system-ui, sans-serif !important;
+  letter-spacing: -.03em !important;
+}
+.ps2-shell .ps2-main h1 { font-size: clamp(1.8rem, 3vw, 2.55rem) !important; line-height: 1.14 !important; }
+.ps2-shell .ps2-main p { color: #526174; }
+.ps2-shell .ps2-main :is(.eyebrow,.town-kicker) { color: var(--town-accent-safe) !important; }
+.ps2-shell .ps2-main :is(.card,.town-page,.town-hero,.feed-card,.feed-post-card,.community-card,.community-panel,.discussion-card,.post-card,.chat-box,.settings-card,.profile-card,.town-side-card,.town-home-side-card,.town-home-community-card,.community-detail-card,.reputation-card,.moderation-card,.notification-item,.saved-post-card,.search-result,.town-empty,.town-state) {
+  background: #fff !important; color: #202a35 !important;
+  border: 1px solid #e2e8f0 !important; border-radius: 16px !important;
+  box-shadow: 0 5px 20px rgba(24,39,56,.045) !important;
+  -webkit-backdrop-filter: none !important; backdrop-filter: none !important;
+}
+.ps2-shell .ps2-main .card { padding: clamp(18px, 2vw, 26px) !important; }
+.ps2-shell .ps2-main :is(input,textarea,select) {
+  background: #fff !important; color: #202a35 !important;
+  border: 1px solid #cfd9e4 !important; border-radius: 10px !important;
+  box-shadow: none !important;
+}
+.ps2-shell .ps2-main :is(input,textarea,select)::placeholder { color: #8793a1 !important; }
+.ps2-shell .ps2-main :is(input,textarea,select):focus {
+  border-color: var(--town-accent-safe) !important;
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--town-accent-safe) 14%, transparent) !important;
+}
+.ps2-shell .ps2-main :is(button,.button,.feed-filter-toggle) { border-radius: 10px !important; }
+.ps2-shell .ps2-main .button.primary,
+.ps2-shell .ps2-main :is(.feed-filter-toggle,.primary-action) {
+  background: var(--town-accent-safe) !important; border-color: var(--town-accent-safe) !important;
+  color: #fff !important; box-shadow: none !important;
+}
+.ps2-shell .ps2-main .button.primary * { color: #fff !important; }
+.ps2-shell .ps2-main .button.secondary,
+.ps2-shell .ps2-main .button.ghost {
+  background: #f1f5f9 !important; border: 1px solid #d8e1eb !important; color: #34465a !important;
+}
+.ps2-shell .ps2-main .button.secondary:hover,
+.ps2-shell .ps2-main .button.ghost:hover { background: #e8eef5 !important; }
+.ps2-shell .ps2-top-signout {
+  background: #fff !important; color: #34465a !important;
+  border: 1px solid #d8e1eb !important; box-shadow: none !important;
+}
+.ps2-shell .ps2-footer { color: #718096 !important; }
+.ps2-shell .ps2-footer a { color: #46627f !important; }
+.ps2-shell :is(.discussion-post,.comment-composer,.reply-form,.comment-item) {
+  background: #fff !important; color: #263648 !important; border-color: #dce4ed !important;
+}
+.ps2-shell .comment-item > p, .ps2-shell .discussion-body { color: #344256 !important; }
+.ps2-shell .comment-head strong, .ps2-shell .discussion-votes strong { color: #1e2b39 !important; }
+.ps2-shell .comment-children { border-left-color: #dbe5ef !important; }
+.ps2-shell .guest-comment-prompt, .ps2-shell .community-membership-help { background: #f0f6fc !important; border-color: #d5e2ef !important; }
+.ps2-shell .guest-comment-prompt p, .ps2-shell .community-membership-help p { color: #344b62 !important; }
+.ps2-shell :is(.dropdown-menu,.popover,.modal,.dialog,.menu-panel,.tooltip-panel,.pet-companion-panel) {
+  background: #fff !important; color: #202a35 !important; border-color: #dce3ea !important;
+  box-shadow: 0 14px 40px rgba(15,23,42,.14) !important;
+}
+.ps2-shell .pet-companion { background: #f8fafc !important; border-color: #dce3ea !important; color: #263648 !important; }
+.ps2-shell .pet-sprite-button, .ps2-shell .pet-name-tag { color: #263648 !important; }
+.ps2-shell .pet-companion-panel :is(h3,p,label,span,small) { color: #263648 !important; }
+.ps2-shell .pet-companion-panel :is(input,select) { background: #fff !important; color: #202a35 !important; border-color: #cbd5e1 !important; }
+.ps2-shell .pet-actions button { background: #f1f5f9 !important; color: #34465a !important; border-color: #d8e1eb !important; }
+.ps2-shell :is(.engagement-panel,.profile-preview-card,.profile-avatar-popover,.profile-avatar-grid-compact button,.profile-current-avatar) {
+  background: #fff !important; color: #263648 !important; border-color: #dce3ea !important;
+}
+.ps2-shell :is(.profile-pet-choice,.town-global-search,.town-directory-intro) {
+  background: #fff !important; color: #263648 !important; border-color: #dce3ea !important;
+}
+.ps2-shell .profile-pet-choice { color: #263648 !important; }
+.ps2-shell .profile-pet-choice small { color: #64748b !important; }
+.ps2-shell .town-global-search form > label { color: #526174 !important; }
+.ps2-shell .town-global-result-group > a { color: #263648 !important; border-color: #e5eaf0 !important; }
+.ps2-shell :is(.status.error,.error-state) { background: #fff1f1 !important; color: #8f2525 !important; border-color: #f0caca !important; }
+.ps2-shell :is(.status.success,.success-state) { background: #effaf3 !important; color: #216a45 !important; border-color: #c8e8d4 !important; }
+.ps2-shell :is(.status.warning,.warning-state) { background: #fff8e8 !important; color: #805b12 !important; border-color: #f0dfb4 !important; }
+.ps2-shell :is(a,button,input,textarea,select,[role="button"]):focus-visible { outline: 2px solid var(--town-accent-safe) !important; outline-offset: 3px; }
+.auth-shell { background: radial-gradient(circle at 12% 0,#eaf2fb,transparent 42%),#f5f7fa !important; color: #202a35 !important; }
+.auth-card { background: #fff !important; color: #202a35 !important; border: 1px solid #dce3ea !important; box-shadow: 0 12px 36px rgba(15,23,42,.08) !important; }
+.auth-card :is(h1,h2,h3,label,strong) { color: #1e2b39 !important; }
+.auth-card :is(p,.lead) { color: #526174 !important; }
+.auth-card input { background: #fff !important; color: #202a35 !important; border-color: #cbd5e1 !important; }
+.auth-card .button.primary { background: #2878d0 !important; color: #fff !important; }
+@media (max-width: 900px) {
+  .ps2-shell .ps2-layout { grid-template-columns: minmax(0,1fr) !important; }
+  .ps2-shell .ps2-sidebar {
+    position: fixed !important; z-index: 101 !important; top: 0 !important; bottom: 0 !important;
+    left: 0 !important; width: min(300px,84vw) !important; height: 100dvh !important;
+    padding: 24px 16px !important; overflow-y: auto !important;
+    background: #fff !important; border-right: 1px solid #e5eaf0 !important;
+    box-shadow: 16px 0 45px rgba(20,35,52,.14) !important;
+  }
+  .ps2-shell .ps2-sidebar:not(.mobile-open) { transform: translateX(-110%) !important; visibility: hidden !important; }
+  .ps2-shell .ps2-sidebar.mobile-open { transform: translateX(0) !important; visibility: visible !important; }
+  .ps2-shell .ps2-menu-label { color: #8491a1 !important; }
+  .ps2-shell .ps2-nav { display: grid !important; grid-template-columns: minmax(0,1fr) !important; overflow: visible !important; }
+  .ps2-shell .ps2-nav a { display: grid !important; grid-template-columns: 28px minmax(0,1fr) 16px !important; }
+  .ps2-shell .mobile-nav-backdrop { background: rgba(20,31,44,.28) !important; }
+}
+@media (max-width: 620px) {
+  .ps2-shell .ps2-topbar { min-height: 62px !important; padding: 8px 12px !important; background: #fff !important; }
+  .ps2-shell .ps2-main { padding: 20px 14px 44px !important; }
+  .ps2-shell .ps2-top-search { width: auto; min-width: 0; }
+}
