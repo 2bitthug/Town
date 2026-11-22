@@ -1860,13 +1860,13 @@ function App() {
           {personalNav.map(([id, label], index) => {
             const active = isActive(id)
             return <a key={id} className={active ? 'active' : ''} href={id === 'profile' ? currentProfileHref : `#/${id}`}>
-              <span className="ps2-nav-index">{String(index + 5).padStart(2, '0')}</span>
+              <span className="ps2-nav-index">{String(index + primaryNav.length + 1).padStart(2, '0')}</span>
               <span>{label}</span>
               {active && <b>▶</b>}
             </a>
           })}
           {canModerate && <a className={isActive('moderation') ? 'active' : ''} href="#/moderation">
-            <span className="ps2-nav-index">{String(personalNav.length + 5).padStart(2, '0')}</span>
+            <span className="ps2-nav-index">{String(primaryNav.length + personalNav.length + 1).padStart(2, '0')}</span>
             <span>Moderation</span>
             {isActive('moderation') && <b>▶</b>}
           </a>}
