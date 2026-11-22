@@ -3,6 +3,7 @@ import { test, expect } from '@playwright/test';
 const hasCredentials = Boolean(process.env.TEST_USERNAME && process.env.TEST_PASSWORD);
 
 test('user can choose one of Town\'s fixed profile avatars', async ({ page, isMobile }) => {
+  test.skip(!hasCredentials, 'Set TEST_USERNAME and TEST_PASSWORD to run the authenticated avatar test');
   test.skip(isMobile, 'Avatar settings are tested on desktop');
 
   await page.goto('/');

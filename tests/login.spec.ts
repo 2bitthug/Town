@@ -28,7 +28,7 @@ test('user can sign in and navigate Town', async ({ page, isMobile }) => {
     page.getByRole('link', { name: '01 Bulletin' })
   ).toBeVisible({ timeout: 15000 });
 
-  await page.getByRole('link', { name: '01 Town' }).click();
+  await page.getByRole('link', { name: '01 Bulletin' }).click();
   await page.getByRole('link', { name: '02 Feed' }).click();
   await page.getByRole('link', { name: '03 Downtowns' }).click();
 });
