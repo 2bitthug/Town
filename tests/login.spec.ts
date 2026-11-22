@@ -1,6 +1,9 @@
 import { test, expect } from '@playwright/test';
 
+const hasCredentials = Boolean(process.env.TEST_USERNAME && process.env.TEST_PASSWORD);
+
 test('user can sign in and navigate Town', async ({ page, isMobile }) => {
+  test.skip(!hasCredentials, 'Set TEST_USERNAME and TEST_PASSWORD to run authenticated navigation tests');
   test.skip(isMobile, 'Mobile navigation is tested separately');
 
   await page.goto('/');
@@ -22,10 +25,10 @@ test('user can sign in and navigate Town', async ({ page, isMobile }) => {
   ).toBeVisible({ timeout: 15000 });
 
   await expect(
-    page.getByRole('link', { name: '01 Town' })
+    page.getByRole('link', { name: '01 Bulletin' })
   ).toBeVisible({ timeout: 15000 });
 
   await page.getByRole('link', { name: '01 Town' }).click();
   await page.getByRole('link', { name: '02 Feed' }).click();
-  await page.getByRole('link', { name: '03 Communities' }).click();
+  await page.getByRole('link', { name: '03 Downtowns' }).click();
 });

@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 
+const hasCredentials = Boolean(process.env.TEST_USERNAME && process.env.TEST_PASSWORD);
+
 test('user can choose one of Town\'s fixed profile avatars', async ({ page, isMobile }) => {
   test.skip(isMobile, 'Avatar settings are tested on desktop');
 
@@ -14,7 +16,7 @@ test('user can choose one of Town\'s fixed profile avatars', async ({ page, isMo
   );
   await page.getByRole('button', { name: 'Sign in' }).click();
 
-  await page.getByRole('link', { name: 'SETTINGS' }).click();
+  await page.getByRole('link', { name: '09 Settings' }).click();
   await expect(page.getByRole('heading', { name: 'Settings' })).toBeVisible();
 
   await page.getByRole('button', { name: 'Change avatar' }).click();
