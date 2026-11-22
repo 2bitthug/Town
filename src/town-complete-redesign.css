@@ -286,3 +286,75 @@ html, body, #root { min-height:100%; background:#f3f5f8!important; color:#182335
 @media(max-width:820px) {
   .ps2-shell .ps2-sidebar { background:#fff!important; }
 }
+
+
+/* MONOCHROME MODE — intentionally remove all interface colour. */
+:root {
+  color-scheme:light!important;
+  --town-bg:#fff!important;
+  --town-surface:#fff!important;
+  --town-surface-raised:#fff!important;
+  --town-ink:#000!important;
+  --town-copy:#000!important;
+  --town-muted:#000!important;
+  --town-border:#000!important;
+  --town-primary:#000!important;
+  --town-primary-hover:#000!important;
+  --town-primary-soft:#fff!important;
+  --town-accent:#000!important;
+}
+html,body,#root,
+.ps2-shell,.ps2-layout,.ps2-main,.ps2-sidebar,.ps2-footer,
+.auth-shell,.auth-card {
+  background:#fff!important;
+  background-image:none!important;
+  color:#000!important;
+}
+.ps2-shell *,.auth-shell * {
+  color:#000!important;
+  text-shadow:none!important;
+  box-shadow:none!important;
+}
+.ps2-shell :is(*, *::before, *::after),
+.auth-shell :is(*, *::before, *::after) {
+  background-color:#fff!important;
+  background-image:none!important;
+  border-color:#000!important;
+}
+.ps2-shell :is(a,a:visited,a:hover,a:active),
+.auth-shell :is(a,a:visited,a:hover,a:active) { color:#000!important; }
+.ps2-shell :is(button,.button,.ps2-create-action,.ps2-nav a,.ps2-nav a.active),
+.auth-shell :is(button,.button) {
+  background:#fff!important;
+  color:#000!important;
+  border:1px solid #000!important;
+}
+.ps2-shell :is(input,textarea,select),
+.auth-shell :is(input,textarea,select) {
+  background:#fff!important;
+  color:#000!important;
+  border:1px solid #000!important;
+  caret-color:#000!important;
+}
+.ps2-shell :is(input,textarea,select)::placeholder,
+.auth-shell :is(input,textarea,select)::placeholder { color:#000!important; opacity:1!important; }
+.ps2-shell :is(.ps2-nav a.active,.feed-action.active,.discussion-votes button.selected,
+.profile-interest-option.selected,.profile-avatar-choice.selected,.profile-color-choice.selected,
+.profile-banner-choice.selected,.pet-choice-grid button.selected) {
+  background:#fff!important;
+  color:#000!important;
+  border:2px solid #000!important;
+}
+.ps2-shell :is(.town-home-community-art,.community-card-icon,.pet-room-sky,.pet-room-ground,
+.pet-collectible-art,.town-share-card,.town-share-card-inner,.town-share-avatar,
+.town-share-bio,.town-share-labels span,.town-share-values strong) {
+  background:#fff!important;
+  background-image:none!important;
+  color:#000!important;
+  border-color:#000!important;
+}
+.ps2-shell :is(svg) { color:#000!important; }
+.ps2-shell svg :is(path,circle,rect,line,polyline,polygon) { stroke:#000!important; }
+.ps2-shell svg [fill]:not([fill="none"]) { fill:#000!important; }
+.ps2-shell img { filter:grayscale(1)!important; }
+::selection { background:#000!important; color:#fff!important; }
