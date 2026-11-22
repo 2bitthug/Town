@@ -122,7 +122,7 @@ export function FeedPage({ currentUserId, guestMode = false, guestState, setGues
       <label className="feed-search"><span aria-hidden="true">⌕</span><input value={searchInput} onChange={e => setSearchInput(e.target.value)} placeholder="Search posts…" aria-label="Search posts" /></label>
       <div className="feed-toolbar-actions">
         <button type="button" className={`feed-filter-toggle ${filtersOpen ? 'active' : ''}`} aria-expanded={filtersOpen} onClick={() => setFiltersOpen(open => !open)}><span>☷</span> Filters{[communityFilter !== 'all', tagFilter !== 'all', postType !== 'all', feedMode !== 'all', joinedOnly].filter(Boolean).length > 0 && <span className="feed-filter-count">{[communityFilter !== 'all', tagFilter !== 'all', postType !== 'all', feedMode !== 'all', joinedOnly].filter(Boolean).length}</span>}</button>
-        <label className="feed-sort"><span className="sr-only">Sort feed</span><select value={sort} onChange={e => setSort(e.target.value)} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select></label>
+        <label className="feed-sort"><span className="sr-only">Sort feed</span><select value={sort} onChange={e => { const next = e.target.value; setSort(next); if (currentUserId) supabase.from('user_content_preferences').upsert({ user_id: currentUserId, ...preferences, feed_sort: next, updated_at: new Date().toISOString() }, { onConflict: 'user_id' }).then(({ error: preferenceError }) => { if (preferenceError) setError(preferenceError.message) }) }} aria-label="Sort feed">{SORTS.map(([v, l]) => <option value={v} key={v}>{l}</option>)}</select></label>
       </div>
     </div>
     {filtersOpen && <div className="feed-filter-panel">

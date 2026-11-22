@@ -48,10 +48,10 @@ with check (
 );
 drop policy if exists "Community moderators review weekly questions" on public.community_weekly_features;
 create policy "Community moderators review weekly questions" on public.community_weekly_features for update to authenticated
-using (exists(select 1 from public.community_memberships m where m.community_id=community_weekly_features.community_id and m.user_id=(select auth.uid()) and m.role in ('owner','moderator','admin')))
+using (exists(select 1 from public.community_memberships m where m.community_id=community_weekly_features.community_id and m.user_id=(select auth.uid()) and m.role in ('owner','moderator')))
 with check (
   approved_by=(select auth.uid()) and status in ('featured','rejected')
-  and exists(select 1 from public.community_memberships m where m.community_id=community_weekly_features.community_id and m.user_id=(select auth.uid()) and m.role in ('owner','moderator','admin'))
+  and exists(select 1 from public.community_memberships m where m.community_id=community_weekly_features.community_id and m.user_id=(select auth.uid()) and m.role in ('owner','moderator'))
 );
 grant select,insert,update on public.community_weekly_features to authenticated;
 grant select on public.community_weekly_features to anon;
