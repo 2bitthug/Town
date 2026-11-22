@@ -5,7 +5,7 @@ const DEFAULT_PREFS = { feed_sort: 'latest', included_community_ids: [], exclude
 const SORTS = [['latest','Latest'],['discussed','Most discussed'],['upvoted','Most upvoted'],['viewed','Most viewed']]
 const TYPES = [['question','Questions'],['discussion','Discussions'],['link','Links'],['media','Media']]
 const ago = value => { const ms=Math.max(0,Date.now()-new Date(value).getTime()),m=Math.floor(ms/60000); if(m<1)return 'just now'; if(m<60)return m+'m ago'; const h=Math.floor(m/60); if(h<24)return h+'h ago'; const d=Math.floor(h/24); return d<30?d+'d ago':new Date(value).toLocaleDateString() }
-const monday = (date=new Date()) => { const d=new Date(date); d.setHours(0,0,0,0); d.setDate(d.getDate()-(d.getDay()+6)%7); return [d.getFullYear(),String(d.getMonth()+1).padStart(2,'0'),String(d.getDate()).padStart(2,'0')].join('-') }
+const monday = (date=new Date()) => { const d=new Date(date); d.setUTCHours(0,0,0,0); d.setUTCDate(d.getUTCDate()-(d.getUTCDay()+6)%7); return d.toISOString().slice(0,10) }
 const plusDays = (iso,n) => { const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n); return d.toISOString().slice(0,10) }
 function Frame({ eyebrow='TOWN', title, intro, actions, children }) { return <section className="town-page town-discovery-page"><div className="town-page-heading"><div><p className="eyebrow">{eyebrow}</p><h1>{title}</h1>{intro&&<p className="feature-text">{intro}</p>}</div>{actions&&<div className="town-page-actions">{actions}</div>}</div>{children}</section> }
 function State({children}) { return <div className="town-state">{children}</div> }
