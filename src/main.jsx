@@ -18,6 +18,7 @@ import { ShareProfileCard } from './components/profile/ShareProfileCard'
 import { PetCompanionExperience } from './components/pet/PetCompanionExperience'
 import PetSprite from './components/pet/PetSprite'
 import { NotificationsPage } from './components/notifications/NotificationsPage'
+import { BulletinPage, QuestionsPage, ConnectionsPage, PreferencesPage, WeeklyQuestionsPage } from './components/discovery/DiscoveryPages'
 import './town-complete-redesign.css'
 
 const LEGACY_SOURCES = {
@@ -1752,15 +1753,18 @@ function App() {
 
   const isActive = (id) => {
     if (id === 'feed') return routeName === 'feed' || routeName === 'post'
+    if (id === 'bulletin') return routeName === 'home' || routeName === 'bulletin'
     if (id === 'communities') return ['communities', 'community', 'create-community', 'community-manage'].includes(routeName)
     if (id === 'profile') return routeName === 'profile'
     return routeName === id
   }
 
   const primaryNav = [
-    ['home', 'Home'],
+    ['bulletin', 'Bulletin'],
     ['feed', 'Feed'],
     ['communities', 'Downtowns'],
+    ['questions', 'Questions'],
+    ['connections', 'Connections'],
     ['social', 'Chat']
   ]
 
@@ -1770,13 +1774,19 @@ function App() {
     ['settings', 'Settings'],
     ['reputation', 'Reputation'],
     ['profile', 'Profile'],
-    ['pet', 'Pet companion']
+    ['pet', 'Pet companion'],
+    ['weekly', 'Question of the week'],
+    ['settings-feed', 'My Town, My Rules']
   ]
 
   // Public routes open directly; authentication is requested only for account-dependent actions.
 
   let page
-  if (routeName === 'home') page = <HomePage currentUserId={session?.user?.id} />
+  if (routeName === 'home' || routeName === 'bulletin') page = <BulletinPage currentUserId={session?.user?.id} />
+  else if (routeName === 'questions') page = <QuestionsPage currentUserId={session?.user?.id} />
+  else if (routeName === 'connections') page = <ConnectionsPage currentUserId={session?.user?.id} />
+  else if (routeName === 'weekly') page = <WeeklyQuestionsPage currentUserId={session?.user?.id} />
+  else if (routeName === 'settings-feed') page = session ? <PreferencesPage currentUserId={session.user.id} /> : <InfoPage title="Sign in to set your rules"><p className="feature-text">Your content preferences are saved to your account and apply across devices.</p><a className="button primary" href="#/signin">Sign in</a></InfoPage>
   else if (routeName === 'feed') page = <FeedPage currentUserId={session?.user?.id} guestMode={guestMode} guestState={guestState} setGuestState={setGuestState} />
   else if (routeName === 'post' && routeParam) page = <PostPage postId={routeParam} currentUserId={session?.user?.id} guestMode={guestMode} />
   else if (routeName === 'create-post') page = <CreatePostPage currentUserId={session?.user?.id} />
