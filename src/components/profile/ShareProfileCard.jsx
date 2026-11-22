@@ -111,8 +111,12 @@ export function ShareProfileCard({ userId, profile = {}, daysJoined }) {
   const tier = memberDays !== null && memberDays >= 31 ? 'gold' : memberDays !== null && memberDays >= 8 ? 'red' : 'standard'
   const tierLabel = tier === 'gold' ? 'GOLD MEMBER' : tier === 'red' ? 'RARE MEMBER' : 'NEW MEMBER'
   const daysDisplay = memberDays === null ? '—' : String(memberDays)
-  // Keep rarity labels, but render every exported card in monochrome.
-  const colors = { bg: '#ffffff', ink: '#000000', accent: '#000000', line: '#000000', soft: '#ffffff' }
+  // The collectible card is a full-colour reward; the surrounding profile UI stays monochrome.
+  const colors = tier === 'gold'
+    ? { bg: '#211b0d', ink: '#fff4c6', accent: '#f5c451', line: '#8b6725', soft: '#30240c' }
+    : tier === 'red'
+      ? { bg: '#1c1015', ink: '#fff0f1', accent: '#ff5268', line: '#8e263a', soft: '#29131a' }
+      : { bg: '#101a17', ink: '#e8fff3', accent: '#39ff9c', line: '#28684f', soft: '#17221d' }
 
   const roundedRect = (ctx, x, y, w, h, r) => {
     ctx.beginPath()

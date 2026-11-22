@@ -361,14 +361,14 @@ html, body, #root {
   -webkit-text-fill-color: #000 !important;
   opacity: 1 !important;
 }
-#root .ps2-shell :is(svg, svg *) {
+#root .ps2-shell :is(svg, svg *):not(.pet-experience svg):not(.pet-experience svg *) {
   color: #000 !important;
   stroke: #000 !important;
 }
-#root .ps2-shell svg [fill]:not([fill="none"]) {
+#root .ps2-shell svg [fill]:not([fill="none"]):not(.pet-experience svg [fill]) {
   fill: #000 !important;
 }
-#root .ps2-shell img {
+#root .ps2-shell img:not(.profile-avatar img):not(.profile-avatar-choice img):not(.profile-avatar-grid-compact img):not(.cosmetic-avatar-image img):not(.town-share-avatar img):not(.town-share-pet img) {
   filter: grayscale(1) !important;
 }
 #root .ps2-shell :is(.ps2-nav a, .ps2-nav a *, .ps2-create-action,
@@ -407,7 +407,7 @@ html,body,#root,.ps2-shell,.auth-shell,.auth-card { background:#fff !important; 
 .ps2-shell :is(input,textarea,select) { -webkit-text-fill-color:#000 !important; }
 .ps2-shell :is(input,textarea,select)::placeholder { color:#000 !important; opacity:.65 !important; }
 .ps2-shell :is(a,button,input,textarea,select,[tabindex]):focus-visible { outline:2px solid #000 !important; outline-offset:2px !important; }
-.ps2-shell :is(img,svg) { filter:grayscale(1) !important; }
+.ps2-shell :is(img,svg):not(.pet-experience svg) { filter:grayscale(1) !important; }
 .ps2-shell :is(.active,.selected,[aria-selected=true],[aria-pressed=true],[aria-current=page]) { background:#fff !important; color:#000 !important; border-color:#000 !important; }
 
  
@@ -419,3 +419,79 @@ html,body,#root,.ps2-shell,.auth-shell,.auth-card { background:#fff !important; 
   filter: none !important;
   -webkit-filter: none !important;
 }
+
+
+/* Keep member identity artwork and collectible rewards in their authored colours.
+   The surrounding profile editor and Town interface remain monochrome. */
+#root .ps2-shell :is(.profile-avatar img,.profile-avatar-choice img,.profile-avatar-grid-compact img,.cosmetic-avatar-image img,.town-share-avatar img,.town-share-pet img) {
+  filter:none !important;
+  -webkit-filter:none !important;
+}
+#root .ps2-shell .pet-experience svg,
+#root .ps2-shell .pet-experience svg * {
+  filter:none !important;
+  color:initial !important;
+  stroke:revert !important;
+}
+#root .ps2-shell .pet-experience svg [fill]:not([fill="none"]) {
+  fill:revert !important;
+}
+
+/* The collectible member card is an intentional full-colour artefact;
+   only its editor controls and surrounding page follow the monochrome theme. */
+#root .ps2-shell .share-card-builder .town-share-card {
+  background:#080b0d !important;
+  background-image:linear-gradient(145deg,#17221d,#050505 45%,#101017) !important;
+  color:#e8fff3 !important;
+  border:1px solid #28684f !important;
+  box-shadow:0 12px 34px #0009,0 0 22px #39ff9c12 !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-inner {
+  background:radial-gradient(ellipse at 10% 5%,#39ff9c18,transparent 48%),linear-gradient(155deg,#101a17,#07090a 62%) !important;
+  color:#e8fff3 !important;
+  border:1px solid #28684f !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-inner :is(strong,span,p) {
+  color:inherit !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-brand,
+#root .ps2-shell .share-card-builder .town-share-card-edition {
+  color:#39ff9c !important;
+}
+#root .ps2-shell .share-card-builder .town-share-bio,
+#root .ps2-shell .share-card-builder .town-share-labels span,
+#root .ps2-shell .share-card-builder .town-share-values strong,
+#root .ps2-shell .share-card-builder .town-share-active span,
+#root .ps2-shell .share-card-builder .town-share-active strong {
+  border-color:#28684f !important;
+  color:#e8fff3 !important;
+}
+#root .ps2-shell .share-card-builder .town-share-avatar,
+#root .ps2-shell .share-card-builder .town-share-bio,
+#root .ps2-shell .share-card-builder .town-share-labels span,
+#root .ps2-shell .share-card-builder .town-share-values strong,
+#root .ps2-shell .share-card-builder .town-share-active strong {
+  background:#101a17 !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-red {
+  border-color:#8e263a !important;
+  background-image:linear-gradient(145deg,#29131a,#080b0d 55%,#170b10) !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-red .town-share-card-inner {
+  border-color:#8e263a !important;
+  background:radial-gradient(ellipse at 10% 5%,#ff52681a,transparent 48%),linear-gradient(155deg,#1c1015,#07090a 62%) !important;
+  color:#fff0f1 !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-red .town-share-card-brand,
+#root .ps2-shell .share-card-builder .town-share-card-red .town-share-card-edition { color:#ff5268 !important; }
+#root .ps2-shell .share-card-builder .town-share-card-gold {
+  border-color:#8b6725 !important;
+  background-image:linear-gradient(145deg,#30240c,#080b0d 55%,#1d1608) !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-gold .town-share-card-inner {
+  border-color:#8b6725 !important;
+  background:radial-gradient(ellipse at 10% 5%,#f5c4511c,transparent 48%),linear-gradient(155deg,#211b0d,#07090a 62%) !important;
+  color:#fff4c6 !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-gold .town-share-card-brand,
+#root .ps2-shell .share-card-builder .town-share-card-gold .town-share-card-edition { color:#f5c451 !important; }
