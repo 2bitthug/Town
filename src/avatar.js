@@ -1,5 +1,5 @@
 const CREATURES = [
-  ['avatar-01', 'Mosskin', '#9CFF6B', '#2D9B63', '#173D35', 'leaf'],
+  ['avatar-01', 'Mosskin', '#dddddd', '#777777', '#222222', 'leaf'],
   ['avatar-02', 'Emberfox', '#FFB15A', '#F05A35', '#722F32', 'fox'],
   ['avatar-03', 'Tidebit', '#72F2FF', '#2786D9', '#143F73', 'fin'],
   ['avatar-04', 'Moonmoth', '#E7D5FF', '#9E83F5', '#443A83', 'wing'],
@@ -46,7 +46,7 @@ function creatureSvg(creature) {
     cat: '<path d="M42 68L24 12L66 47ZM118 68L136 12L94 47Z" fill="url(#accent)" stroke="' + light + '" stroke-width="3"/><path d="M46 108C19 111 25 139 45 137Q56 136 56 123M114 108C141 111 135 139 115 137Q104 136 104 123" fill="none" stroke="' + light + '" stroke-width="9" stroke-linecap="round"/>',
     coral: '<path d="M52 69L37 34L57 49L63 16L79 51M108 69L123 34L103 49L97 16L81 51" fill="none" stroke="' + light + '" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/><circle cx="37" cy="34" r="6" fill="' + light + '"/><circle cx="123" cy="34" r="6" fill="' + light + '"/>'
   };
-  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="${name} creature avatar">
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-label="${name} creature avatar" style="filter:grayscale(1)">
   <defs>
     <radialGradient id="bg-${uid}" cx="48%" cy="26%" r="80%"><stop stop-color="${dark}"/><stop offset=".58" stop-color="#111321"/><stop offset="1" stop-color="#030407"/></radialGradient>
     <linearGradient id="body-${uid}" x1="0" y1="0" x2=".9" y2="1"><stop stop-color="#FFFFFF"/><stop offset=".15" stop-color="${light}"/><stop offset=".58" stop-color="${mid}"/><stop offset="1" stop-color="${dark}"/></linearGradient>

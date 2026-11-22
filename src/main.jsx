@@ -1499,8 +1499,8 @@ function SettingsPage({ currentUserId }) {
         </fieldset>
 
         <fieldset className="profile-editor-section">
-          <legend>Accent colour</legend>
-          <div className="profile-color-grid" role="group" aria-label="Profile accent colours">{PROFILE_COLORS.map(([value, label]) => <button type="button" key={value} className={`profile-color-choice ${profile.accent_color === value ? 'selected' : ''}`} style={{ '--choice-color': value }} aria-label={`${label}${profile.accent_color === value ? ', selected' : ''}`} aria-pressed={profile.accent_color === value} onClick={() => chooseAccentColour(value)}><span aria-hidden="true" /><b>{label}</b></button>)}</div>
+          <legend>Interface theme</legend>
+          <p className="widget-help">Town uses a fixed monochrome interface: white surfaces and black text.</p>
         </fieldset>
 
         <fieldset className="profile-editor-section">
@@ -1583,14 +1583,11 @@ function GuestEntryScreen({ onGuest, onSignIn }) {
 }
 
 function GuestSettings({ guestState, setGuestState, onExit }) {
-  // Reuse the canonical palette so guest accents always pass the global theme resolver.
-  const colors = PROFILE_COLORS.map(([color, name]) => [name, color])
   const profile = guestState.profile || GUEST_DEFAULT.profile
-  const apply = color => { setGuestState(state=>({...state,accentColor:color})); window.dispatchEvent(new CustomEvent('town-accent-change',{detail:color})) }
   const updateProfile = patch => setGuestState(state=>({...state,profile:{...state.profile,...patch}}))
   return <Card eyebrow="SETTINGS · GUEST SESSION" title="Make Town yours">
     <p className="feature-text">These preferences exist only for this visit and are cleared when you exit guest mode.</p>
-    <h3>Accent colour</h3><div className="pet-choice-grid">{colors.map(([name,color])=><button type="button" key={color} className={guestState.accentColor===color?'selected':''} aria-pressed={guestState.accentColor===color} onClick={()=>apply(color)}><span style={{display:'block',width:32,height:32,borderRadius:'50%',background:color,margin:'auto'}}/><small>{name}</small></button>)}</div>
+     <h3>Interface theme</h3><p className="widget-help">Town uses a fixed monochrome interface: white surfaces and black text.</p>
     <h3>Guest profile preview</h3>
     <label>Display name<input value={profile.display_name} maxLength={40} onChange={e=>updateProfile({display_name:e.target.value})}/></label>
     <label>Bio<textarea value={profile.bio} maxLength={240} onChange={e=>updateProfile({bio:e.target.value})}/></label>
@@ -1676,7 +1673,7 @@ function App() {
   const route = useHashRoute()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [canModerate, setCanModerate] = useState(false)
-  const [globalAccent, setGlobalAccent] = useState('#287BFF')
+  const [globalAccent, setGlobalAccent] = useState('#000000')
   useEffect(() => { setMobileNavOpen(false) }, [route])
   useEffect(() => {
     if (!mobileNavOpen) return
@@ -1691,12 +1688,12 @@ function App() {
     }
   }, [mobileNavOpen])
   useEffect(() => {
-    const resolveAccent = (candidate) => PROFILE_COLORS.find(([value]) => value.toLowerCase() === String(candidate || '').toLowerCase())?.[0] || '#287BFF'
+    const resolveAccent = () => '#000000'
     const syncAccent = (event) => {
       const stored = session?.user?.id
         ? localStorage.getItem(`town-accent:${session.user.id}`)
         : entryMode === 'guest' ? guestState.accentColor : '#287BFF'
-      setGlobalAccent(resolveAccent(event?.detail || stored))
+      setGlobalAccent(resolveAccent())
     }
     syncAccent()
     window.addEventListener('town-accent-change', syncAccent)

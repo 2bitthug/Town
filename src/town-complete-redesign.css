@@ -395,3 +395,17 @@ html, body, #root {
   border: 2px solid #000 !important;
 }
 ::selection { background: #000 !important; color: #fff !important; -webkit-text-fill-color: #fff !important; }
+
+
+/* FINAL THEME CONTRACT: monochrome across every route and interaction state. */
+:root { color-scheme:light; --town-bg:#fff; --town-paper:#fff; --town-paper-2:#fff; --town-paper-3:#fff; --town-ink:#000; --town-copy:#000; --town-muted:#000; --town-faint:#000; --town-border:#000; --town-border-strong:#000; --town-primary:#000; --town-primary-hover:#000; --town-primary-soft:#fff; --town-green:#000; --town-green-soft:#fff; --town-amber:#000; --town-red:#000; --town-shadow-xs:none; --town-shadow-sm:none; --town-shadow-md:none; --town-shadow-lg:none; --accent:#000; --accent-text:#000; --profile-accent:#000; }
+html,body,#root,.ps2-shell,.auth-shell,.auth-card { background:#fff !important; color:#000 !important; }
+.ps2-shell *, .auth-shell *, .auth-card * { color:#000 !important; text-shadow:none !important; }
+.ps2-shell :is(section,article,aside,nav,header,footer,main,form,fieldset,details,summary,div,button,input,textarea,select,option) { background-color:#fff !important; border-color:#000 !important; box-shadow:none !important; }
+.ps2-shell :is(a,a:hover,a:visited,button,.button,[role=button]) { color:#000 !important; }
+.ps2-shell :is(button,.button,[role=button],input,textarea,select) { background:#fff !important; border:1px solid #000 !important; }
+.ps2-shell :is(input,textarea,select) { -webkit-text-fill-color:#000 !important; }
+.ps2-shell :is(input,textarea,select)::placeholder { color:#000 !important; opacity:.65 !important; }
+.ps2-shell :is(a,button,input,textarea,select,[tabindex]):focus-visible { outline:2px solid #000 !important; outline-offset:2px !important; }
+.ps2-shell :is(img,svg) { filter:grayscale(1) !important; }
+.ps2-shell :is(.active,.selected,[aria-selected=true],[aria-pressed=true],[aria-current=page]) { background:#fff !important; color:#000 !important; border-color:#000 !important; }

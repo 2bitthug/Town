@@ -25,7 +25,7 @@ const ART = {
 
 export function PetSprite({ id, className = '', title }) {
   const markup = ART[id] || ART.cat
-  return <svg className={className} viewBox="0 0 96 96" role="img" aria-label={title || id || 'Town companion'} shapeRendering="crispEdges">
+  return <svg className={className} viewBox="0 0 96 96" role="img" aria-label={title || id || 'Town companion'} shapeRendering="crispEdges" style={{ filter: "grayscale(1)" }}>
     <ellipse cx="48" cy="91" rx="23" ry="3" fill="#000" opacity=".22" />
     <g dangerouslySetInnerHTML={{ __html: markup }} />
   </svg>

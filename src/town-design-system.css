@@ -4,16 +4,16 @@
  */
 :root {
   color-scheme: light;
-  --town-canvas: #f4f6f9;
+  --town-canvas: #ffffff;
   --town-surface: #ffffff;
-  --town-surface-soft: #f8fafc;
-  --town-ink: #172033;
-  --town-body: #344256;
-  --town-muted: #66758a;
-  --town-faint: #8491a3;
-  --town-line: #e2e8f0;
-  --town-line-strong: #cbd5e1;
-  --town-accent: var(--accent, #287BFF);
+  --town-surface-soft: #ffffff;
+  --town-ink: #000000;
+  --town-body: #000000;
+  --town-muted: #000000;
+  --town-faint: #000000;
+  --town-line: #000000;
+  --town-line-strong: #000000;
+  --town-accent: var(--accent, #000000);
   --town-accent-soft: color-mix(in srgb, var(--town-accent) 9%, white);
   --town-shadow-sm: 0 1px 2px rgba(16,24,40,.04), 0 3px 10px rgba(16,24,40,.035);
   --town-shadow-card: 0 2px 5px rgba(16,24,40,.035), 0 10px 28px rgba(16,24,40,.055);
@@ -33,11 +33,11 @@ body { background: var(--town-canvas); color: var(--town-ink); }
   font-size: 14px;
   line-height: 1.55;
   letter-spacing: 0 !important;
-  --town-accent: var(--accent, #287BFF);
+  --town-accent: var(--accent, #000000);
   --town-accent-soft: color-mix(in srgb, var(--town-accent) 9%, white);
   --town-glass-border: var(--town-line);
   --town-panel: #fff;
-  --town-panel-raised: #f8fafc;
+  --town-panel-raised: #ffffff;
   --town-shadow: var(--town-shadow-card);
 }
 .ps2-shell::before, .ps2-shell .ps2-scanlines { display: none !important; }
@@ -75,7 +75,7 @@ body { background: var(--town-canvas); color: var(--town-ink); }
 .ps2-shell .ps2-brand { flex: 0 0 205px; }
 .ps2-shell .ps2-brand-title {
   margin: 0;
-  color: #172033 !important;
+  color: #000000 !important;
   font-size: 19px !important;
   font-weight: 850 !important;
   letter-spacing: .16em !important;
@@ -117,7 +117,7 @@ body { background: var(--town-canvas); color: var(--town-ink); }
   border: 1px solid var(--town-line-strong) !important;
   border-radius: 10px;
   background: #fff !important;
-  color: #344256 !important;
+  color: #000000 !important;
   font: inherit;
   font-size: 12px;
   font-weight: 700;
@@ -176,7 +176,7 @@ body { background: var(--town-canvas); color: var(--town-ink); }
 .ps2-shell .ps2-nav a:hover {
   transform: none !important;
   background: #f4f7fb !important;
-  color: #172033 !important;
+  color: #000000 !important;
 }
 .ps2-shell .ps2-nav a.active {
   border-color: #d9e6f7 !important;
@@ -279,7 +279,7 @@ body { background: var(--town-canvas); color: var(--town-ink); }
 .ps2-shell .town-home-community-art { display: grid; place-items: center; width: 76px; height: 76px; overflow: hidden; border-radius: 13px; background: #edf3fa !important; color: #31577e; font-size: 26px; font-weight: 800; }
 .ps2-shell .town-home-community-art img { width: 100%; height: 100%; object-fit: cover; }
 .ps2-shell .town-home-community-copy { min-width: 0; }
-.ps2-shell .town-home-community-category { color: #66758a !important; font-size: 10px; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
+.ps2-shell .town-home-community-category { color: #000000 !important; font-size: 10px; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
 .ps2-shell .town-home-community-copy h3 { margin: 4px 0 5px; }
 .ps2-shell .town-home-community-copy p { margin: 0 0 9px; color: #5b687a !important; font-size: 12px; line-height: 1.5; }
 .ps2-shell .town-home-card-link { color: #245db5 !important; font-size: 11px; font-weight: 750; }
@@ -296,10 +296,10 @@ body { background: var(--town-canvas); color: var(--town-ink); }
 .ps2-shell .town-home-discussion-community { color: #63748b !important; font-size: 10px; font-weight: 750; text-transform: uppercase; letter-spacing: .06em; }
 .ps2-shell .town-home-discussion strong { font-size: 13px; line-height: 1.4; }
 .ps2-shell .town-home-discussion-excerpt { color: #637187 !important; font-size: 11px; line-height: 1.5; }
-.ps2-shell .town-home-discussion-meta { color: #8491a3 !important; font-size: 10px; }
+.ps2-shell .town-home-discussion-meta { color: #000000 !important; font-size: 10px; }
 .ps2-shell .town-home-empty, .ps2-shell .town-home-side-empty, .ps2-shell .town-empty, .ps2-shell .town-state, .ps2-shell .empty-state {
   padding: 18px;
-  border: 1px dashed #cbd5e1 !important;
+  border: 1px dashed #000000 !important;
   border-radius: 12px;
   background: #fafbfd !important;
   color: #5d6b7e !important;
@@ -344,17 +344,17 @@ body { background: var(--town-canvas); color: var(--town-ink); }
   min-width: 0;
   min-height: 43px;
   padding: 10px 12px;
-  border: 1px solid #cbd5e1 !important;
+  border: 1px solid #000000 !important;
   border-radius: 10px !important;
   background: #fff !important;
-  color: #172033 !important;
+  color: #000000 !important;
   font: inherit;
   box-shadow: inset 0 1px 2px rgba(16,24,40,.025) !important;
 }
 .ps2-shell .ps2-main textarea { min-height: 110px; resize: vertical; }
 .ps2-shell .ps2-main :is(input,textarea,select)::placeholder { color: #78869a !important; opacity: 1; }
 .ps2-shell .ps2-main :is(input,textarea,select):focus { outline: 0 !important; border-color: #4c83cf !important; box-shadow: 0 0 0 3px rgba(37,99,235,.13) !important; }
-.ps2-shell .ps2-main label { color: #344256 !important; font-size: 12px; font-weight: 700; }
+.ps2-shell .ps2-main label { color: #000000 !important; font-size: 12px; font-weight: 700; }
 .ps2-shell .button, .ps2-shell button.button, .ps2-shell a.button {
   display: inline-flex;
   align-items: center;
@@ -382,9 +382,9 @@ body { background: var(--town-canvas); color: var(--town-ink); }
 .ps2-shell .button.secondary, .ps2-shell a.button.secondary {
   border-color: #d5dee9 !important;
   background: #fff !important;
-  color: #344256 !important;
+  color: #000000 !important;
 }
-.ps2-shell .button.secondary:hover:not(:disabled), .ps2-shell a.button.secondary:hover { background: #f3f6fa !important; border-color: #b8c6d7 !important; color: #172033 !important; }
+.ps2-shell .button.secondary:hover:not(:disabled), .ps2-shell a.button.secondary:hover { background: #f3f6fa !important; border-color: #b8c6d7 !important; color: #000000 !important; }
 .ps2-shell .button.danger { border-color: #f0c4c4 !important; background: #fff5f5 !important; color: #a32929 !important; }
 .ps2-shell .button:disabled { opacity: .55; cursor: not-allowed; }
 .ps2-shell :is(.chip-row,.filter-row,.feed-filters,.community-filters,.town-tabs,.pet-exp-tabs,.saved-collection-filters) { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
@@ -413,22 +413,22 @@ body { background: var(--town-canvas); color: var(--town-ink); }
 .ps2-shell .list-item strong, .ps2-shell .user-row strong { color: var(--town-ink) !important; }
 .ps2-shell .list-item span, .ps2-shell .user-row span { color: #64748b !important; }
 .ps2-shell table { width: 100%; border-collapse: collapse; color: var(--town-body); }
-.ps2-shell th { color: #64748b !important; background: #f8fafc; font-size: 10px; letter-spacing: .07em; }
-.ps2-shell td { color: #344256 !important; border-color: var(--town-line) !important; }
+.ps2-shell th { color: #64748b !important; background: #ffffff; font-size: 10px; letter-spacing: .07em; }
+.ps2-shell td { color: #000000 !important; border-color: var(--town-line) !important; }
 .ps2-shell .status, .ps2-shell .meta, .ps2-shell .hint, .ps2-shell .feature-text, .ps2-shell .widget-help { color: #536176 !important; }
 .ps2-shell .status.notice { border: 1px solid #b9dfce !important; background: #effaf4 !important; color: #17633e !important; }
 .ps2-shell .pill.bullish { background: #e8f7ee !important; color: #17633e !important; }
 .ps2-shell .pill.bearish { background: #fff0f0 !important; color: #a32929 !important; }
-.ps2-shell .quote, .ps2-shell .poem { color: #344256 !important; }
-.ps2-shell .placeholder, .ps2-shell .empty-state { color: #536176 !important; border-color: #cbd5e1 !important; background: #f8fafc !important; }
+.ps2-shell .quote, .ps2-shell .poem { color: #000000 !important; }
+.ps2-shell .placeholder, .ps2-shell .empty-state { color: #536176 !important; border-color: #000000 !important; background: #ffffff !important; }
 .ps2-shell .chat-box { overflow: hidden; }
-.ps2-shell .chat-header, .ps2-shell .chat-compose { border-color: var(--town-line) !important; background: #f8fafc !important; }
+.ps2-shell .chat-header, .ps2-shell .chat-compose { border-color: var(--town-line) !important; background: #ffffff !important; }
 .ps2-shell .messages { background: #fff !important; }
-.ps2-shell .message { border: 1px solid #e2e8f0 !important; background: #f1f5f9 !important; color: #243247 !important; }
+.ps2-shell .message { border: 1px solid #000000 !important; background: #f1f5f9 !important; color: #243247 !important; }
 .ps2-shell .message.mine { border-color: #c9dcf7 !important; background: #eaf3ff !important; color: #173b66 !important; }
 .ps2-shell .message small { color: #64748b !important; }
 .ps2-shell .chat-empty { color: #64748b !important; }
-.ps2-shell .account-badge, .ps2-shell .session-badge { border-color: var(--town-line) !important; background: #f8fafc !important; color: #536176 !important; }
+.ps2-shell .account-badge, .ps2-shell .session-badge { border-color: var(--town-line) !important; background: #ffffff !important; color: #536176 !important; }
 .ps2-shell .reputation-hero { display: flex; align-items: center; justify-content: space-between; gap: 24px; }
 .ps2-shell .reputation-score { display: grid; justify-items: center; min-width: 140px; padding: 18px; border: 1px solid #dce6f2; border-radius: 15px; background: #f4f8fd; }
 .ps2-shell .reputation-score strong { color: #174a8b !important; font-size: 38px; line-height: 1; }
@@ -436,11 +436,11 @@ body { background: var(--town-canvas); color: var(--town-ink); }
 .ps2-shell .reputation-grid { display: grid; grid-template-columns: minmax(0,1fr) minmax(0,1.3fr); gap: 18px; margin: 18px 0; }
 .ps2-shell .reputation-stat-grid { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 10px; }
 .ps2-shell .reputation-stat-grid > div { display: grid; gap: 4px; padding: 13px; border: 1px solid var(--town-line); border-radius: 11px; background: #fafbfd; }
-.ps2-shell .reputation-stat-grid strong { color: #172033 !important; font-size: 22px; }
+.ps2-shell .reputation-stat-grid strong { color: #000000 !important; font-size: 22px; }
 .ps2-shell .reputation-stat-grid span { color: #64748b !important; font-size: 11px; }
 .ps2-shell .achievement-collection { display: grid; grid-template-columns: repeat(auto-fit,minmax(190px,1fr)); gap: 12px; }
-.ps2-shell .achievement-card { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 14px; border: 1px solid #dbe3ed !important; border-radius: 13px !important; background: linear-gradient(150deg,#fff,#f8fafc) !important; box-shadow: var(--town-shadow-sm) !important; }
-.ps2-shell .achievement-card.is-locked { background: #f8fafc !important; }
+.ps2-shell .achievement-card { display: flex; flex-direction: column; gap: 10px; min-width: 0; padding: 14px; border: 1px solid #dbe3ed !important; border-radius: 13px !important; background: linear-gradient(150deg,#fff,#ffffff) !important; box-shadow: var(--town-shadow-sm) !important; }
+.ps2-shell .achievement-card.is-locked { background: #ffffff !important; }
 .ps2-shell .achievement-card-top, .ps2-shell .achievement-card-footer { display: flex; justify-content: space-between; gap: 8px; color: #64748b !important; font-size: 9px; font-weight: 750; letter-spacing: .07em; }
 .ps2-shell .achievement-art { display: flex; justify-content: center; align-items: center; gap: 12px; min-height: 72px; border-radius: 10px; background: #edf4fd !important; color: #245db5 !important; }
 .ps2-shell .achievement-art strong { color: #245db5 !important; font-size: 24px; }
@@ -448,7 +448,7 @@ body { background: var(--town-canvas); color: var(--town-ink); }
 .ps2-shell .achievement-card-copy h3 { margin: 0 0 5px; font-size: 13px !important; }
 .ps2-shell .achievement-card-copy p { margin: 0; color: #5d6b7e !important; font-size: 11px; }
 .ps2-shell .achievement-progress, .ps2-shell .achievement-earned { display: grid; gap: 6px; margin-top: auto; color: #536176 !important; font-size: 10px; }
-.ps2-shell .achievement-progress b { color: #344256 !important; }
+.ps2-shell .achievement-progress b { color: #000000 !important; }
 .ps2-shell .achievement-progress-track { height: 6px; overflow: hidden; border-radius: 99px; background: #e5eaf1 !important; }
 .ps2-shell .achievement-progress-track i { display: block; height: 100%; border-radius: inherit; background: #3978c8 !important; }
 .ps2-shell .achievement-earned { padding: 9px; border-radius: 8px; background: #effaf4 !important; color: #17633e !important; }
@@ -477,10 +477,10 @@ body { background: var(--town-canvas); color: var(--town-ink); }
 .ps2-shell .profile-contribution-breakdown { gap: 10px; }
 .ps2-shell .profile-contribution-metric { background: #fafbfd !important; }
 .ps2-shell .profile-contribution-metric strong { color: #245db5 !important; }
-.ps2-shell .profile-contribution-metric span { color: #344256 !important; }
+.ps2-shell .profile-contribution-metric span { color: #000000 !important; }
 .ps2-shell .profile-contribution-metric small { color: #64748b !important; }
 .ps2-shell .profile-contribution-event { background: #fafbfd !important; }
-.ps2-shell .profile-contribution-event strong { color: #344256 !important; }
+.ps2-shell .profile-contribution-event strong { color: #000000 !important; }
 .ps2-shell .profile-contribution-event span { color: #64748b !important; }
 .ps2-shell .ps2-footer {
   display: flex;
@@ -499,7 +499,7 @@ body { background: var(--town-canvas); color: var(--town-ink); }
 .ps2-shell .footer-links a { color: #536176 !important; font-size: 10px; font-weight: 650; text-decoration: none; }
 .ps2-shell .footer-links a:hover { color: #245db5 !important; }
 .ps2-shell :is(a,button,input,textarea,select,[role="button"]):focus-visible { outline: 3px solid rgba(37,99,235,.5) !important; outline-offset: 2px; }
-.ps2-shell button:not(.button) { color: #344256; }
+.ps2-shell button:not(.button) { color: #000000; }
 .ps2-shell .ps2-main :is(.pet-experience,.pet-room,.pet-panel,.pet-progress-card,.pet-souvenir,.pet-collectible-card,.pet-catalog>div) {
   color: #243247 !important;
   border-color: #dce4ed !important;
@@ -507,17 +507,17 @@ body { background: var(--town-canvas); color: var(--town-ink); }
   box-shadow: var(--town-shadow-sm) !important;
 }
 .ps2-shell .pet-experience { width: 100%; max-width: 1180px; margin: 0 auto; color: #243247 !important; }
-.ps2-shell .pet-exp-header h1 { color: #172033 !important; }
+.ps2-shell .pet-exp-header h1 { color: #000000 !important; }
 .ps2-shell .pet-exp-header p:not(.eyebrow), .ps2-shell .pet-panel p, .ps2-shell .pet-progress-card p, .ps2-shell .pet-room-caption span { color: #536176 !important; }
 .ps2-shell .pet-exp-tabs button { border-color: #d9e1eb !important; background: #fff !important; color: #536176 !important; }
 .ps2-shell .pet-exp-tabs button.active { border-color: #b8cce7 !important; background: #edf4fd !important; color: #174a8b !important; }
 .ps2-shell .pet-room-sky { border-color: #d7e0ea !important; background: linear-gradient(180deg,#e7f0f8 0%,#edf2f4 65%,#dce8df 100%) !important; }
 .ps2-shell .pet-room-floor { border-color: #b8c9b9 !important; background: #d4e1d3 !important; }
-.ps2-shell .pet-room-sign { border-color: #c9d6e3 !important; background: #fff !important; color: #344256 !important; box-shadow: var(--town-shadow-sm); }
-.ps2-shell .pet-room-empty, .ps2-shell .pet-empty { color: #64748b !important; border-color: #cbd5e1 !important; }
-.ps2-shell .pet-emotes { border-color: #e2e8f0 !important; }
+.ps2-shell .pet-room-sign { border-color: #c9d6e3 !important; background: #fff !important; color: #000000 !important; box-shadow: var(--town-shadow-sm); }
+.ps2-shell .pet-room-empty, .ps2-shell .pet-empty { color: #64748b !important; border-color: #000000 !important; }
+.ps2-shell .pet-emotes { border-color: #000000 !important; }
 .ps2-shell .pet-emotes > span, .ps2-shell .pet-milestone small, .ps2-shell .pet-catalog small, .ps2-shell .pet-home-item small, .ps2-shell .pet-discovery-item small, .ps2-shell .pet-footnote { color: #64748b !important; }
-.ps2-shell .pet-emotes button, .ps2-shell .pet-choice-grid button { border-color: #d9e1eb !important; background: #f8fafc !important; color: #344256 !important; }
+.ps2-shell .pet-emotes button, .ps2-shell .pet-choice-grid button { border-color: #d9e1eb !important; background: #ffffff !important; color: #000000 !important; }
 .ps2-shell .pet-choice-grid button.selected { border-color: #8eadd4 !important; background: #edf4fd !important; box-shadow: inset 0 0 0 1px #c6d9f2 !important; }
 .ps2-shell .pet-choice-grid button small { color: #536176 !important; }
 .ps2-shell .pet-catalog>div>div strong, .ps2-shell .pet-collectible-info strong { color: #243247 !important; }
@@ -527,20 +527,20 @@ body { background: var(--town-canvas); color: var(--town-ink); }
 .ps2-shell .pet-collectible-art { border-color: #d9e1eb !important; background: linear-gradient(145deg,#edf4fd,#e3ebf5) !important; }
 .ps2-shell .pet-collectible-stamp { border-color: #9aabc0 !important; color: #31577e !important; box-shadow: inset 0 0 0 4px rgba(49,87,126,.08); }
 .ps2-shell .pet-collectible-mark, .ps2-shell .pet-collectible-art small, .ps2-shell .pet-collectible-kicker, .ps2-shell .pet-collectible-meta { color: #536176 !important; }
-.ps2-shell .pet-collectible-meta { border-color: #e2e8f0 !important; }
+.ps2-shell .pet-collectible-meta { border-color: #000000 !important; }
 .ps2-shell .pet-collected-state { border-color: #b9dfce !important; background: #effaf4 !important; color: #17633e !important; }
 .ps2-shell .pet-notice { border: 1px solid #b9dfce !important; background: #effaf4 !important; color: #17633e !important; }
 .ps2-shell .pet-room-decoration { filter: saturate(.85); }
 .ps2-shell .pet-room-character { filter: drop-shadow(0 7px 5px rgba(16,24,40,.16)); }
-.ps2-shell .pet-room-sky :is(span,small) { color: #344256; }
-.ps2-shell .ps2-main .engagement-panel { border: 1px solid #dce4ed !important; border-radius: 13px !important; background: #f8fafc !important; color: #344256 !important; }
-.ps2-shell .ps2-main .engagement-panel h3 { color: #172033 !important; }
+.ps2-shell .pet-room-sky :is(span,small) { color: #000000; }
+.ps2-shell .ps2-main .engagement-panel { border: 1px solid #dce4ed !important; border-radius: 13px !important; background: #ffffff !important; color: #000000 !important; }
+.ps2-shell .ps2-main .engagement-panel h3 { color: #000000 !important; }
 .ps2-shell .ps2-main .engagement-muted, .ps2-shell .ps2-main .suggestion-row span { color: #536176 !important; }
-.ps2-shell .ps2-main .engagement-badge { border-color: #cbd5e1 !important; background: #fff !important; color: #344256 !important; }
+.ps2-shell .ps2-main .engagement-badge { border-color: #000000 !important; background: #fff !important; color: #000000 !important; }
 .ps2-shell .ps2-main .engagement-badge.locked { color: #64748b !important; }
 .ps2-shell .ps2-main .completion-track { background: #e5eaf1 !important; }
 .ps2-shell .ps2-main .suggestion-row span { border-color: #d9e1eb !important; background: #fff !important; }
-.ps2-shell .ps2-main .profile-toggle-list .profile-toggle { color: #344256 !important; }
+.ps2-shell .ps2-main .profile-toggle-list .profile-toggle { color: #000000 !important; }
 .ps2-shell .ps2-main .pet-experience :is(button,input,select,textarea) { font-family: inherit; }
 .ps2-shell .ps2-main .pet-experience .button.primary { background: #245db5 !important; color: #fff !important; }
 @media (max-width: 1080px) {
@@ -577,7 +577,7 @@ body { background: var(--town-canvas); color: var(--town-ink); }
     border: 1px solid var(--town-line-strong);
     border-radius: 9px;
     background: #fff;
-    color: #344256;
+    color: #000000;
     font-size: 11px;
     font-weight: 750;
   }
@@ -629,8 +629,8 @@ body { background: var(--town-canvas); color: var(--town-ink); }
   display: grid;
   place-items: center;
   padding: 28px;
-  background: radial-gradient(circle at 12% 8%, #e7effa, transparent 34%), #f4f6f9 !important;
-  color: #172033 !important;
+  background: radial-gradient(circle at 12% 8%, #e7effa, transparent 34%), #ffffff !important;
+  color: #000000 !important;
 }
 .auth-card {
   width: min(460px,100%);
@@ -638,14 +638,28 @@ body { background: var(--town-canvas); color: var(--town-ink); }
   border: 1px solid #e0e6ee !important;
   border-radius: 20px;
   background: #fff !important;
-  color: #172033 !important;
+  color: #000000 !important;
   box-shadow: 0 18px 55px rgba(16,24,40,.09) !important;
 }
-.auth-card h1 { color: #172033 !important; font-size: clamp(30px,6vw,42px) !important; line-height: 1.1; }
+.auth-card h1 { color: #000000 !important; font-size: clamp(30px,6vw,42px) !important; line-height: 1.1; }
 .auth-card .lead { color: #5b687a !important; }
-.auth-card label { color: #344256 !important; }
-.auth-card input { background: #fff !important; color: #172033 !important; border-color: #cbd5e1 !important; }
+.auth-card label { color: #000000 !important; }
+.auth-card input { background: #fff !important; color: #000000 !important; border-color: #000000 !important; }
 .auth-card .demo-notice { border: 1px solid #dce6f2; background: #f5f8fc !important; color: #536176 !important; }
 .auth-card .demo-notice strong { color: #243247 !important; }
 .auth-card .eyebrow { color: #245db5 !important; }
 @media (max-width: 500px) { .auth-card { padding: 28px 22px; } }
+
+
+/* FINAL MONOCHROME OVERRIDE */
+:root { color-scheme:light; --town-canvas:#fff; --town-surface:#fff; --town-surface-soft:#fff; --town-ink:#000; --town-body:#000; --town-muted:#000; --town-faint:#000; --town-line:#000; --town-line-strong:#000; --town-accent:#000; --town-accent-soft:#fff; --town-panel:#fff; --town-panel-raised:#fff; --town-shadow-sm:none; --town-shadow-card:none; --accent:#000; --accent-text:#000; --profile-accent:#000; }
+html,body,#root,.ps2-shell,.auth-shell,.auth-card { background:#fff !important; color:#000 !important; }
+.ps2-shell *, .auth-shell *, .auth-card * { color:#000 !important; text-shadow:none !important; }
+.ps2-shell :is(section,article,aside,nav,header,footer,main,form,fieldset,details,summary,div,button,input,textarea,select,option) { background-color:#fff !important; border-color:#000 !important; box-shadow:none !important; }
+.ps2-shell :is(a,a:hover,a:visited,button,.button,[role=button]) { color:#000 !important; }
+.ps2-shell :is(button,.button,[role=button],input,textarea,select) { background:#fff !important; border:1px solid #000 !important; }
+.ps2-shell :is(input,textarea,select) { -webkit-text-fill-color:#000 !important; }
+.ps2-shell :is(input,textarea,select)::placeholder { color:#000 !important; opacity:.65 !important; }
+.ps2-shell :is(a,button,input,textarea,select,[tabindex]):focus-visible { outline:2px solid #000 !important; outline-offset:2px !important; }
+.ps2-shell :is(img,svg) { filter:grayscale(1) !important; }
+.ps2-shell :is(.active,.selected,[aria-selected=true],[aria-pressed=true],[aria-current=page]) { background:#fff !important; color:#000 !important; border-color:#000 !important; }
