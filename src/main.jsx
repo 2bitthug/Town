@@ -1583,9 +1583,7 @@ function GuestEntryScreen({ onGuest, onSignIn }) {
 }
 
 function GuestSettings({ guestState, setGuestState, onExit }) {
-  // Reuse the canonical palette so guest accents always pass the global theme resolver.
-   const profile = guestState.profile || GUEST_DEFAULT.profile
-  const apply = color => { setGuestState(state=>({...state,accentColor:color})); window.dispatchEvent(new CustomEvent('town-accent-change',{detail:color})) }
+  const profile = guestState.profile || GUEST_DEFAULT.profile
   const updateProfile = patch => setGuestState(state=>({...state,profile:{...state.profile,...patch}}))
   return <Card eyebrow="SETTINGS · GUEST SESSION" title="Make Town yours">
     <p className="feature-text">These preferences exist only for this visit and are cleared when you exit guest mode.</p>
