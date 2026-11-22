@@ -13,7 +13,7 @@ export default function CosmeticAvatarFrame({
   avatar,
   frame = 'none',
   badge = null,
-  accent = '#39ff14',
+  accent = '#000000',
   size = 72,
   alt = 'Profile avatar'
 }) {
@@ -23,7 +23,7 @@ export default function CosmeticAvatarFrame({
     <div
       className={`cosmetic-avatar ${frameClass}`}
       style={{
-        '--avatar-accent': accent,
+        '--avatar-accent': '#000000',
         '--avatar-size': `${size}px`
       }}
     >
