@@ -1675,7 +1675,7 @@ function App() {
   const route = useHashRoute()
   const [mobileNavOpen, setMobileNavOpen] = useState(false)
   const [canModerate, setCanModerate] = useState(false)
-  const [globalAccent, setGlobalAccent] = useState('#287BFF')
+  const [globalAccent, setGlobalAccent] = useState('#000000')
   useEffect(() => { setMobileNavOpen(false) }, [route])
   useEffect(() => {
     if (!mobileNavOpen) return
