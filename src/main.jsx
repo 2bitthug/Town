@@ -2,7 +2,6 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { createRoot } from 'react-dom/client'
 import './styles.css'
 import './town-design-system.css'
-import '../town-visual-refresh.css'
 import { isSupabaseConfigured, supabase } from './lib/supabase'
 import { DEFAULT_AVATAR_ID, PROFILE_AVATARS, CREATURE_DETAILS, avatarUrl } from './avatar'
 import { TownHomePage, CommunitiesPage, CommunityPage, CreateCommunityPage } from './components/community/CommunityPages'
@@ -19,6 +18,7 @@ import { ShareProfileCard } from './components/profile/ShareProfileCard'
 import { PetCompanionExperience } from './components/pet/PetCompanionExperience'
 import PetSprite from './components/pet/PetSprite'
 import { NotificationsPage } from './components/notifications/NotificationsPage'
+import './town-complete-redesign.css'
 
 const LEGACY_SOURCES = {
   pokemon: (name) => `https://pokeapi.co/api/v2/pokemon/${encodeURIComponent(name.toLowerCase())}`,
