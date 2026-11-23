@@ -152,3 +152,91 @@ html:has(#root .ps2-shell), body:has(#root .ps2-shell), #root:has(.ps2-shell) {
 @media (max-width:760px) {
   #root .ps2-shell .ps2-sidebar { background:#fff !important; }
 }
+
+
+/* Preserve expressive color in member customization and collectible surfaces. */
+#root .ps2-shell .profile-pet-choice,
+#root .ps2-shell .pet-choice-grid button {
+  background:linear-gradient(155deg,#fff,#f2f0ff) !important;
+  border-color:#d9d5fa !important;
+}
+#root .ps2-shell .profile-pet-choice.selected,
+#root .ps2-shell .pet-choice-grid button.selected {
+  background:linear-gradient(145deg,#e9e7ff,#dcd9ff) !important;
+  border-color:#7770e8 !important;
+  box-shadow:inset 0 0 0 1px #aaa5ff,0 4px 12px rgba(91,91,214,.12) !important;
+}
+#root .ps2-shell .profile-pet-choice img,
+#root .ps2-shell .pet-choice-grid img,
+#root .ps2-shell .pet-room-character,
+#root .ps2-shell .pet-catalog img,
+#root .ps2-shell .pet-collectible-art img {
+  filter:none !important;
+  -webkit-filter:none !important;
+  image-rendering:pixelated;
+}
+#root .ps2-shell .pet-room-sky {
+  background:linear-gradient(180deg,#b9e5ff 0%,#d9f1ff 56%,#d7efda 100%) !important;
+}
+#root .ps2-shell .pet-room-floor {
+  background:linear-gradient(180deg,#a8d6a5,#79b77b) !important;
+}
+#root .ps2-shell .pet-collectible-art {
+  background:linear-gradient(145deg,#dff4ff,#d9dcff 52%,#f8dff0) !important;
+  border-color:#b9b5ed !important;
+}
+#root .ps2-shell .pet-collectible-stamp {
+  color:#6255c9 !important;
+  border-color:#8e83e4 !important;
+  box-shadow:inset 0 0 0 4px rgba(98,85,201,.12) !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card {
+  background:#080b0d !important;
+  background-image:linear-gradient(145deg,#17221d,#050505 45%,#101017) !important;
+  color:#e8fff3 !important;
+  border:1px solid #28684f !important;
+  box-shadow:0 12px 34px #0009,0 0 22px #39ff9c12 !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-inner {
+  background:radial-gradient(ellipse at 10% 5%,#39ff9c18,transparent 48%),linear-gradient(155deg,#101a17,#07090a 62%) !important;
+  color:#e8fff3 !important;
+  border:1px solid #28684f !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-inner :is(strong,span,p) { color:inherit !important; }
+#root .ps2-shell .share-card-builder .town-share-card-brand,
+#root .ps2-shell .share-card-builder .town-share-card-edition { color:#39ff9c !important; }
+#root .ps2-shell .share-card-builder .town-share-bio,
+#root .ps2-shell .share-card-builder .town-share-labels span,
+#root .ps2-shell .share-card-builder .town-share-values strong,
+#root .ps2-shell .share-card-builder .town-share-active span,
+#root .ps2-shell .share-card-builder .town-share-active strong {
+  border-color:#28684f !important;
+  color:#e8fff3 !important;
+}
+#root .ps2-shell .share-card-builder .town-share-avatar,
+#root .ps2-shell .share-card-builder .town-share-bio,
+#root .ps2-shell .share-card-builder .town-share-labels span,
+#root .ps2-shell .share-card-builder .town-share-values strong,
+#root .ps2-shell .share-card-builder .town-share-active strong { background:#101a17 !important; }
+#root .ps2-shell .share-card-builder .town-share-card-red {
+  border-color:#8e263a !important;
+  background-image:linear-gradient(145deg,#29131a,#080b0d 55%,#170b10) !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-red .town-share-card-inner {
+  border-color:#8e263a !important;
+  background:radial-gradient(ellipse at 10% 5%,#ff52681a,transparent 48%),linear-gradient(155deg,#1c1015,#07090a 62%) !important;
+  color:#fff0f1 !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-red .town-share-card-brand,
+#root .ps2-shell .share-card-builder .town-share-card-red .town-share-card-edition { color:#ff5268 !important; }
+#root .ps2-shell .share-card-builder .town-share-card-gold {
+  border-color:#8b6725 !important;
+  background-image:linear-gradient(145deg,#30240c,#080b0d 55%,#1d1608) !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-gold .town-share-card-inner {
+  border-color:#8b6725 !important;
+  background:radial-gradient(ellipse at 10% 5%,#f5c4511c,transparent 48%),linear-gradient(155deg,#211b0d,#07090a 62%) !important;
+  color:#fff4c6 !important;
+}
+#root .ps2-shell .share-card-builder .town-share-card-gold .town-share-card-brand,
+#root .ps2-shell .share-card-builder .town-share-card-gold .town-share-card-edition { color:#f5c451 !important; }
