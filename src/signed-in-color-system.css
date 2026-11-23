@@ -1,0 +1,154 @@
+/* TOWN — signed-in color layer
+   Restores a restrained, purposeful palette inside the product.
+   The public landing page remains independently styled. */
+:root {
+  --town-canvas:#f5f6fa;
+  --town-surface:#ffffff;
+  --town-surface-soft:#f7f8fc;
+  --town-ink:#202438;
+  --town-body:#424b60;
+  --town-muted:#737d92;
+  --town-faint:#98a1b2;
+  --town-line:#e6e8f0;
+  --town-line-strong:#d8dceb;
+  --town-accent:#5b5bd6;
+  --town-accent-text:#4c4cc4;
+  --town-accent-soft:#efefff;
+  --town-panel:#fff;
+  --town-panel-raised:#f8f8ff;
+  --town-shadow-sm:0 2px 8px rgba(37,42,77,.045);
+  --town-shadow-card:0 8px 26px rgba(37,42,77,.055);
+}
+html:has(#root .ps2-shell), body:has(#root .ps2-shell), #root:has(.ps2-shell) {
+  background:#f5f6fa !important;
+  color:#202438 !important;
+}
+#root .ps2-shell {
+  --town-canvas:#f5f6fa;
+  --town-surface:#fff;
+  --town-surface-soft:#f7f8fc;
+  --town-ink:#202438;
+  --town-body:#424b60;
+  --town-muted:#737d92;
+  --town-faint:#98a1b2;
+  --town-line:#e6e8f0;
+  --town-line-strong:#d8dceb;
+  --town-accent:#5b5bd6;
+  --town-accent-text:#4c4cc4;
+  --town-accent-soft:#efefff;
+  background:#f5f6fa !important;
+  color:#202438 !important;
+}
+#root .ps2-shell :is(.ps2-topbar,.ps2-sidebar) {
+  background:rgba(255,255,255,.96) !important;
+  border-color:#e6e8f0 !important;
+}
+#root .ps2-shell .ps2-brand-title { color:#252943 !important; }
+#root .ps2-shell .ps2-main { color:#424b60 !important; }
+#root .ps2-shell .ps2-main :is(h1,h2,h3,h4,strong,b) { color:#202438 !important; }
+#root .ps2-shell .ps2-main :is(p,li,dd,dt) { color:#424b60 !important; }
+#root .ps2-shell .ps2-main :is(small,.muted,.town-meta,.post-meta,.meta,.hint,.source-note,.widget-help) { color:#737d92 !important; }
+#root .ps2-shell .eyebrow,
+#root .ps2-shell .town-kicker,
+#root .ps2-shell .ps2-menu-label,
+#root .ps2-shell .ps2-section-label { color:#7776b9 !important; }
+#root .ps2-shell .ps2-nav a { color:#555e74 !important; }
+#root .ps2-shell .ps2-nav a:hover { background:#f4f3ff !important; color:#3e3d9f !important; }
+#root .ps2-shell .ps2-nav a.active {
+  background:#efefff !important;
+  border-color:#dedfff !important;
+  color:#4c4cc4 !important;
+}
+#root .ps2-shell .ps2-nav a.active :is(span,b) { color:#4c4cc4 !important; }
+#root .ps2-shell .ps2-nav-index { color:#9aa2b4 !important; }
+#root .ps2-shell .ps2-create-action,
+#root .ps2-shell .ps2-main .button.primary,
+#root .ps2-shell .ps2-main button.primary {
+  background:#5757cf !important;
+  border-color:#5757cf !important;
+  color:#fff !important;
+}
+#root .ps2-shell .ps2-create-action:hover,
+#root .ps2-shell .ps2-main .button.primary:hover,
+#root .ps2-shell .ps2-main button.primary:hover {
+  background:#4545b8 !important;
+  border-color:#4545b8 !important;
+}
+#root .ps2-shell .ps2-main .button.secondary,
+#root .ps2-shell .ps2-top-signout {
+  background:#fff !important;
+  border-color:#d8dceb !important;
+  color:#4c5368 !important;
+}
+#root .ps2-shell :is(.card,.feed-card,.post-card,.community-card,.profile-card,.moderation-card,.growth-card,.launch-checklist,.launch-notice,.town-discovery-card,.town-preference-group,.town-home-side-card,.town-home-community-card) {
+  background:#fff !important;
+  border-color:#e6e8f0 !important;
+  color:#424b60 !important;
+  box-shadow:0 5px 20px rgba(37,42,77,.045) !important;
+}
+#root .ps2-shell .town-page-heading { border-color:#e6e8f0 !important; }
+#root .ps2-shell .town-home-hero {
+  background:linear-gradient(120deg,#fff 0%,#f5f4ff 62%,#eeefff 100%) !important;
+  border-color:#e1e1f6 !important;
+}
+#root .ps2-shell .town-home-hero::after {
+  border-color:rgba(91,91,214,.16) !important;
+  box-shadow:0 0 0 35px rgba(91,91,214,.045),0 0 0 75px rgba(91,91,214,.025) !important;
+}
+#root .ps2-shell .town-home-headline { color:#252943 !important; }
+#root .ps2-shell .town-home-subhead { color:#667087 !important; }
+#root .ps2-shell :is(a,.ps2-user-link,.town-discovery-section-head>a) { color:#5555c7 !important; }
+#root .ps2-shell :is(a:hover,.town-discovery-section-head>a:hover) { color:#39399e !important; }
+#root .ps2-shell .ps2-top-search,
+#root .ps2-shell :is(input,textarea,select) {
+  background:#fafaff !important;
+  border-color:#dfe2ef !important;
+  color:#30364b !important;
+  -webkit-text-fill-color:#30364b !important;
+}
+#root .ps2-shell :is(input,textarea,select)::placeholder { color:#9299aa !important; }
+#root .ps2-shell :is(button,input,textarea,select,a):focus-visible {
+  outline:2px solid #7775e8 !important;
+  outline-offset:3px !important;
+}
+#root .ps2-shell :is(.accepted-answer,.notification-item.is-unread) {
+  background:#f2f8f5 !important;
+  border-color:#cfe7d9 !important;
+}
+#root .ps2-shell :is(.accepted-answer-label,.accepted-answer-action) { color:#23734f !important; }
+#root .ps2-shell .notification-item,
+#root .ps2-shell .saved-collection-create,
+#root .ps2-shell .community-event-item {
+  background:#fff !important;
+  border-color:#e6e8f0 !important;
+}
+#root .ps2-shell .community-event-date {
+  background:#f0efff !important;
+  color:#5555c7 !important;
+}
+#root .ps2-shell :is(.post-type-question,.question-answer-state) {
+  color:#4c4cc4 !important;
+  border-color:#d9d9fa !important;
+  background:#f5f4ff !important;
+}
+#root .ps2-shell .town-discovery-community-art,
+#root .ps2-shell .town-preference-chips label {
+  background:#f6f5ff !important;
+  border-color:#e1e0f5 !important;
+}
+#root .ps2-shell .town-preference-row input,
+#root .ps2-shell .town-preference-chips input { accent-color:#5757cf !important; }
+#root .ps2-shell .town-discovery-success {
+  background:#eff8f2 !important;
+  border-color:#cfe7d7 !important;
+  color:#276345 !important;
+}
+/* Preserve the color that belongs to members and communities. */
+#root .ps2-shell img,
+#root .ps2-shell svg,
+#root .ps2-shell video { filter:none !important; -webkit-filter:none !important; }
+#root .ps2-shell .ps2-sidebar,
+#root .ps2-shell .ps2-topbar { box-shadow:0 1px 5px rgba(37,42,77,.025) !important; }
+@media (max-width:760px) {
+  #root .ps2-shell .ps2-sidebar { background:#fff !important; }
+}
