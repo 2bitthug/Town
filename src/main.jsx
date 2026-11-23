@@ -20,6 +20,8 @@ import PetSprite from './components/pet/PetSprite'
 import { NotificationsPage } from './components/notifications/NotificationsPage'
 import { BulletinPage, QuestionsPage, ConnectionsPage, PreferencesPage, WeeklyQuestionsPage } from './components/discovery/DiscoveryPages'
 import './town-complete-redesign.css'
+import './landing-page.css'
+import { LandingPage } from './components/landing/LandingPage'
 
 const LEGACY_SOURCES = {
   pokemon: (name) => `https://pokeapi.co/api/v2/pokemon/${encodeURIComponent(name.toLowerCase())}`,
@@ -1750,6 +1752,8 @@ function App() {
   const guestMode = !session
   const exitGuestMode = () => { setGuestState({...GUEST_DEFAULT,profile:{...GUEST_DEFAULT.profile},petProfile:{...GUEST_DEFAULT.petProfile},petCompanion:{...GUEST_DEFAULT.petCompanion}}); setEntryMode('guest'); window.location.hash='#/home' }
   const currentProfileHref = session?.user?.id ? `#/profile/${session.user.id}` : '#/profile/demo'
+  // The bare public URL is the product introduction. Enter Town opens the Bulletin.
+  if (!session && !window.location.hash) return <LandingPage />
 
   const isActive = (id) => {
     if (id === 'feed') return routeName === 'feed' || routeName === 'post'
