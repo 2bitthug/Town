@@ -22,6 +22,7 @@ import { BulletinPage, QuestionsPage, ConnectionsPage, PreferencesPage, WeeklyQu
 import './town-complete-redesign.css'
 import './landing-page.css'
 import { LandingPage } from './components/landing/LandingPage'
+import './signed-in-color-system.css'
 
 const LEGACY_SOURCES = {
   pokemon: (name) => `https://pokeapi.co/api/v2/pokemon/${encodeURIComponent(name.toLowerCase())}`,
